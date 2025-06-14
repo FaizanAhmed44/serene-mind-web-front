@@ -1,3 +1,4 @@
+
 import { Book, Home, User, Calendar, Search, Heart } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -24,7 +25,7 @@ const menuItems = [
     icon: User,
   },
   {
-    title: "My Favorites",
+    title: "Interest",
     url: "/favorites",
     icon: Heart,
   },

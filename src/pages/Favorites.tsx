@@ -1,268 +1,266 @@
 
 import { useState } from "react";
-import { Heart, Clock, Book, Star, User, Search, Filter } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Heart, Star, Users, Clock, BookOpen, Play, ChevronRight, TrendingUp, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Mock favorite courses data
-const favoriteCourses = [
+// Interest categories data
+const interestCategories = [
+  { id: 1, name: "Mental Health", courses: 24, icon: "🧠", color: "bg-blue-500" },
+  { id: 2, name: "Stress Management", courses: 18, icon: "🧘", color: "bg-green-500" },
+  { id: 3, name: "Anxiety Relief", courses: 15, icon: "💚", color: "bg-purple-500" },
+  { id: 4, name: "Confidence Building", courses: 12, icon: "💪", color: "bg-orange-500" },
+  { id: 5, name: "Depression Support", courses: 21, icon: "🌟", color: "bg-pink-500" },
+  { id: 6, name: "Mindfulness", courses: 19, icon: "🌸", color: "bg-indigo-500" },
+];
+
+// Recommended courses based on interests
+const recommendedCourses = [
   {
     id: 1,
-    title: "Overcoming Anxiety",
-    description: "Learn practical techniques to manage and reduce anxiety in daily life",
-    duration: "6 weeks",
-    modules: 12,
-    category: "Anxiety",
+    title: "Cognitive Behavioral Therapy Basics",
     instructor: "Dr. Sarah Johnson",
+    university: "Stanford University",
     rating: 4.8,
-    students: 2847,
-    progress: 0,
-    dateAdded: "2024-01-15",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=250&fit=crop"
+    reviews: 2847,
+    duration: "6 weeks",
+    level: "Beginner",
+    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=250&fit=crop",
+    category: "Mental Health",
+    enrolled: 45000,
+    certificate: true
   },
   {
     id: 2,
-    title: "Confident Public Speaking",
-    description: "Build confidence and overcome fear of public speaking",
-    duration: "4 weeks",
-    modules: 8,
-    category: "Confidence",
-    instructor: "Mark Thompson",
+    title: "Mindfulness and Stress Reduction",
+    instructor: "Dr. Michael Chen",
+    university: "Yale University",
     rating: 4.9,
-    students: 1924,
-    progress: 65,
-    dateAdded: "2024-01-10",
-    image: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=250&fit=crop"
+    reviews: 1924,
+    duration: "4 weeks",
+    level: "Intermediate",
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop",
+    category: "Stress Management",
+    enrolled: 32000,
+    certificate: true
   },
   {
-    id: 4,
-    title: "Managing Depression",
-    description: "Evidence-based strategies for understanding and managing depression",
+    id: 3,
+    title: "Building Emotional Resilience",
+    instructor: "Prof. Lisa Wang",
+    university: "Harvard University",
+    rating: 4.7,
+    reviews: 3201,
     duration: "8 weeks",
-    modules: 16,
-    category: "Depression",
-    instructor: "Dr. Michael Rodriguez",
-    rating: 4.9,
-    students: 3201,
-    progress: 0,
-    dateAdded: "2024-01-05",
-    image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=250&fit=crop"
+    level: "Advanced",
+    image: "https://images.unsplash.com/photo-1552581234-26160f608093?w=400&h=250&fit=crop",
+    category: "Confidence Building",
+    enrolled: 28000,
+    certificate: true
   }
 ];
 
-const categories = ["All Categories", "Anxiety", "Confidence", "Decision Making", "Depression", "Stress Management"];
-const sortOptions = [
-  { value: "recent", label: "Recently Added" },
-  { value: "alphabetical", label: "Alphabetical" },
-  { value: "rating", label: "Highest Rated" },
-  { value: "progress", label: "Progress" }
+// Learning goals
+const learningGoals = [
+  { icon: Target, title: "Reduce Anxiety", progress: 75, courses: 3 },
+  { icon: Award, title: "Build Confidence", progress: 45, courses: 2 },
+  { icon: TrendingUp, title: "Stress Management", progress: 60, courses: 4 },
 ];
 
 const Favorites = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
-  const [sortBy, setSortBy] = useState("recent");
-
-  const filteredCourses = favoriteCourses
-    .filter(course => {
-      const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           course.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === "All Categories" || course.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "alphabetical":
-          return a.title.localeCompare(b.title);
-        case "rating":
-          return b.rating - a.rating;
-        case "progress":
-          return b.progress - a.progress;
-        case "recent":
-        default:
-          return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
-      }
-    });
-
-  const removeFavorite = (courseId: number) => {
-    // In a real app, this would update the favorites in state management or backend
-    console.log(`Removing course ${courseId} from favorites`);
-  };
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
-      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div className="flex items-center justify-between p-4">
           <SidebarTrigger />
           <div className="text-center">
-            <h1 className="text-lg font-semibold text-foreground">My Favorites</h1>
+            <h1 className="text-lg font-semibold text-gray-900">Your Learning Interests</h1>
           </div>
           <div className="w-10" />
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto p-6 space-y-8">
-        {/* Header Section */}
-        <div className="text-center py-6 animate-fade-in">
-          <div className="flex items-center justify-center mb-4">
-            <Heart className="h-8 w-8 text-red-500 mr-3" />
-            <h1 className="text-3xl font-bold text-foreground">Favorite Courses</h1>
-          </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Keep track of courses you love and want to revisit. Your personal learning collection.
+        {/* Hero Section */}
+        <div className="text-center py-8 animate-fade-in">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Discover Your Potential</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            Explore courses tailored to your mental wellness journey. Build skills that matter for your personal growth and well-being.
           </p>
-          <div className="mt-4 text-sm text-muted-foreground">
-            {favoriteCourses.length} {favoriteCourses.length === 1 ? 'course' : 'courses'} saved
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {learningGoals.map((goal, index) => (
+              <Card key={index} className="p-4 hover:shadow-lg transition-shadow">
+                <div className="flex items-center space-x-3 mb-3">
+                  <goal.icon className="h-8 w-8 text-blue-600" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{goal.title}</h3>
+                    <p className="text-sm text-gray-500">{goal.courses} courses</p>
+                  </div>
+                </div>
+                <Progress value={goal.progress} className="h-2" />
+                <p className="text-sm text-gray-600 mt-2">{goal.progress}% complete</p>
+              </Card>
+            ))}
           </div>
         </div>
 
-        {/* Search and Filters */}
-        <div className="bg-card rounded-lg p-6 shadow-sm animate-slide-up">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search your favorites..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger>
-                <Filter className="h-4 w-4 mr-2" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {sortOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Favorites Grid */}
-        {filteredCourses.length === 0 ? (
-          <div className="text-center py-16 animate-fade-in">
-            <Heart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              {searchQuery || selectedCategory !== "All Categories" ? "No matching favorites" : "No favorites yet"}
-            </h3>
-            <p className="text-muted-foreground mb-6">
-              {searchQuery || selectedCategory !== "All Categories" 
-                ? "Try adjusting your search or filter criteria" 
-                : "Start adding courses to your favorites to see them here"}
-            </p>
-            <Button asChild>
-              <Link to="/">Browse Courses</Link>
+        {/* Interest Categories */}
+        <section className="animate-slide-up">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Browse by Interest</h2>
+            <Button variant="outline" className="text-blue-600 hover:text-blue-700">
+              View All <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
-        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {interestCategories.map((category) => (
+              <Card 
+                key={category.id} 
+                className="p-4 hover:shadow-lg transition-all cursor-pointer hover:scale-105"
+                onClick={() => setSelectedCategory(category.name)}
+              >
+                <div className="text-center">
+                  <div className={`w-12 h-12 ${category.color} rounded-full flex items-center justify-center text-white text-xl mx-auto mb-3`}>
+                    {category.icon}
+                  </div>
+                  <h3 className="font-semibold text-gray-900 text-sm mb-1">{category.name}</h3>
+                  <p className="text-xs text-gray-500">{category.courses} courses</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Recommended for You */}
+        <section className="animate-slide-up">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Recommended for You</h2>
+              <p className="text-gray-600">Based on your interests and learning goals</p>
+            </div>
+            <Button variant="outline" className="text-blue-600 hover:text-blue-700">
+              View All <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course) => (
-              <Card key={course.id} className="hover-lift cursor-pointer group relative">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="absolute top-3 right-3 z-10 bg-background/80 backdrop-blur-sm hover:bg-background"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    removeFavorite(course.id);
-                  }}
-                >
-                  <Heart className="h-4 w-4 fill-red-500 text-red-500" />
-                </Button>
-                
+            {recommendedCourses.map((course) => (
+              <Card key={course.id} className="overflow-hidden hover:shadow-xl transition-shadow group">
                 <Link to={`/courses/${course.id}`}>
-                  <div className="relative overflow-hidden rounded-t-lg">
+                  <div className="relative">
                     <img
                       src={course.image}
                       alt={course.title}
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <Badge className="absolute bottom-3 left-3 bg-primary text-primary-foreground">
+                    <Badge className="absolute top-3 left-3 bg-white text-gray-900 hover:bg-white">
                       {course.category}
                     </Badge>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="absolute top-3 right-3 bg-white/80 hover:bg-white"
+                    >
+                      <Heart className="h-4 w-4" />
+                    </Button>
                   </div>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{course.description}</p>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <CardContent className="p-6">
+                    <div className="mb-2">
+                      <Badge variant="outline" className="text-xs">
+                        {course.level}
+                      </Badge>
+                      {course.certificate && (
+                        <Badge variant="outline" className="text-xs ml-2 text-green-600 border-green-600">
+                          Certificate
+                        </Badge>
+                      )}
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                      {course.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-3">{course.university}</p>
+                    <p className="text-sm text-gray-700 mb-4">by {course.instructor}</p>
+                    
+                    <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="font-medium text-gray-900">{course.rating}</span>
+                          <span>({course.reviews.toLocaleString()})</span>
+                        </div>
+                      </div>
                       <div className="flex items-center space-x-1">
                         <Clock className="h-4 w-4" />
                         <span>{course.duration}</span>
                       </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
                       <div className="flex items-center space-x-1">
-                        <Book className="h-4 w-4" />
-                        <span>{course.modules} modules</span>
+                        <Users className="h-4 w-4" />
+                        <span>{course.enrolled.toLocaleString()} enrolled</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <BookOpen className="h-4 w-4" />
+                        <span>View Course</span>
                       </div>
                     </div>
                     
-                    {course.progress > 0 && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Progress</span>
-                          <span>{course.progress}%</span>
-                        </div>
-                        <Progress value={course.progress} className="h-2" />
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-1">
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                          <span className="text-sm font-medium">{course.rating}</span>
-                        </div>
-                        <div className="flex items-center space-x-1 text-muted-foreground">
-                          <User className="h-4 w-4" />
-                          <span className="text-sm">{course.students.toLocaleString()}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>by {course.instructor}</span>
-                      <span>Added {new Date(course.dateAdded).toLocaleDateString()}</span>
-                    </div>
-                    
-                    <Button 
-                      className="w-full" 
-                      variant={course.progress > 0 ? "default" : "outline"}
-                    >
-                      {course.progress > 0 ? "Continue Learning" : "Start Course"}
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                      <Play className="h-4 w-4 mr-2" />
+                      Enroll Now
                     </Button>
                   </CardContent>
                 </Link>
               </Card>
             ))}
           </div>
-        )}
+        </section>
+
+        {/* Popular This Week */}
+        <section className="animate-slide-up">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Popular This Week</h2>
+            <Button variant="outline" className="text-blue-600 hover:text-blue-700">
+              View All <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="h-8 w-8 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900">Trending: Emotional Intelligence</h3>
+                  <p className="text-gray-600">15 new courses added this week</p>
+                  <Button variant="link" className="p-0 h-auto text-blue-600">
+                    Explore Now <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <Award className="h-8 w-8 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900">New Certificates Available</h3>
+                  <p className="text-gray-600">Professional certificates in mental wellness</p>
+                  <Button variant="link" className="p-0 h-auto text-blue-600">
+                    Learn More <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </section>
       </div>
     </div>
   );
