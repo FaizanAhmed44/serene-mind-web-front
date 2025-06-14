@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+import UserAvatar from "./UserAvatar";
 
 const menuItems = [
   {
@@ -47,19 +48,22 @@ export function AppSidebar() {
   return (
     <Sidebar className="border-r border-sidebar-border">
       <SidebarHeader className="p-6">
-        <div className="flex items-center space-x-4">
-          <div className="relative">
-            <img 
-              src="/lovable-uploads/0d5f19e2-335b-46b8-85f6-4784451740ba.png" 
-              alt="Core Cognitive Logo" 
-              className="h-12 w-12 rounded-full border-3 border-white shadow-lg hover:shadow-xl transition-shadow duration-300"
-            />
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent to-black/10"></div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <img 
+                src="/lovable-uploads/0d5f19e2-335b-46b8-85f6-4784451740ba.png" 
+                alt="Core Cognitive Logo" 
+                className="h-12 w-12 rounded-full border-3 border-white shadow-lg hover:shadow-xl transition-shadow duration-300"
+              />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent to-black/10"></div>
+            </div>
+            <div className="flex-1">
+              <h1 className="text-xl font-bold text-sidebar-foreground leading-tight">Core Cognitive</h1>
+              <p className="text-sm text-sidebar-foreground/80 font-medium">Mental Wellness Platform</p>
+            </div>
           </div>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-sidebar-foreground leading-tight">Core Cognitive</h1>
-            <p className="text-sm text-sidebar-foreground/80 font-medium">Mental Wellness Platform</p>
-          </div>
+          <UserAvatar />
         </div>
       </SidebarHeader>
       <SidebarContent>

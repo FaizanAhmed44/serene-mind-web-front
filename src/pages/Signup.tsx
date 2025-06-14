@@ -1,15 +1,17 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -17,6 +19,8 @@ const Signup = () => {
     password: "",
     confirmPassword: ""
   });
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -25,10 +29,41 @@ const Signup = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle signup logic here
-    console.log("Signup attempt:", formData);
+    setIsLoading(true);
+
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Password mismatch",
+        description: "Please make sure your passwords match.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Simulate signup API call
+    setTimeout(() => {
+      console.log("Signup attempt:", formData);
+      
+      // Mock successful signup - in a real app, validate and create account
+      if (formData.firstName && formData.lastName && formData.email && formData.password) {
+        toast({
+          title: "Account created successfully!",
+          description: "Welcome to Core Cognitive. You're now signed in.",
+        });
+        navigate("/"); // Redirect to home page
+      } else {
+        toast({
+          title: "Signup failed",
+          description: "Please fill in all required fields.",
+          variant: "destructive",
+        });
+      }
+      setIsLoading(false);
+    }, 1000);
   };
 
   return (
@@ -165,9 +200,9 @@ const Signup = () => {
                 </Label>
               </div>
 
-              <Button type="submit" className="w-full" size="lg">
-                Create Account
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                {isLoading ? "Creating Account..." : "Create Account"}
+                {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
               </Button>
             </form>
 
