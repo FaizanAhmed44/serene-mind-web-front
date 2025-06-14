@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { 
@@ -96,6 +97,160 @@ const courseData = {
         name: "Michael Chen",
         rating: 5,
         comment: "Dr. Johnson's expertise really shows. The content is well-structured and the exercises are incredibly helpful.",
+        date: "1 month ago"
+      }
+    ]
+  },
+  "2": {
+    id: 2,
+    title: "Confident Public Speaking",
+    description: "Master the art of public speaking and overcome stage fright with proven techniques and practical exercises.",
+    longDescription: "Transform your fear of public speaking into confidence with this comprehensive course. Whether you're presenting at work, speaking at events, or just want to feel more comfortable in group settings, this course provides you with the skills and confidence you need to speak with impact and authenticity.",
+    duration: "8 weeks",
+    modules: 16,
+    category: "Communication",
+    instructor: {
+      name: "Mark Thompson",
+      title: "Professional Speaker & Communication Coach",
+      bio: "Mark Thompson has been a professional speaker for over 15 years and has helped thousands of people overcome their fear of public speaking.",
+      photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face"
+    },
+    rating: 4.9,
+    students: 1892,
+    progress: 65,
+    price: "$199",
+    language: "English",
+    level: "Intermediate",
+    certificate: true,
+    image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=450&fit=crop",
+    outcomes: [
+      "Overcome stage fright and speaking anxiety",
+      "Structure compelling presentations that engage your audience",
+      "Use body language and voice effectively",
+      "Handle difficult questions and situations with confidence",
+      "Develop your unique speaking style",
+      "Build lasting confidence in all speaking situations"
+    ],
+    modules_detail: [
+      {
+        week: 1,
+        title: "Foundation of Public Speaking",
+        lessons: [
+          "Understanding Stage Fright",
+          "The Psychology of Confidence",
+          "Breathing and Relaxation Techniques"
+        ],
+        duration: "2.5 hours"
+      },
+      {
+        week: 2,
+        title: "Structuring Your Message",
+        lessons: [
+          "Creating Compelling Openings",
+          "Organizing Your Content",
+          "Powerful Conclusions"
+        ],
+        duration: "3 hours"
+      },
+      {
+        week: 3,
+        title: "Delivery Techniques",
+        lessons: [
+          "Voice and Vocal Variety",
+          "Body Language and Gestures",
+          "Managing Nerves During Delivery"
+        ],
+        duration: "3.5 hours"
+      }
+    ],
+    reviews: [
+      {
+        name: "Sarah Williams",
+        rating: 5,
+        comment: "Mark's teaching style is incredible. I went from being terrified of speaking to actually enjoying presentations!",
+        date: "1 week ago"
+      },
+      {
+        name: "David Park",
+        rating: 5,
+        comment: "The practical exercises really helped me build confidence. I can now speak in front of large groups without fear.",
+        date: "3 weeks ago"
+      }
+    ]
+  },
+  "3": {
+    id: 3,
+    title: "Decision Making Mastery",
+    description: "Learn to make better decisions faster with frameworks and techniques used by top executives and entrepreneurs.",
+    longDescription: "Decision-making is one of the most critical skills for success in both personal and professional life. This course teaches you systematic approaches to making better decisions, avoiding common cognitive biases, and building confidence in your choices.",
+    duration: "5 weeks",
+    modules: 10,
+    category: "Critical Thinking",
+    instructor: {
+      name: "Dr. Emily Chen",
+      title: "Behavioral Economist & Decision Science Expert",
+      bio: "Dr. Emily Chen is a leading expert in decision science with a PhD in Behavioral Economics from Stanford University.",
+      photo: "https://images.unsplash.com/photo-1494790108755-2616b612b577?w=300&h=300&fit=crop&crop=face"
+    },
+    rating: 4.7,
+    students: 1456,
+    progress: 30,
+    price: "$179",
+    language: "English",
+    level: "Advanced",
+    certificate: true,
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=450&fit=crop",
+    outcomes: [
+      "Master proven decision-making frameworks",
+      "Identify and overcome cognitive biases",
+      "Make faster, more confident decisions",
+      "Improve decision quality in uncertain situations",
+      "Develop intuition through structured thinking",
+      "Apply decision science to real-world problems"
+    ],
+    modules_detail: [
+      {
+        week: 1,
+        title: "Decision Science Fundamentals",
+        lessons: [
+          "The Science of Decision Making",
+          "Types of Decisions and Their Challenges",
+          "Common Decision-Making Pitfalls"
+        ],
+        duration: "2 hours"
+      },
+      {
+        week: 2,
+        title: "Cognitive Biases",
+        lessons: [
+          "Understanding Cognitive Biases",
+          "Confirmation Bias and Anchoring",
+          "Overcoming Mental Shortcuts"
+        ],
+        duration: "2.5 hours"
+      },
+      {
+        week: 3,
+        title: "Decision Frameworks",
+        lessons: [
+          "The DECIDE Model",
+          "Pros and Cons Analysis",
+          "Cost-Benefit Analysis"
+        ],
+        duration: "3 hours"
+      }
+    ],
+    reviews: [
+      {
+        name: "James Miller",
+        rating: 5,
+        comment: "Dr. Chen's approach to decision making is revolutionary. I make much better choices now in both business and life.",
+        date: "2 weeks ago"
+      },
+      {
+        name: "Lisa Zhang",
+        rating: 4,
+        comment: "Great frameworks and practical tools. The content on cognitive biases was especially eye-opening.",
         date: "1 month ago"
       }
     ]

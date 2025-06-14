@@ -51,7 +51,8 @@ const Dashboard = () => {
   ];
 
   const handleContinueLearning = (courseId: number, courseTitle: string) => {
-    toast.success(`Continuing ${courseTitle}...`);
+    console.log(`Navigating to course ${courseId}: ${courseTitle}`);
+    toast.success(`Continuing with ${courseTitle}...`);
     navigate(`/courses/${courseId}`);
   };
 
