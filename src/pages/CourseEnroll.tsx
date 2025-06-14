@@ -25,7 +25,6 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
 import { getCourseById } from "@/data/courses";
 import { getPricingPlans } from "@/data/pricing";
-import { UserAvatar } from "@/components/UserAvatar";
 
 const CourseEnroll = () => {
   const { id } = useParams();
@@ -93,8 +92,10 @@ const CourseEnroll = () => {
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="flex items-center justify-between p-4">
           <SidebarTrigger />
-          <h1 className="text-2xl font-bold text-foreground">Course Enrollment</h1>
-          <UserAvatar />
+          <div className="text-center">
+            <h1 className="text-lg font-semibold text-foreground">Course Enrollment</h1>
+          </div>
+          <div className="w-10" />
         </div>
       </div>
 

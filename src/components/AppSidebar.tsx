@@ -1,3 +1,4 @@
+
 import { Book, Home, User, Calendar, Search, Heart, UserCog } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -11,7 +12,6 @@ import {
   SidebarMenuItem,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { UserAvatar } from "@/components/UserAvatar";
 
 const menuItems = [
   {
