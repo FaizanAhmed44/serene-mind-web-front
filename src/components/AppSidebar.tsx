@@ -41,7 +41,7 @@ export function AppSidebar() {
           <img 
             src="/lovable-uploads/0d5f19e2-335b-46b8-85f6-4784451740ba.png" 
             alt="Core Cognitive Logo" 
-            className="h-8 w-8"
+            className="h-8 w-8 rounded-full"
           />
           <div>
             <h1 className="text-lg font-bold text-sidebar-foreground">Core Cognitive</h1>
