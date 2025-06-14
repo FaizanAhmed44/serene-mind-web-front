@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Heart, Star, Users, Clock, BookOpen, Play, ChevronRight, TrendingUp, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,6 @@ import { Progress } from "@/components/ui/progress";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { Link } from "react-router-dom";
-import { UserAvatar } from "@/components/UserAvatar";
 
 // Interest categories data
 const interestCategories = [
@@ -82,13 +82,14 @@ const Favorites = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div className="flex items-center justify-between p-4">
           <SidebarTrigger />
-          <h1 className="text-2xl font-bold text-foreground">My Interests</h1>
-          <UserAvatar />
+          <div className="text-center">
+            <h1 className="text-lg font-semibold text-gray-900">Your Learning Interests</h1>
+          </div>
+          <div className="w-10" />
         </div>
       </div>
 
