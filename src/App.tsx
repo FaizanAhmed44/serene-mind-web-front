@@ -15,6 +15,7 @@ import ExpertProfile from "./pages/ExpertProfile";
 import CourseDetail from "./pages/CourseDetail";
 import CourseEnroll from "./pages/CourseEnroll";
 import UserProfile from "./pages/UserProfile";
+import FAQ from "./pages/FAQ";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
@@ -46,6 +47,7 @@ const App = () => (
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/favorites" element={<Favorites />} />
                       <Route path="/profile" element={<UserProfile />} />
+                      <Route path="/faq" element={<FAQ />} />
                       <Route path="/courses/:id" element={<CourseDetail />} />
                       <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
                       <Route path="*" element={<NotFound />} />
