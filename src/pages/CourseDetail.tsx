@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { 
@@ -12,7 +13,8 @@ import {
   Globe,
   Users,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Video
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +28,7 @@ import { getCourseById } from "@/data/courses";
 const CourseDetail = () => {
   const { id } = useParams();
   const [expandedModule, setExpandedModule] = useState<number | null>(null);
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
   
   const course = getCourseById(id as string);
 
@@ -42,6 +45,14 @@ const CourseDetail = () => {
     );
   }
 
+  // Check if user is enrolled (has progress)
+  const isEnrolled = course.progress !== undefined;
+
+  const handleVideoPlay = (videoId: string) => {
+    setActiveVideo(videoId);
+    console.log("Playing video:", videoId);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
@@ -55,6 +66,49 @@ const CourseDetail = () => {
       </div>
 
       <div className="max-w-7xl mx-auto p-6 space-y-8">
+        {/* Enrolled User Video Section */}
+        {isEnrolled && (
+          <Card className="animate-fade-in">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Video className="h-5 w-5" />
+                <span>Course Content</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4">
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+                  {activeVideo ? (
+                    <div className="text-center text-white">
+                      <Video className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                      <p className="text-lg mb-2">Now Playing: {activeVideo}</p>
+                      <p className="text-sm opacity-75">Video player would be integrated here</p>
+                    </div>
+                  ) : (
+                    <div className="text-center text-white">
+                      <Play className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                      <p className="text-lg mb-2">Welcome to {course.title}</p>
+                      <p className="text-sm opacity-75">Select a lesson to start watching</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Your Progress</p>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <Progress value={course.progress} className="w-32" />
+                    <span className="text-sm font-medium">{course.progress}% Complete</span>
+                  </div>
+                </div>
+                <Button>
+                  Continue Learning
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
@@ -225,9 +279,22 @@ const CourseDetail = () => {
                   <CardContent>
                     <div className="space-y-2">
                       {module.lessons.map((lesson, lessonIndex) => (
-                        <div key={lessonIndex} className="flex items-center space-x-2 p-2 hover:bg-muted/50 rounded">
-                          <Play className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{lesson}</span>
+                        <div 
+                          key={lessonIndex} 
+                          className={`flex items-center justify-between p-2 hover:bg-muted/50 rounded cursor-pointer transition-colors ${
+                            isEnrolled ? 'hover:bg-primary/10' : ''
+                          }`}
+                          onClick={() => isEnrolled && handleVideoPlay(`${module.title} - ${lesson}`)}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <Play className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">{lesson}</span>
+                          </div>
+                          {isEnrolled && (
+                            <Button variant="ghost" size="sm">
+                              <Video className="h-4 w-4" />
+                            </Button>
+                          )}
                         </div>
                       ))}
                     </div>
