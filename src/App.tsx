@@ -12,6 +12,7 @@ import Experts from "./pages/Experts";
 import Dashboard from "./pages/Dashboard";
 import Favorites from "./pages/Favorites";
 import ExpertProfile from "./pages/ExpertProfile";
+import SessionDetails from "./pages/SessionDetails";
 import CourseDetail from "./pages/CourseDetail";
 import CourseEnroll from "./pages/CourseEnroll";
 import UserProfile from "./pages/UserProfile";
@@ -44,6 +45,7 @@ const App = () => (
                       <Route path="/" element={<Index />} />
                       <Route path="/experts" element={<Experts />} />
                       <Route path="/experts/:id" element={<ExpertProfile />} />
+                      <Route path="/session/:id" element={<SessionDetails />} />
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/favorites" element={<Favorites />} />
                       <Route path="/profile" element={<UserProfile />} />

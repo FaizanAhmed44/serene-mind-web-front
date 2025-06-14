@@ -6,15 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import BookingModal from "@/components/BookingModal";
 
 const ExpertProfile = () => {
   const { id } = useParams();
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [message, setMessage] = useState("");
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   // This would normally come from an API
   const expert = {
@@ -43,11 +39,6 @@ const ExpertProfile = () => {
       { date: "Tomorrow", times: ["10:00 AM", "2:00 PM", "4:00 PM"] },
       { date: "Friday", times: ["9:00 AM", "11:00 AM", "3:00 PM", "5:00 PM"] }
     ]
-  };
-
-  const handleBookSession = () => {
-    // This would handle the booking logic
-    console.log("Booking session:", { selectedDate, selectedTime, message });
   };
 
   return (
@@ -86,13 +77,23 @@ const ExpertProfile = () => {
                   </div>
                   <span className="text-muted-foreground">{expert.experience}</span>
                 </div>
-                <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+                <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-6">
                   {expert.specializations.map((spec) => (
                     <Badge key={spec} variant="secondary">
                       {spec}
                     </Badge>
                   ))}
                 </div>
+                
+                {/* Prominent Book Now Button */}
+                <Button 
+                  size="lg" 
+                  className="w-full lg:w-auto px-8 py-3 text-lg"
+                  onClick={() => setIsBookingModalOpen(true)}
+                >
+                  <Calendar className="h-5 w-5 mr-2" />
+                  Book Now
+                </Button>
               </div>
               
               <div className="lg:col-span-2 space-y-6">
@@ -135,71 +136,6 @@ const ExpertProfile = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-foreground">{session.price}</p>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button size="sm" className="mt-2">Book Now</Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-md">
-                        <DialogHeader>
-                          <DialogTitle>Book {session.type}</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div>
-                            <label className="text-sm font-medium">Select Date</label>
-                            <Select value={selectedDate} onValueChange={setSelectedDate}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Choose a date" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {expert.availability.map((day) => (
-                                  <SelectItem key={day.date} value={day.date}>
-                                    {day.date}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          
-                          {selectedDate && (
-                            <div>
-                              <label className="text-sm font-medium">Select Time</label>
-                              <Select value={selectedTime} onValueChange={setSelectedTime}>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Choose a time" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {expert.availability
-                                    .find(day => day.date === selectedDate)?.times
-                                    .map((time) => (
-                                      <SelectItem key={time} value={time}>
-                                        {time}
-                                      </SelectItem>
-                                    ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          )}
-                          
-                          <div>
-                            <label className="text-sm font-medium">Message (Optional)</label>
-                            <Textarea
-                              placeholder="Briefly describe what you'd like to work on..."
-                              value={message}
-                              onChange={(e) => setMessage(e.target.value)}
-                              className="mt-1"
-                            />
-                          </div>
-                          
-                          <Button 
-                            className="w-full" 
-                            onClick={handleBookSession}
-                            disabled={!selectedDate || !selectedTime}
-                          >
-                            Confirm Booking - {session.price}
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
                   </div>
                 </div>
               ))}
@@ -270,6 +206,13 @@ const ExpertProfile = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        expert={expert}
+      />
     </div>
   );
 };
