@@ -28,7 +28,7 @@ const CourseDetail = () => {
   const { id } = useParams();
   const [expandedModule, setExpandedModule] = useState<number | null>(null);
   
-  const course: Course | undefined = getCourseById(id as string);
+  const course = getCourseById(id as string);
 
   if (!course) {
     return (
