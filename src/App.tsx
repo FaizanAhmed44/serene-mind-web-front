@@ -15,6 +15,8 @@ import ExpertProfile from "./pages/ExpertProfile";
 import CourseDetail from "./pages/CourseDetail";
 import CourseEnroll from "./pages/CourseEnroll";
 import UserProfile from "./pages/UserProfile";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,24 +28,33 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <SidebarProvider>
-            <div className="min-h-screen flex w-full">
-              <AppSidebar />
-              <main className="flex-1 overflow-hidden">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/experts" element={<Experts />} />
-                  <Route path="/experts/:id" element={<ExpertProfile />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/favorites" element={<Favorites />} />
-                  <Route path="/profile" element={<UserProfile />} />
-                  <Route path="/courses/:id" element={<CourseDetail />} />
-                  <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-            </div>
-          </SidebarProvider>
+          <Routes>
+            {/* Authentication routes without sidebar */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            
+            {/* Main app routes with sidebar */}
+            <Route path="/*" element={
+              <SidebarProvider>
+                <div className="min-h-screen flex w-full">
+                  <AppSidebar />
+                  <main className="flex-1 overflow-hidden">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/experts" element={<Experts />} />
+                      <Route path="/experts/:id" element={<ExpertProfile />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/favorites" element={<Favorites />} />
+                      <Route path="/profile" element={<UserProfile />} />
+                      <Route path="/courses/:id" element={<CourseDetail />} />
+                      <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </main>
+                </div>
+              </SidebarProvider>
+            } />
+          </Routes>
         </BrowserRouter>
       </FavoritesProvider>
     </TooltipProvider>
