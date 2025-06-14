@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
 
 interface UserData {
@@ -105,42 +106,41 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-            {!isEditing ? (
-              <Button onClick={handleEdit} className="bg-blue-600 hover:bg-blue-700">
-                <Edit2 className="h-4 w-4 mr-2" />
-                Edit Profile
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="flex items-center justify-between p-4">
+          <SidebarTrigger />
+          <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
+          {!isEditing ? (
+            <Button onClick={handleEdit}>
+              <Edit2 className="h-4 w-4 mr-2" />
+              Edit Profile
+            </Button>
+          ) : (
+            <div className="flex space-x-2">
+              <Button onClick={handleSave}>
+                <Save className="h-4 w-4 mr-2" />
+                Save
               </Button>
-            ) : (
-              <div className="flex space-x-2">
-                <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
-                </Button>
-                <Button onClick={handleCancel} variant="outline">
-                  <X className="h-4 w-4 mr-2" />
-                  Cancel
-                </Button>
-              </div>
-            )}
-          </div>
+              <Button onClick={handleCancel} variant="outline">
+                <X className="h-4 w-4 mr-2" />
+                Cancel
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="p-6 space-y-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Overview Card */}
           <div className="lg:col-span-1">
-            <Card className="bg-white shadow-lg">
+            <Card className="hover-lift animate-slide-up">
               <CardContent className="p-6 text-center">
                 <div className="relative mx-auto mb-4 w-32 h-32">
                   <Avatar className="h-32 w-32">
                     <AvatarImage src={isEditing ? editedData.avatar : userData.avatar} alt={userData.name} />
-                    <AvatarFallback className="text-2xl bg-blue-100 text-blue-600">
+                    <AvatarFallback className="text-2xl bg-primary/10 text-primary">
                       {userData.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
@@ -172,20 +172,20 @@ const UserProfile = () => {
                   </div>
                 )}
                 
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{userData.name}</h2>
-                <p className="text-gray-600 mb-4">{userData.email}</p>
+                <h2 className="text-2xl font-bold text-foreground mb-2">{userData.name}</h2>
+                <p className="text-muted-foreground mb-4">{userData.email}</p>
                 
-                <div className="flex items-center justify-center text-sm text-gray-500 mb-4">
+                <div className="flex items-center justify-center text-sm text-muted-foreground mb-4">
                   <Calendar className="h-4 w-4 mr-2" />
                   <span>Joined {userData.joinDate}</span>
                 </div>
 
                 <div className="space-y-3 text-sm">
-                  <div className="flex items-center justify-center text-gray-600">
+                  <div className="flex items-center justify-center text-muted-foreground">
                     <Phone className="h-4 w-4 mr-2" />
                     <span>{userData.phone}</span>
                   </div>
-                  <div className="flex items-center justify-center text-gray-600">
+                  <div className="flex items-center justify-center text-muted-foreground">
                     <MapPin className="h-4 w-4 mr-2" />
                     <span>{userData.location}</span>
                   </div>
@@ -196,10 +196,10 @@ const UserProfile = () => {
 
           {/* Profile Details Card */}
           <div className="lg:col-span-2">
-            <Card className="bg-white shadow-lg">
+            <Card className="hover-lift animate-slide-up">
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <User className="h-5 w-5 mr-2" />
+                  <User className="h-5 w-5 mr-2 text-primary" />
                   Profile Information
                 </CardTitle>
               </CardHeader>
@@ -216,7 +216,7 @@ const UserProfile = () => {
                           className="mt-1"
                         />
                       ) : (
-                        <p className="mt-1 text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{userData.name}</p>
+                        <p className="mt-1 text-foreground bg-muted/50 px-3 py-2 rounded-md">{userData.name}</p>
                       )}
                     </div>
 
@@ -231,7 +231,7 @@ const UserProfile = () => {
                           className="mt-1"
                         />
                       ) : (
-                        <p className="mt-1 text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{userData.email}</p>
+                        <p className="mt-1 text-foreground bg-muted/50 px-3 py-2 rounded-md">{userData.email}</p>
                       )}
                     </div>
 
@@ -245,7 +245,7 @@ const UserProfile = () => {
                           className="mt-1"
                         />
                       ) : (
-                        <p className="mt-1 text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{userData.phone}</p>
+                        <p className="mt-1 text-foreground bg-muted/50 px-3 py-2 rounded-md">{userData.phone}</p>
                       )}
                     </div>
 
@@ -259,7 +259,7 @@ const UserProfile = () => {
                           className="mt-1"
                         />
                       ) : (
-                        <p className="mt-1 text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{userData.location}</p>
+                        <p className="mt-1 text-foreground bg-muted/50 px-3 py-2 rounded-md">{userData.location}</p>
                       )}
                     </div>
                   </div>
@@ -276,7 +276,7 @@ const UserProfile = () => {
                         placeholder="Tell us about yourself..."
                       />
                     ) : (
-                      <p className="mt-1 text-gray-900 bg-gray-50 px-3 py-2 rounded-md min-h-[100px]">{userData.bio}</p>
+                      <p className="mt-1 text-foreground bg-muted/50 px-3 py-2 rounded-md min-h-[100px]">{userData.bio}</p>
                     )}
                   </div>
                 </div>
@@ -284,23 +284,23 @@ const UserProfile = () => {
             </Card>
 
             {/* Stats Card */}
-            <Card className="bg-white shadow-lg mt-6">
+            <Card className="hover-lift animate-slide-up mt-6">
               <CardHeader>
                 <CardTitle>Activity Overview</CardTitle>
               </CardHeader>
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-600">12</div>
-                    <div className="text-sm text-gray-600">Courses Enrolled</div>
+                    <div className="text-3xl font-bold text-primary">12</div>
+                    <div className="text-sm text-muted-foreground">Courses Enrolled</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-green-600">8</div>
-                    <div className="text-sm text-gray-600">Courses Completed</div>
+                    <div className="text-3xl font-bold text-primary">8</div>
+                    <div className="text-sm text-muted-foreground">Courses Completed</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-600">45</div>
-                    <div className="text-sm text-gray-600">Hours Learned</div>
+                    <div className="text-3xl font-bold text-primary">45</div>
+                    <div className="text-sm text-muted-foreground">Hours Learned</div>
                   </div>
                 </div>
               </CardContent>
