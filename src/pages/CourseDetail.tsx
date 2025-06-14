@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { courses } from "@/data/courses";
+import { getCourseById } from "@/data/courses";
 
 const CourseDetail = () => {
   const { id } = useParams();
   const [activeLesson, setActiveLesson] = useState(0);
   
-  const course = courses.find(c => c.id === parseInt(id || "0"));
+  const course = getCourseById(id || "0");
   
   if (!course) {
     return (
@@ -53,7 +53,7 @@ const CourseDetail = () => {
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{course.title}</h1>
-          <p className="text-gray-600 mt-1">by {course.instructor}</p>
+          <p className="text-gray-600 mt-1">by {course.instructor.name}</p>
         </div>
       </div>
 
@@ -78,13 +78,12 @@ const CourseDetail = () => {
             <CardContent className="p-6">
               <h2 className="text-2xl font-bold mb-4">About This Course</h2>
               <p className="text-gray-600 mb-4">
-                This comprehensive mindfulness course will guide you through the fundamentals of meditation and 
-                mindful living. Perfect for beginners and those looking to deepen their practice.
+                {course.longDescription}
               </p>
               <div className="flex flex-wrap gap-4 mb-4">
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm">Total: 1h 48m</span>
+                  <span className="text-sm">Total: {course.duration}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-blue-600" />
