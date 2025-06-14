@@ -1,98 +1,95 @@
 
-import { Calendar, Book, Clock, User, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { Calendar, Clock, User, BookOpen, Star, TrendingUp, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { enrolledCoursesData } from "@/data/courses";
-import { upcomingSessionsData } from "@/data/sessions";
-import { dashboardStatsData } from "@/data/stats";
+import { upcomingSessionsData, completedSessionsData, Session } from "@/data/sessions";
+import ReviewDialog from "@/components/ReviewDialog";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
+  const [upcomingSessions] = useState<Session[]>(upcomingSessionsData);
+  const [completedSessions, setCompletedSessions] = useState<Session[]>(completedSessionsData);
 
-  const handleContinueLearning = (courseId: number, courseTitle: string) => {
-    console.log(`Navigating to course ${courseId}: ${courseTitle}`);
-    toast.success(`Continuing with ${courseTitle}...`);
-    navigate(`/courses/${courseId}`);
+  const handleReviewSubmitted = (sessionId: number) => {
+    setCompletedSessions(prev => 
+      prev.map(session => 
+        session.id === sessionId 
+          ? { ...session, hasReviewed: true }
+          : session
+      )
+    );
   };
+
+  const stats = [
+    {
+      title: "Total Sessions",
+      value: upcomingSessions.length + completedSessions.length,
+      icon: Calendar,
+      change: "+2 this month"
+    },
+    {
+      title: "Hours of Therapy",
+      value: "24.5",
+      icon: Clock,
+      change: "+4.2 hours"
+    },
+    {
+      title: "Progress Score",
+      value: "85%",
+      icon: TrendingUp,
+      change: "+12% improvement"
+    },
+    {
+      title: "Completed Goals",
+      value: "7/10",
+      icon: CheckCircle,
+      change: "3 remaining"
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="flex items-center justify-between p-4">
           <SidebarTrigger />
-          <h1 className="text-2xl font-bold text-foreground">My Dashboard</h1>
+          <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
           <div className="w-10" />
         </div>
       </div>
 
       <div className="p-6 space-y-8">
         {/* Welcome Section */}
-        <div className="animate-fade-in">
-          <h2 className="text-3xl font-bold text-foreground mb-2">Welcome back!</h2>
-          <p className="text-lg text-muted-foreground">Continue your mental wellness journey</p>
+        <div className="text-center py-4 animate-fade-in">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Welcome back, Sarah!
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Continue your mental wellness journey
+          </p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-slide-up">
-          {dashboardStatsData.map((stat) => (
-            <Card key={stat.label} className="hover-lift">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                    <p className="text-3xl font-bold text-foreground">{stat.value}</p>
-                  </div>
-                  <stat.icon className="h-8 w-8 text-primary" />
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {stats.map((stat) => (
+            <Card key={stat.title} className="hover-lift">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </CardTitle>
+                <stat.icon className="h-4 w-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">{stat.change}</p>
               </CardContent>
             </Card>
           ))}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Current Courses */}
-          <Card className="animate-slide-up">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Book className="h-5 w-5 text-primary" />
-                <span>Current Courses</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {enrolledCoursesData.map((course) => (
-                <div key={course.id} className="space-y-3 p-4 bg-muted/50 rounded-lg">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">{course.title}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Next: {course.nextLesson}
-                      </p>
-                    </div>
-                    <span className="text-sm text-muted-foreground">{course.timeSpent}</span>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Progress</span>
-                      <span>{course.progress}%</span>
-                    </div>
-                    <Progress value={course.progress} className="h-3" />
-                  </div>
-                  <Button 
-                    className="w-full" 
-                    size="sm"
-                    onClick={() => handleContinueLearning(course.id, course.title)}
-                  >
-                    Continue Learning
-                  </Button>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
           {/* Upcoming Sessions */}
           <Card className="animate-slide-up">
             <CardHeader>
@@ -102,55 +99,106 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {upcomingSessionsData.map((session) => (
-                <div key={session.id} className="p-4 bg-muted/50 rounded-lg space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-semibold text-foreground">{session.type}</h3>
-                      <p className="text-sm text-muted-foreground">with {session.expertName}</p>
+              {upcomingSessions.map((session) => (
+                <div key={session.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0">
+                      <User className="h-8 w-8 text-primary" />
                     </div>
-                    <span className="text-sm text-muted-foreground">{session.duration}</span>
+                    <div>
+                      <h4 className="font-semibold text-foreground">{session.expertName}</h4>
+                      <p className="text-sm text-muted-foreground">{session.type}</p>
+                      <p className="text-sm text-muted-foreground">{session.date}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>{session.date}</span>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      Reschedule
-                    </Button>
-                    <Button size="sm" className="flex-1">
-                      Join Session
-                    </Button>
+                  <div className="text-right">
+                    <Badge variant="outline">{session.duration}</Badge>
+                    <Button size="sm" className="ml-2">Join</Button>
                   </div>
                 </div>
               ))}
-              <Button variant="outline" className="w-full">
-                Schedule New Session
-              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Completed Sessions */}
+          <Card className="animate-slide-up">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <CheckCircle className="h-5 w-5 text-primary" />
+                <span>Recent Sessions</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {completedSessions.map((session) => (
+                <div key={session.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0">
+                      <User className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground">{session.expertName}</h4>
+                      <p className="text-sm text-muted-foreground">{session.type}</p>
+                      <p className="text-sm text-muted-foreground">{session.date}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <Badge variant="secondary">{session.duration}</Badge>
+                    {session.canReview && !session.hasReviewed && (
+                      <ReviewDialog
+                        expertName={session.expertName}
+                        sessionType={session.type}
+                        onReviewSubmitted={() => handleReviewSubmitted(session.id)}
+                      >
+                        <Button size="sm" variant="outline" className="ml-2">
+                          <Star className="h-4 w-4 mr-1" />
+                          Review
+                        </Button>
+                      </ReviewDialog>
+                    )}
+                    {session.hasReviewed && (
+                      <Badge variant="outline" className="ml-2">
+                        <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
+                        Reviewed
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </div>
 
-        {/* Quick Actions */}
+        {/* Progress Section */}
         <Card className="animate-slide-up">
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle className="flex items-center space-x-2">
+              <BookOpen className="h-5 w-5 text-primary" />
+              <span>Your Progress</span>
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button variant="outline" className="h-20 flex-col space-y-2">
-                <Book className="h-6 w-6" />
-                <span>Browse Courses</span>
-              </Button>
-              <Button variant="outline" className="h-20 flex-col space-y-2">
-                <User className="h-6 w-6" />
-                <span>Find Expert</span>
-              </Button>
-              <Button variant="outline" className="h-20 flex-col space-y-2">
-                <Calendar className="h-6 w-6" />
-                <span>Book Session</span>
-              </Button>
+          <CardContent className="space-y-6">
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-muted-foreground">Overall Mental Wellness</span>
+                <span className="font-medium">85%</span>
+              </div>
+              <Progress value={85} className="h-2" />
+            </div>
+            
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-muted-foreground">Anxiety Management</span>
+                <span className="font-medium">78%</span>
+              </div>
+              <Progress value={78} className="h-2" />
+            </div>
+            
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-muted-foreground">Confidence Building</span>
+                <span className="font-medium">92%</span>
+              </div>
+              <Progress value={92} className="h-2" />
             </div>
           </CardContent>
         </Card>
