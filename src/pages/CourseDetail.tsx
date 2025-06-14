@@ -1,26 +1,21 @@
+
 import { Play } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { courses } from "@/data/courses";
-import { EnrollmentCard } from "@/components/EnrollmentCard";
+import { getCourseById } from "@/data/courses";
 import { UserAvatar } from "@/components/UserAvatar";
 
 const CourseDetail = () => {
   const { id } = useParams();
-  const course = courses.find(c => c.id === parseInt(id || '0'));
+  const course = getCourseById(id || '0');
 
   if (!course) {
     return <div>Course not found</div>;
   }
-
-  // Create a course object with optional progress for the EnrollmentCard
-  const courseWithProgress = {
-    ...course,
-    progress: course.progress || 0
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
@@ -43,12 +38,12 @@ const CourseDetail = () => {
                 
                 <div className="flex items-center space-x-4 mb-4">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={course.instructor.image} alt={course.instructor.name} />
+                    <AvatarImage src={course.instructor.photo} alt={course.instructor.name} />
                     <AvatarFallback>{course.instructor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="font-semibold">{course.instructor.name}</p>
-                    <p className="text-sm text-muted-foreground">{course.instructor.credentials}</p>
+                    <p className="text-sm text-muted-foreground">{course.instructor.title}</p>
                   </div>
                 </div>
 
@@ -58,9 +53,9 @@ const CourseDetail = () => {
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-2">
-                  {course.tags?.map((tag) => (
-                    <Badge key={tag} variant="secondary">{tag}</Badge>
-                  ))}
+                  <Badge variant="secondary">{course.category}</Badge>
+                  <Badge variant="secondary">{course.level}</Badge>
+                  <Badge variant="secondary">{course.language}</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -71,29 +66,51 @@ const CourseDetail = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {/* Course content would go here */}
-                  <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
-                    <Play className="h-4 w-4 text-primary" />
-                    <span>Introduction to the Course</span>
-                    <span className="ml-auto text-sm text-muted-foreground">5 min</span>
-                  </div>
-                  <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
-                    <Play className="h-4 w-4 text-muted-foreground" />
-                    <span>Understanding the Basics</span>
-                    <span className="ml-auto text-sm text-muted-foreground">15 min</span>
-                  </div>
-                  <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
-                    <Play className="h-4 w-4 text-muted-foreground" />
-                    <span>Advanced Techniques</span>
-                    <span className="ml-auto text-sm text-muted-foreground">20 min</span>
-                  </div>
+                  {course.modules_detail.map((module, index) => (
+                    <div key={index} className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
+                      <Play className="h-4 w-4 text-primary" />
+                      <span>Week {module.week}: {module.title}</span>
+                      <span className="ml-auto text-sm text-muted-foreground">{module.duration}</span>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </div>
 
           <div className="lg:col-span-1">
-            <EnrollmentCard course={courseWithProgress} />
+            <Card>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="text-3xl font-bold">{course.price}</div>
+                  {course.originalPrice && (
+                    <div className="text-sm text-muted-foreground line-through">
+                      ${course.originalPrice}
+                    </div>
+                  )}
+                  <Button className="w-full">Enroll Now</Button>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Duration:</span>
+                      <span>{course.duration}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Students:</span>
+                      <span>{course.students.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Rating:</span>
+                      <span>{course.rating}/5</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Certificate:</span>
+                      <span>{course.certificate ? 'Yes' : 'No'}</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
