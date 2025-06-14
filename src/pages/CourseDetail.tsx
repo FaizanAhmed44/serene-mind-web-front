@@ -22,246 +22,13 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FavoriteButton } from "@/components/FavoriteButton";
-
-const courseData = {
-  "1": {
-    id: 1,
-    title: "Overcoming Anxiety",
-    description: "Learn practical techniques to manage and reduce anxiety in daily life through evidence-based cognitive behavioral therapy methods.",
-    longDescription: "This comprehensive course provides you with the tools and strategies needed to understand, manage, and overcome anxiety. Through a combination of theoretical knowledge and practical exercises, you'll learn how anxiety works, identify your personal triggers, and develop a toolkit of coping strategies that you can use in any situation.",
-    duration: "6 weeks",
-    modules: 12,
-    category: "Anxiety",
-    instructor: {
-      name: "Dr. Sarah Johnson",
-      title: "Licensed Clinical Psychologist",
-      bio: "Dr. Sarah Johnson has over 12 years of experience in clinical psychology, specializing in anxiety disorders and cognitive behavioral therapy.",
-      photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face"
-    },
-    rating: 4.8,
-    students: 2847,
-    progress: 0,
-    price: "$149",
-    language: "English",
-    level: "Beginner",
-    certificate: true,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&h=450&fit=crop",
-    outcomes: [
-      "Understand the science behind anxiety and how it affects your body and mind",
-      "Identify personal anxiety triggers and develop awareness of your patterns",
-      "Master breathing techniques and progressive muscle relaxation",
-      "Learn cognitive restructuring to challenge anxious thoughts",
-      "Develop a personalized anxiety management plan",
-      "Build confidence in handling anxiety-provoking situations"
-    ],
-    modules_detail: [
-      {
-        week: 1,
-        title: "Understanding Anxiety",
-        lessons: [
-          "What is Anxiety? The Science Behind It",
-          "Types of Anxiety Disorders",
-          "Identifying Your Anxiety Triggers"
-        ],
-        duration: "2 hours"
-      },
-      {
-        week: 2,
-        title: "Physical Techniques",
-        lessons: [
-          "Breathing Exercises for Immediate Relief",
-          "Progressive Muscle Relaxation",
-          "Grounding Techniques"
-        ],
-        duration: "2.5 hours"
-      },
-      {
-        week: 3,
-        title: "Cognitive Strategies",
-        lessons: [
-          "Challenging Negative Thoughts",
-          "Cognitive Restructuring Techniques",
-          "Building Positive Self-Talk"
-        ],
-        duration: "3 hours"
-      }
-    ],
-    reviews: [
-      {
-        name: "Emily Rodriguez",
-        rating: 5,
-        comment: "This course completely changed my approach to managing anxiety. The practical techniques are easy to implement and really work!",
-        date: "2 weeks ago"
-      },
-      {
-        name: "Michael Chen",
-        rating: 5,
-        comment: "Dr. Johnson's expertise really shows. The content is well-structured and the exercises are incredibly helpful.",
-        date: "1 month ago"
-      }
-    ]
-  },
-  "2": {
-    id: 2,
-    title: "Confident Public Speaking",
-    description: "Master the art of public speaking and overcome stage fright with proven techniques and practical exercises.",
-    longDescription: "Transform your fear of public speaking into confidence with this comprehensive course. Whether you're presenting at work, speaking at events, or just want to feel more comfortable in group settings, this course provides you with the skills and confidence you need to speak with impact and authenticity.",
-    duration: "8 weeks",
-    modules: 16,
-    category: "Communication",
-    instructor: {
-      name: "Mark Thompson",
-      title: "Professional Speaker & Communication Coach",
-      bio: "Mark Thompson has been a professional speaker for over 15 years and has helped thousands of people overcome their fear of public speaking.",
-      photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face"
-    },
-    rating: 4.9,
-    students: 1892,
-    progress: 65,
-    price: "$199",
-    language: "English",
-    level: "Intermediate",
-    certificate: true,
-    image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=450&fit=crop",
-    outcomes: [
-      "Overcome stage fright and speaking anxiety",
-      "Structure compelling presentations that engage your audience",
-      "Use body language and voice effectively",
-      "Handle difficult questions and situations with confidence",
-      "Develop your unique speaking style",
-      "Build lasting confidence in all speaking situations"
-    ],
-    modules_detail: [
-      {
-        week: 1,
-        title: "Foundation of Public Speaking",
-        lessons: [
-          "Understanding Stage Fright",
-          "The Psychology of Confidence",
-          "Breathing and Relaxation Techniques"
-        ],
-        duration: "2.5 hours"
-      },
-      {
-        week: 2,
-        title: "Structuring Your Message",
-        lessons: [
-          "Creating Compelling Openings",
-          "Organizing Your Content",
-          "Powerful Conclusions"
-        ],
-        duration: "3 hours"
-      },
-      {
-        week: 3,
-        title: "Delivery Techniques",
-        lessons: [
-          "Voice and Vocal Variety",
-          "Body Language and Gestures",
-          "Managing Nerves During Delivery"
-        ],
-        duration: "3.5 hours"
-      }
-    ],
-    reviews: [
-      {
-        name: "Sarah Williams",
-        rating: 5,
-        comment: "Mark's teaching style is incredible. I went from being terrified of speaking to actually enjoying presentations!",
-        date: "1 week ago"
-      },
-      {
-        name: "David Park",
-        rating: 5,
-        comment: "The practical exercises really helped me build confidence. I can now speak in front of large groups without fear.",
-        date: "3 weeks ago"
-      }
-    ]
-  },
-  "3": {
-    id: 3,
-    title: "Decision Making Mastery",
-    description: "Learn to make better decisions faster with frameworks and techniques used by top executives and entrepreneurs.",
-    longDescription: "Decision-making is one of the most critical skills for success in both personal and professional life. This course teaches you systematic approaches to making better decisions, avoiding common cognitive biases, and building confidence in your choices.",
-    duration: "5 weeks",
-    modules: 10,
-    category: "Critical Thinking",
-    instructor: {
-      name: "Dr. Emily Chen",
-      title: "Behavioral Economist & Decision Science Expert",
-      bio: "Dr. Emily Chen is a leading expert in decision science with a PhD in Behavioral Economics from Stanford University.",
-      photo: "https://images.unsplash.com/photo-1494790108755-2616b612b577?w=300&h=300&fit=crop&crop=face"
-    },
-    rating: 4.7,
-    students: 1456,
-    progress: 30,
-    price: "$179",
-    language: "English",
-    level: "Advanced",
-    certificate: true,
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=450&fit=crop",
-    outcomes: [
-      "Master proven decision-making frameworks",
-      "Identify and overcome cognitive biases",
-      "Make faster, more confident decisions",
-      "Improve decision quality in uncertain situations",
-      "Develop intuition through structured thinking",
-      "Apply decision science to real-world problems"
-    ],
-    modules_detail: [
-      {
-        week: 1,
-        title: "Decision Science Fundamentals",
-        lessons: [
-          "The Science of Decision Making",
-          "Types of Decisions and Their Challenges",
-          "Common Decision-Making Pitfalls"
-        ],
-        duration: "2 hours"
-      },
-      {
-        week: 2,
-        title: "Cognitive Biases",
-        lessons: [
-          "Understanding Cognitive Biases",
-          "Confirmation Bias and Anchoring",
-          "Overcoming Mental Shortcuts"
-        ],
-        duration: "2.5 hours"
-      },
-      {
-        week: 3,
-        title: "Decision Frameworks",
-        lessons: [
-          "The DECIDE Model",
-          "Pros and Cons Analysis",
-          "Cost-Benefit Analysis"
-        ],
-        duration: "3 hours"
-      }
-    ],
-    reviews: [
-      {
-        name: "James Miller",
-        rating: 5,
-        comment: "Dr. Chen's approach to decision making is revolutionary. I make much better choices now in both business and life.",
-        date: "2 weeks ago"
-      },
-      {
-        name: "Lisa Zhang",
-        rating: 4,
-        comment: "Great frameworks and practical tools. The content on cognitive biases was especially eye-opening.",
-        date: "1 month ago"
-      }
-    ]
-  }
-};
+import { getCourseById } from "@/data/courses";
 
 const CourseDetail = () => {
   const { id } = useParams();
   const [expandedModule, setExpandedModule] = useState<number | null>(null);
   
-  const course = courseData[id as keyof typeof courseData];
+  const course = getCourseById(id as string);
 
   if (!course) {
     return (
@@ -349,7 +116,7 @@ const CourseDetail = () => {
                   <p className="text-sm text-muted-foreground">One-time payment</p>
                 </div>
                 
-                {course.progress > 0 && (
+                {course.progress && course.progress > 0 && (
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Your Progress</span>
@@ -361,7 +128,7 @@ const CourseDetail = () => {
                 
                 <Button className="w-full" size="lg" asChild>
                   <Link to={`/courses/${course.id}/enroll`}>
-                    {course.progress > 0 ? "Continue Learning" : "Enroll Now"}
+                    {course.progress && course.progress > 0 ? "Continue Learning" : "Enroll Now"}
                   </Link>
                 </Button>
                 

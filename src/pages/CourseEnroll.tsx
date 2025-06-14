@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { 
@@ -24,30 +23,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
-
-const courseData = {
-  "1": {
-    id: 1,
-    title: "Overcoming Anxiety",
-    description: "Learn practical techniques to manage and reduce anxiety in daily life through evidence-based cognitive behavioral therapy methods.",
-    duration: "6 weeks",
-    modules: 12,
-    category: "Anxiety",
-    instructor: {
-      name: "Dr. Sarah Johnson",
-      title: "Licensed Clinical Psychologist",
-      photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face"
-    },
-    rating: 4.8,
-    students: 2847,
-    price: 149,
-    originalPrice: 249,
-    language: "English",
-    level: "Beginner",
-    certificate: true,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=250&fit=crop"
-  }
-};
+import { getCourseById } from "@/data/courses";
+import { getPricingPlans } from "@/data/pricing";
 
 const CourseEnroll = () => {
   const { id } = useParams();
@@ -66,7 +43,7 @@ const CourseEnroll = () => {
     agreeMarketing: false
   });
 
-  const course = courseData[id as keyof typeof courseData];
+  const course = getCourseById(id as string);
 
   if (!course) {
     return (
@@ -80,6 +57,9 @@ const CourseEnroll = () => {
       </div>
     );
   }
+
+  const coursePrice = parseInt(course.price.replace('$', ''));
+  const pricingPlans = getPricingPlans(coursePrice, course.originalPrice);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -104,37 +84,6 @@ const CourseEnroll = () => {
       navigate(`/courses/${course.id}`);
     }, 2000);
   };
-
-  const pricingPlans = [
-    {
-      id: "full",
-      name: "Full Course Access",
-      price: course.price,
-      originalPrice: course.originalPrice,
-      description: "Complete course with lifetime access",
-      features: [
-        "All course materials",
-        "Lifetime access",
-        "Certificate of completion",
-        "Expert support",
-        "Mobile & desktop access"
-      ]
-    },
-    {
-      id: "subscription",
-      name: "Monthly Subscription",
-      price: 39,
-      originalPrice: null,
-      description: "Access to this course and 100+ others",
-      features: [
-        "Access to 100+ courses",
-        "New courses added monthly",
-        "Cancel anytime",
-        "Expert support",
-        "Mobile & desktop access"
-      ]
-    }
-  ];
 
   const selectedPlanData = pricingPlans.find(plan => plan.id === selectedPlan);
 

@@ -1,3 +1,4 @@
+
 import { Calendar, Book, Clock, User, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -5,50 +6,12 @@ import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { enrolledCoursesData } from "@/data/courses";
+import { upcomingSessionsData } from "@/data/sessions";
+import { dashboardStatsData } from "@/data/stats";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
-  const enrolledCourses = [
-    {
-      id: 2,
-      title: "Confident Public Speaking",
-      progress: 65,
-      nextLesson: "Module 5: Managing Stage Fright",
-      timeSpent: "8.5 hours"
-    },
-    {
-      id: 3,
-      title: "Decision Making Mastery",
-      progress: 30,
-      nextLesson: "Module 3: Cognitive Biases",
-      timeSpent: "4.2 hours"
-    }
-  ];
-
-  const upcomingSessions = [
-    {
-      id: 1,
-      expertName: "Mark Thompson",
-      date: "Today, 4:30 PM",
-      type: "Public Speaking Consultation",
-      duration: "50 minutes"
-    },
-    {
-      id: 2,
-      expertName: "Dr. Emily Chen",
-      date: "Friday, 10:00 AM",
-      type: "Decision Making Session",
-      duration: "50 minutes"
-    }
-  ];
-
-  const stats = [
-    { label: "Courses Completed", value: "3", icon: Book },
-    { label: "Study Hours", value: "47", icon: Clock },
-    { label: "Sessions Attended", value: "12", icon: User },
-    { label: "Progress This Week", value: "+15%", icon: TrendingUp }
-  ];
 
   const handleContinueLearning = (courseId: number, courseTitle: string) => {
     console.log(`Navigating to course ${courseId}: ${courseTitle}`);
@@ -75,7 +38,7 @@ const Dashboard = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-slide-up">
-          {stats.map((stat) => (
+          {dashboardStatsData.map((stat) => (
             <Card key={stat.label} className="hover-lift">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -100,7 +63,7 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {enrolledCourses.map((course) => (
+              {enrolledCoursesData.map((course) => (
                 <div key={course.id} className="space-y-3 p-4 bg-muted/50 rounded-lg">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -139,7 +102,7 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {upcomingSessions.map((session) => (
+              {upcomingSessionsData.map((session) => (
                 <div key={session.id} className="p-4 bg-muted/50 rounded-lg space-y-3">
                   <div className="flex justify-between items-start">
                     <div>
