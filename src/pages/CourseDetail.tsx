@@ -6,12 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { courses } from "@/data/courses";
+import { getCourseById } from "@/data/courses";
 import { UserAvatar } from "@/components/UserAvatar";
 
 const CourseDetail = () => {
   const { id } = useParams();
-  const course = courses.find((c) => c.id === parseInt(id || '0'));
+  const course = getCourseById(id || '0');
 
   if (!course) {
     return <div>Course not found</div>;
@@ -39,12 +39,12 @@ const CourseDetail = () => {
                 
                 <div className="flex items-center space-x-4 mb-4">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={course.instructor.image} alt={course.instructor.name} />
+                    <AvatarImage src={course.instructor.photo} alt={course.instructor.name} />
                     <AvatarFallback>{course.instructor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="font-semibold text-foreground">{course.instructor.name}</p>
-                    <p className="text-sm text-muted-foreground">{course.instructor.specialty}</p>
+                    <p className="text-sm text-muted-foreground">{course.instructor.title}</p>
                   </div>
                 </div>
                 
@@ -64,10 +64,10 @@ const CourseDetail = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {course.modules.map((module, index) => (
+                  {course.modules_detail.map((module, index) => (
                     <div key={index} className="flex items-center space-x-3 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors">
                       <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-sm font-medium">{index + 1}</span>
+                        <span className="text-sm font-medium">{module.week}</span>
                       </div>
                       <div className="flex-1">
                         <p className="font-medium">{module.title}</p>
@@ -85,7 +85,7 @@ const CourseDetail = () => {
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
                   <div>
-                    <span className="text-3xl font-bold text-foreground">${course.price}</span>
+                    <span className="text-3xl font-bold text-foreground">{course.price}</span>
                     <p className="text-sm text-muted-foreground">One-time payment</p>
                   </div>
                   
