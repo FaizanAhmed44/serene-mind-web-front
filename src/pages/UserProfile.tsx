@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X } from "lucide-react";
+import { useState, useRef } from "react";
+import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ interface UserData {
 
 const UserProfile = () => {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     name: "John Doe",
@@ -60,6 +61,49 @@ const UserProfile = () => {
     }));
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 5MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select a valid image file.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageUrl = e.target?.result as string;
+        setEditedData(prev => ({
+          ...prev,
+          avatar: imageUrl
+        }));
+        toast({
+          title: "Image uploaded",
+          description: "Profile picture has been updated. Don't forget to save your changes.",
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-200">
@@ -93,12 +137,40 @@ const UserProfile = () => {
           <div className="lg:col-span-1">
             <Card className="bg-white shadow-lg">
               <CardContent className="p-6 text-center">
-                <Avatar className="h-32 w-32 mx-auto mb-4">
-                  <AvatarImage src={userData.avatar} alt={userData.name} />
-                  <AvatarFallback className="text-2xl bg-blue-100 text-blue-600">
-                    {userData.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative mx-auto mb-4 w-32 h-32">
+                  <Avatar className="h-32 w-32">
+                    <AvatarImage src={isEditing ? editedData.avatar : userData.avatar} alt={userData.name} />
+                    <AvatarFallback className="text-2xl bg-blue-100 text-blue-600">
+                      {userData.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  {isEditing && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition-opacity cursor-pointer" onClick={triggerFileInput}>
+                      <Upload className="h-8 w-8 text-white" />
+                    </div>
+                  )}
+                </div>
+
+                {isEditing && (
+                  <div className="mb-4">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={triggerFileInput}
+                      className="text-sm"
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Change Photo
+                    </Button>
+                  </div>
+                )}
                 
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">{userData.name}</h2>
                 <p className="text-gray-600 mb-4">{userData.email}</p>
