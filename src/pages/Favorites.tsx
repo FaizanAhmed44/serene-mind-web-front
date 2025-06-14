@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Heart, Star, Users, Clock, BookOpen, Play, ChevronRight, TrendingUp, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Progress } from "@/components/ui/progress";
+import { FavoriteButton } from "@/components/FavoriteButton";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { Link } from "react-router-dom";
 
 // Interest categories data
@@ -73,6 +74,7 @@ const learningGoals = [
 
 const Favorites = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const { favorites } = useFavorites();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -136,6 +138,61 @@ const Favorites = () => {
             ))}
           </div>
         </section>
+
+        {/* My Saved Courses */}
+        {favorites.length > 0 && (
+          <section className="animate-slide-up">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">My Saved Courses</h2>
+              <p className="text-gray-600">{favorites.length} course{favorites.length !== 1 ? 's' : ''} saved</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {favorites.map((course) => (
+                <Card key={course.id} className="overflow-hidden hover:shadow-xl transition-shadow group">
+                  <Link to={`/courses/${course.id}`}>
+                    <div className="relative">
+                      <img
+                        src={course.image}
+                        alt={course.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <Badge className="absolute top-3 left-3 bg-white text-gray-900 hover:bg-white">
+                        {course.category}
+                      </Badge>
+                      <div className="absolute top-3 right-3">
+                        <FavoriteButton course={course} variant="ghost" />
+                      </div>
+                    </div>
+                    <CardContent className="p-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-gray-700 mb-4">by {course.instructor}</p>
+                      
+                      <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-1">
+                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                            <span className="font-medium text-gray-900">{course.rating}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Clock className="h-4 w-4" />
+                          <span>{course.duration}</span>
+                        </div>
+                      </div>
+                      
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                        <Play className="h-4 w-4 mr-2" />
+                        {course.progress > 0 ? "Continue Learning" : "Enroll Now"}
+                      </Button>
+                    </CardContent>
+                  </Link>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Recommended for You */}
         <section className="animate-slide-up">

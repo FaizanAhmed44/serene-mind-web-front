@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import Index from "./pages/Index";
 import Experts from "./pages/Experts";
 import Dashboard from "./pages/Dashboard";
@@ -20,26 +21,29 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <SidebarProvider>
-          <div className="min-h-screen flex w-full">
-            <AppSidebar />
-            <main className="flex-1 overflow-hidden">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/experts" element={<Experts />} />
-                <Route path="/experts/:id" element={<ExpertProfile />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/courses/:id" element={<CourseDetail />} />
-                <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-          </div>
-        </SidebarProvider>
-      </BrowserRouter>
+      <FavoritesProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <SidebarProvider>
+            <div className="min-h-screen flex w-full">
+              <AppSidebar />
+              <main className="flex-1 overflow-hidden">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/experts" element={<Experts />} />
+                  <Route path="/experts/:id" element={<ExpertProfile />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/favorites" element={<Favorites />} />
+                  <Route path="/courses/:id" element={<CourseDetail />} />
+                  <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+            </div>
+          </SidebarProvider>
+        </BrowserRouter>
+      </FavoritesProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

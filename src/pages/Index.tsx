@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Progress } from "@/components/ui/progress";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import { Link } from "react-router-dom";
 
 const courses = [
@@ -137,6 +138,9 @@ const Index = () => {
                   <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
                     {course.category}
                   </Badge>
+                  <div className="absolute top-3 right-3">
+                    <FavoriteButton course={course} variant="ghost" />
+                  </div>
                 </div>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { 
@@ -21,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 const courseData = {
   "1": {
@@ -139,7 +139,10 @@ const CourseDetail = () => {
           <div className="lg:col-span-2 space-y-6">
             <div className="animate-fade-in">
               <div className="mb-4">
-                <Badge className="mb-4">{course.category}</Badge>
+                <div className="flex items-center justify-between mb-4">
+                  <Badge className="mb-4">{course.category}</Badge>
+                  <FavoriteButton course={course} />
+                </div>
                 <h1 className="text-4xl font-bold text-foreground mb-4">{course.title}</h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
                   {course.description}
