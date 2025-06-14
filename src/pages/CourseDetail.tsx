@@ -22,13 +22,13 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FavoriteButton } from "@/components/FavoriteButton";
-import { getCourseById } from "@/data/courses";
+import { getCourseById, type Course } from "@/data/courses";
 
 const CourseDetail = () => {
   const { id } = useParams();
   const [expandedModule, setExpandedModule] = useState<number | null>(null);
   
-  const course = getCourseById(id as string);
+  const course: Course | undefined = getCourseById(id as string);
 
   if (!course) {
     return (
@@ -116,7 +116,7 @@ const CourseDetail = () => {
                   <p className="text-sm text-muted-foreground">One-time payment</p>
                 </div>
                 
-                {course.progress && course.progress > 0 && (
+                {course.progress !== undefined && course.progress > 0 && (
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Your Progress</span>
@@ -128,7 +128,7 @@ const CourseDetail = () => {
                 
                 <Button className="w-full" size="lg" asChild>
                   <Link to={`/courses/${course.id}/enroll`}>
-                    {course.progress && course.progress > 0 ? "Continue Learning" : "Enroll Now"}
+                    {course.progress !== undefined && course.progress > 0 ? "Continue Learning" : "Enroll Now"}
                   </Link>
                 </Button>
                 
