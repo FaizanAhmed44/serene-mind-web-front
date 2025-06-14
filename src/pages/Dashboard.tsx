@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Calendar, Clock, User, BookOpen, Star, TrendingUp, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { upcomingSessionsData, completedSessionsData, Session } from "@/data/sessions";
 import ReviewDialog from "@/components/ReviewDialog";
+import { UserAvatar } from "@/components/UserAvatar";
 
 const Dashboard = () => {
   const [upcomingSessions] = useState<Session[]>(upcomingSessionsData);
@@ -52,11 +52,12 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+      {/* Header */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="flex items-center justify-between p-4">
           <SidebarTrigger />
-          <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
-          <div className="w-10" />
+          <h1 className="text-2xl font-bold text-foreground">My Dashboard</h1>
+          <UserAvatar />
         </div>
       </div>
 
