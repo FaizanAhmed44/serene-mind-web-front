@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ const Signup = () => {
     password: "",
     confirmPassword: ""
   });
+  const navigate = useNavigate();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -29,6 +30,8 @@ const Signup = () => {
     e.preventDefault();
     // Handle signup logic here
     console.log("Signup attempt:", formData);
+    // Simulate successful signup and navigate to home
+    navigate('/');
   };
 
   return (
