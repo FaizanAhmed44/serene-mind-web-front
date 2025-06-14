@@ -1,5 +1,5 @@
 
-import { Book, Home, User, Calendar, Search, Brain } from "lucide-react";
+import { Book, Home, User, Calendar, Search } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -27,7 +27,7 @@ const menuItems = [
   {
     title: "Find Experts",
     url: "/experts",
-    icon: Brain,
+    icon: Search,
   },
 ];
 
@@ -38,7 +38,11 @@ export function AppSidebar() {
     <Sidebar className="border-r border-sidebar-border">
       <SidebarHeader className="p-6">
         <div className="flex items-center space-x-2">
-          <Brain className="h-8 w-8 text-sidebar-primary" />
+          <img 
+            src="/lovable-uploads/0d5f19e2-335b-46b8-85f6-4784451740ba.png" 
+            alt="Core Cognitive Logo" 
+            className="h-8 w-8"
+          />
           <div>
             <h1 className="text-lg font-bold text-sidebar-foreground">Core Cognitive</h1>
             <p className="text-sm text-sidebar-foreground/70">Mental Wellness Platform</p>
