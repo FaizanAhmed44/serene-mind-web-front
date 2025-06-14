@@ -23,7 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const courseData = {
-  1: {
+  "1": {
     id: 1,
     title: "Overcoming Anxiety",
     description: "Learn practical techniques to manage and reduce anxiety in daily life through evidence-based cognitive behavioral therapy methods.",
@@ -201,8 +201,10 @@ const CourseDetail = () => {
                   </div>
                 )}
                 
-                <Button className="w-full" size="lg">
-                  {course.progress > 0 ? "Continue Learning" : "Enroll Now"}
+                <Button className="w-full" size="lg" asChild>
+                  <Link to={`/courses/${course.id}/enroll`}>
+                    {course.progress > 0 ? "Continue Learning" : "Enroll Now"}
+                  </Link>
                 </Button>
                 
                 <div className="space-y-3 text-sm">
