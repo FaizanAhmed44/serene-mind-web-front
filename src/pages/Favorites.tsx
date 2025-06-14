@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Heart, Star, Users, Clock, BookOpen, Play, ChevronRight, TrendingUp, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -75,6 +76,10 @@ const learningGoals = [
 const Favorites = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const { favorites } = useFavorites();
+
+  const getInstructorName = (instructor: string | { name: string; title: string; bio: string; photo: string; }) => {
+    return typeof instructor === 'string' ? instructor : instructor.name;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -167,7 +172,8 @@ const Favorites = () => {
                       <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                         {course.title}
                       </h3>
-                      <p className="text-sm text-gray-700 mb-4">by {course.instructor}</p>
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{course.description}</p>
+                      <p className="text-sm text-gray-700 mb-4">by {getInstructorName(course.instructor)}</p>
                       
                       <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
                         <div className="flex items-center space-x-4">
@@ -175,12 +181,33 @@ const Favorites = () => {
                             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                             <span className="font-medium text-gray-900">{course.rating}</span>
                           </div>
+                          <div className="flex items-center space-x-1">
+                            <Users className="h-4 w-4" />
+                            <span>{course.students.toLocaleString()}</span>
+                          </div>
                         </div>
                         <div className="flex items-center space-x-1">
                           <Clock className="h-4 w-4" />
                           <span>{course.duration}</span>
                         </div>
                       </div>
+
+                      <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                        <div className="flex items-center space-x-1">
+                          <BookOpen className="h-4 w-4" />
+                          <span>{course.modules} modules</span>
+                        </div>
+                      </div>
+
+                      {course.progress > 0 && (
+                        <div className="mb-4">
+                          <div className="flex justify-between text-sm mb-2">
+                            <span>Progress</span>
+                            <span>{course.progress}%</span>
+                          </div>
+                          <Progress value={course.progress} className="h-2" />
+                        </div>
+                      )}
                       
                       <Button className="w-full bg-blue-600 hover:bg-blue-700">
                         <Play className="h-4 w-4 mr-2" />

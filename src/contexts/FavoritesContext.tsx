@@ -8,7 +8,7 @@ interface Course {
   duration: string;
   modules: number;
   category: string;
-  instructor: string;
+  instructor: string | { name: string; title: string; bio: string; photo: string; };
   rating: number;
   students: number;
   progress: number;
