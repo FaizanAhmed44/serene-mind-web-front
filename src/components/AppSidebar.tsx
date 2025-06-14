@@ -1,5 +1,4 @@
-
-import { Book, Home, User, Calendar, Search } from "lucide-react";
+import { Book, Home, User, Calendar, Search, Heart } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -23,6 +22,11 @@ const menuItems = [
     title: "My Dashboard",
     url: "/dashboard",
     icon: User,
+  },
+  {
+    title: "My Favorites",
+    url: "/favorites",
+    icon: Heart,
   },
   {
     title: "Find Experts",

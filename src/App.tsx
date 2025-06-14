@@ -9,6 +9,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import Index from "./pages/Index";
 import Experts from "./pages/Experts";
 import Dashboard from "./pages/Dashboard";
+import Favorites from "./pages/Favorites";
 import ExpertProfile from "./pages/ExpertProfile";
 import CourseDetail from "./pages/CourseDetail";
 import CourseEnroll from "./pages/CourseEnroll";
