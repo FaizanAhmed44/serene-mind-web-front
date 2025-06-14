@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { 
@@ -22,7 +21,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FavoriteButton } from "@/components/FavoriteButton";
-import { getCourseById, type Course } from "@/data/courses";
+import { getCourseById } from "@/data/courses";
 
 const CourseDetail = () => {
   const { id } = useParams();
