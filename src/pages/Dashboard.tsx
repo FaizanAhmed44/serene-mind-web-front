@@ -1,11 +1,14 @@
-
 import { Calendar, Book, Clock, User, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   const enrolledCourses = [
     {
       id: 2,
@@ -46,6 +49,11 @@ const Dashboard = () => {
     { label: "Sessions Attended", value: "12", icon: User },
     { label: "Progress This Week", value: "+15%", icon: TrendingUp }
   ];
+
+  const handleContinueLearning = (courseId: number, courseTitle: string) => {
+    toast.success(`Continuing ${courseTitle}...`);
+    navigate(`/courses/${courseId}`);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
@@ -109,7 +117,11 @@ const Dashboard = () => {
                     </div>
                     <Progress value={course.progress} className="h-3" />
                   </div>
-                  <Button className="w-full" size="sm">
+                  <Button 
+                    className="w-full" 
+                    size="sm"
+                    onClick={() => handleContinueLearning(course.id, course.title)}
+                  >
                     Continue Learning
                   </Button>
                 </div>
