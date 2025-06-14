@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Progress } from "@/components/ui/progress";
+import { Link } from "react-router-dom";
 
 const courses = [
   {
@@ -126,64 +127,66 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredCourses.map((course) => (
             <Card key={course.id} className="hover-lift cursor-pointer group">
-              <div className="relative overflow-hidden rounded-t-lg">
-                <img
-                  src={course.image}
-                  alt={course.title}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
-                  {course.category}
-                </Badge>
-              </div>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
-                <p className="text-sm text-muted-foreground line-clamp-2">{course.description}</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <div className="flex items-center space-x-1">
-                    <Clock className="h-4 w-4" />
-                    <span>{course.duration}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Book className="h-4 w-4" />
-                    <span>{course.modules} modules</span>
-                  </div>
+              <Link to={`/courses/${course.id}`}>
+                <div className="relative overflow-hidden rounded-t-lg">
+                  <img
+                    src={course.image}
+                    alt={course.title}
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
+                    {course.category}
+                  </Badge>
                 </div>
-                
-                {course.progress > 0 && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Progress</span>
-                      <span>{course.progress}%</span>
-                    </div>
-                    <Progress value={course.progress} className="h-2" />
-                  </div>
-                )}
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{course.description}</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm font-medium">{course.rating}</span>
+                      <Clock className="h-4 w-4" />
+                      <span>{course.duration}</span>
                     </div>
-                    <div className="flex items-center space-x-1 text-muted-foreground">
-                      <User className="h-4 w-4" />
-                      <span className="text-sm">{course.students.toLocaleString()}</span>
+                    <div className="flex items-center space-x-1">
+                      <Book className="h-4 w-4" />
+                      <span>{course.modules} modules</span>
                     </div>
                   </div>
-                </div>
-                
-                <p className="text-sm text-muted-foreground">by {course.instructor}</p>
-                
-                <Button 
-                  className="w-full" 
-                  variant={course.progress > 0 ? "default" : "outline"}
-                >
-                  {course.progress > 0 ? "Continue Learning" : "Enroll Now"}
-                </Button>
-              </CardContent>
+                  
+                  {course.progress > 0 && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Progress</span>
+                        <span>{course.progress}%</span>
+                      </div>
+                      <Progress value={course.progress} className="h-2" />
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-medium">{course.rating}</span>
+                      </div>
+                      <div className="flex items-center space-x-1 text-muted-foreground">
+                        <User className="h-4 w-4" />
+                        <span className="text-sm">{course.students.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm text-muted-foreground">by {course.instructor}</p>
+                  
+                  <Button 
+                    className="w-full" 
+                    variant={course.progress > 0 ? "default" : "outline"}
+                  >
+                    {course.progress > 0 ? "Continue Learning" : "Enroll Now"}
+                  </Button>
+                </CardContent>
+              </Link>
             </Card>
           ))}
         </div>

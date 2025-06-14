@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Experts from "./pages/Experts";
 import Dashboard from "./pages/Dashboard";
 import ExpertProfile from "./pages/ExpertProfile";
+import CourseDetail from "./pages/CourseDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
                 <Route path="/experts" element={<Experts />} />
                 <Route path="/experts/:id" element={<ExpertProfile />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/courses/:id" element={<CourseDetail />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
