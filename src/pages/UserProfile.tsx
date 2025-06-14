@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
+import { UserAvatar } from "@/components/UserAvatar";
 
 interface UserData {
   name: string;
@@ -111,23 +111,26 @@ const UserProfile = () => {
         <div className="flex items-center justify-between p-4">
           <SidebarTrigger />
           <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
-          {!isEditing ? (
-            <Button onClick={handleEdit}>
-              <Edit2 className="h-4 w-4 mr-2" />
-              Edit Profile
-            </Button>
-          ) : (
-            <div className="flex space-x-2">
-              <Button onClick={handleSave}>
-                <Save className="h-4 w-4 mr-2" />
-                Save
+          <div className="flex items-center space-x-4">
+            {!isEditing ? (
+              <Button onClick={handleEdit}>
+                <Edit2 className="h-4 w-4 mr-2" />
+                Edit Profile
               </Button>
-              <Button onClick={handleCancel} variant="outline">
-                <X className="h-4 w-4 mr-2" />
-                Cancel
-              </Button>
-            </div>
-          )}
+            ) : (
+              <div className="flex space-x-2">
+                <Button onClick={handleSave}>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save
+                </Button>
+                <Button onClick={handleCancel} variant="outline">
+                  <X className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+              </div>
+            )}
+            <UserAvatar />
+          </div>
         </div>
       </div>
 

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Star, Calendar, Clock, CheckCircle, MessageSquare, Video, Award } from "lucide-react";
@@ -9,6 +8,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { UserAvatar } from "@/components/UserAvatar";
 
 const ExpertProfile = () => {
   const { id } = useParams();
@@ -55,8 +55,8 @@ const ExpertProfile = () => {
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="flex items-center justify-between p-4">
           <SidebarTrigger />
-          <h1 className="text-xl font-semibold text-foreground">Expert Profile</h1>
-          <div className="w-10" />
+          <h1 className="text-2xl font-bold text-foreground">{expert?.name}</h1>
+          <UserAvatar />
         </div>
       </div>
 
