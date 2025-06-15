@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { Link } from "react-router-dom";
 import indexData from "@/data/index-courses.json";
+import type { IndexCourse } from "@/data/types/index-course";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +17,7 @@ const Index = () => {
 
   const { courses, categories } = indexData;
 
-  const filteredCourses = courses.filter(course => {
+  const filteredCourses = courses.filter((course: IndexCourse) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          course.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
@@ -68,7 +69,7 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredCourses.map((course) => (
+          {filteredCourses.map((course: IndexCourse) => (
             <Card key={course.id} className="hover-lift cursor-pointer group">
               <Link to={`/courses/${course.id}`}>
                 <div className="relative overflow-hidden rounded-t-lg">
