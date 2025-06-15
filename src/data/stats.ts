@@ -1,5 +1,6 @@
 
 import { Book, Clock, User, TrendingUp } from "lucide-react";
+import statsData from "./stats.json";
 
 export interface Stat {
   label: string;
@@ -7,9 +8,14 @@ export interface Stat {
   icon: any;
 }
 
-export const dashboardStatsData: Stat[] = [
-  { label: "Courses Completed", value: "3", icon: Book },
-  { label: "Study Hours", value: "47", icon: Clock },
-  { label: "Sessions Attended", value: "12", icon: User },
-  { label: "Progress This Week", value: "+15%", icon: TrendingUp }
-];
+const iconMap = {
+  Book,
+  Clock,
+  User,
+  TrendingUp
+};
+
+export const dashboardStatsData: Stat[] = statsData.dashboardStats.map(stat => ({
+  ...stat,
+  icon: iconMap[stat.icon as keyof typeof iconMap]
+}));

@@ -1,0 +1,25 @@
+
+{
+  "dashboardStats": [
+    {
+      "label": "Courses Completed",
+      "value": "3",
+      "icon": "Book"
+    },
+    {
+      "label": "Study Hours", 
+      "value": "47",
+      "icon": "Clock"
+    },
+    {
+      "label": "Sessions Attended",
+      "value": "12", 
+      "icon": "User"
+    },
+    {
+      "label": "Progress This Week",
+      "value": "+15%",
+      "icon": "TrendingUp"
+    }
+  ]
+}

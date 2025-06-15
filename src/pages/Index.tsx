@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Search, Clock, Book, Star, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -9,67 +8,13 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Progress } from "@/components/ui/progress";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { Link } from "react-router-dom";
-
-const courses = [
-  {
-    id: 1,
-    title: "Overcoming Anxiety",
-    description: "Learn practical techniques to manage and reduce anxiety in daily life",
-    duration: "6 weeks",
-    modules: 12,
-    category: "Anxiety",
-    instructor: "Dr. Sarah Johnson",
-    rating: 4.8,
-    students: 2847,
-    progress: 0,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=250&fit=crop"
-  },
-  {
-    id: 2,
-    title: "Confident Public Speaking",
-    description: "Build confidence and overcome fear of public speaking",
-    duration: "4 weeks",
-    modules: 8,
-    category: "Confidence",
-    instructor: "Mark Thompson",
-    rating: 4.9,
-    students: 1924,
-    progress: 65,
-    image: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=250&fit=crop"
-  },
-  {
-    id: 3,
-    title: "Decision Making Mastery",
-    description: "Develop clear frameworks for making better decisions",
-    duration: "5 weeks",
-    modules: 10,
-    category: "Decision Making",
-    instructor: "Dr. Emily Chen",
-    rating: 4.7,
-    students: 1563,
-    progress: 30,
-    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=400&h=250&fit=crop"
-  },
-  {
-    id: 4,
-    title: "Managing Depression",
-    description: "Evidence-based strategies for understanding and managing depression",
-    duration: "8 weeks",
-    modules: 16,
-    category: "Depression",
-    instructor: "Dr. Michael Rodriguez",
-    rating: 4.9,
-    students: 3201,
-    progress: 0,
-    image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=250&fit=crop"
-  }
-];
-
-const categories = ["All", "Anxiety", "Confidence", "Decision Making", "Depression", "Stress Management"];
+import indexData from "@/data/index-courses.json";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const { courses, categories } = indexData;
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -99,7 +44,6 @@ const Index = () => {
       </div>
 
       <div className="p-6 space-y-8">
-        {/* Hero Section */}
         <div className="text-center py-8 animate-fade-in">
           <h1 className="text-4xl font-bold text-foreground mb-4">
             Transform Your Mental Wellness Journey
@@ -110,7 +54,6 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Category Filters */}
         <div className="flex flex-wrap gap-2 justify-center animate-slide-up">
           {categories.map((category) => (
             <Button
@@ -124,7 +67,6 @@ const Index = () => {
           ))}
         </div>
 
-        {/* Course Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredCourses.map((course) => (
             <Card key={course.id} className="hover-lift cursor-pointer group">
