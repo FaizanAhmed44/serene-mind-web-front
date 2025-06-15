@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Search, Clock, Book, Star, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -8,14 +9,15 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Progress } from "@/components/ui/progress";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { Link } from "react-router-dom";
-import indexData from "@/data/index-courses.json";
+import { useIndexCourses, useCategories } from "@/hooks/useIndexCourses";
 import type { IndexCourse } from "@/data/types/index-course";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const { courses, categories } = indexData;
+  const { data: courses = [], isLoading: coursesLoading } = useIndexCourses();
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
   const filteredCourses = courses.filter((course: IndexCourse) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -23,6 +25,52 @@ const Index = () => {
     const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (coursesLoading || categoriesLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <div className="flex-1 max-w-md mx-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  placeholder="Search courses..."
+                  disabled
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="p-6 space-y-8">
+          <div className="text-center py-8">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-300 rounded w-3/4 mx-auto mb-4"></div>
+              <div className="h-4 bg-gray-300 rounded w-1/2 mx-auto"></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <div className="h-48 bg-gray-300 rounded-t-lg"></div>
+                <CardHeader>
+                  <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                  <div className="h-3 bg-gray-300 rounded w-full"></div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                  <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
