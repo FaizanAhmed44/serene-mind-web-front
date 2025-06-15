@@ -1,12 +1,7 @@
 
 import { Book, Clock, User, TrendingUp } from "lucide-react";
 import statsData from "./stats.json";
-
-export interface Stat {
-  label: string;
-  value: string;
-  icon: any;
-}
+import type { Stat } from "./types/stats";
 
 const iconMap = {
   Book,

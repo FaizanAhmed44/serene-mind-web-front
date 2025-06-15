@@ -1,12 +1,5 @@
 
-export interface PricingPlan {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice?: number | null;
-  description: string;
-  features: string[];
-}
+import type { PricingPlan } from "./types/pricing";
 
 export const getPricingPlans = (coursePrice: number, courseOriginalPrice?: number): PricingPlan[] => [
   {

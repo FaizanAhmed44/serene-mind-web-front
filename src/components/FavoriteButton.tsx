@@ -3,20 +3,7 @@ import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useToast } from "@/hooks/use-toast";
-
-interface Course {
-  id: number;
-  title: string;
-  description: string;
-  duration: string;
-  modules: number;
-  category: string;
-  instructor: string | { name: string; title: string; bio: string; photo: string; };
-  rating: number;
-  students: number;
-  progress: number;
-  image: string;
-}
+import type { Course } from "@/data/types/course";
 
 interface FavoriteButtonProps {
   course: Course;

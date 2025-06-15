@@ -1,19 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-interface Course {
-  id: number;
-  title: string;
-  description: string;
-  duration: string;
-  modules: number;
-  category: string;
-  instructor: string | { name: string; title: string; bio: string; photo: string; };
-  rating: number;
-  students: number;
-  progress: number;
-  image: string;
-}
+import type { Course } from '@/data/types/course';
 
 interface FavoritesContextType {
   favorites: Course[];

@@ -1,16 +1,6 @@
 
 import sessionsData from "./sessions.json";
+import type { Session } from "./types/session";
 
-export interface Session {
-  id: number;
-  expertName: string;
-  date: string;
-  type: string;
-  duration: string;
-  status: 'upcoming' | 'completed';
-  canReview: boolean;
-  hasReviewed: boolean;
-}
-
-export const upcomingSessionsData: Session[] = sessionsData.upcomingSessions;
-export const completedSessionsData: Session[] = sessionsData.completedSessions;
+export const upcomingSessionsData: Session[] = sessionsData.upcomingSessions as Session[];
+export const completedSessionsData: Session[] = sessionsData.completedSessions as Session[];
