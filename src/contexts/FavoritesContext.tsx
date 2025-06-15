@@ -1,10 +1,11 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import type { Course } from '@/data/types/course';
+import type { IndexCourse } from '@/data/types/index-course';
 
 interface FavoritesContextType {
   favorites: Course[];
-  addToFavorites: (course: Course) => void;
+  addToFavorites: (course: Course | IndexCourse) => void;
   removeFromFavorites: (courseId: number) => void;
   isFavorite: (courseId: number) => boolean;
 }
@@ -26,12 +27,33 @@ interface FavoritesProviderProps {
 export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }) => {
   const [favorites, setFavorites] = useState<Course[]>([]);
 
-  const addToFavorites = (course: Course) => {
+  const addToFavorites = (course: Course | IndexCourse) => {
     setFavorites(prev => {
       if (prev.some(fav => fav.id === course.id)) {
         return prev;
       }
-      return [...prev, course];
+      
+      // Convert IndexCourse to Course if needed
+      const fullCourse: Course = 'longDescription' in course ? course as Course : {
+        ...course,
+        longDescription: course.description,
+        price: "Free",
+        originalPrice: undefined,
+        language: "English",
+        level: "Beginner",
+        certificate: true,
+        outcomes: [],
+        modules_detail: [],
+        reviews: [],
+        instructor: {
+          name: course.instructor,
+          title: "",
+          bio: "",
+          photo: ""
+        }
+      };
+      
+      return [...prev, fullCourse];
     });
   };
 
