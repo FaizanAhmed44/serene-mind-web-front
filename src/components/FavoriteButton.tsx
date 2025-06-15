@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useToast } from "@/hooks/use-toast";
 import type { Course } from "@/data/types/course";
+import type { IndexCourse } from "@/data/types/index-course";
 
 interface FavoriteButtonProps {
-  course: Course;
+  course: Course | IndexCourse;
   variant?: "default" | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
 }
