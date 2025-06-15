@@ -50,7 +50,7 @@ export const useCourses = () => {
 
 export const useCourse = (courseId: string | number) => {
   return useQuery({
-    queryKey: ['course', courseId.toString()],
+    queryKey: ['course', String(courseId)],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('courses')
