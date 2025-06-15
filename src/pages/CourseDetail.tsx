@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Star, Clock, Users, BookOpen, Download, ChevronRight, Award, Globe, BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,10 +14,18 @@ import { getCourseById } from "@/data/courses";
 const CourseDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isEnrolled, setIsEnrolled] = useState(false); // Changed from true to false
+  const [isEnrolled, setIsEnrolled] = useState(false);
   const [currentLessonId, setCurrentLessonId] = useState("1-1");
   
   const course = getCourseById(id || "1");
+
+  useEffect(() => {
+    // Check if user is enrolled in this course
+    if (id) {
+      const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+      setIsEnrolled(enrolledCourses.includes(id));
+    }
+  }, [id]);
   
   if (!course) {
     return <div>Course not found</div>;

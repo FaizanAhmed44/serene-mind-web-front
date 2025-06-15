@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { 
@@ -27,6 +26,15 @@ const CourseSuccess = () => {
   const course = getCourseById(id as string);
 
   useEffect(() => {
+    // Mark user as enrolled in this course
+    if (id) {
+      const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+      if (!enrolledCourses.includes(id)) {
+        enrolledCourses.push(id);
+        localStorage.setItem('enrolledCourses', JSON.stringify(enrolledCourses));
+      }
+    }
+
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
