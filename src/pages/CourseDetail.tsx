@@ -13,7 +13,7 @@ import { getCourseById } from "@/data/courses";
 
 const CourseDetail = () => {
   const { id } = useParams();
-  const [isEnrolled, setIsEnrolled] = useState(true); // Mock enrollment status
+  const [isEnrolled, setIsEnrolled] = useState(false); // Changed from true to false
   const [currentLessonId, setCurrentLessonId] = useState("1-1");
   
   const course = getCourseById(id || "1");
@@ -55,6 +55,7 @@ const CourseDetail = () => {
 
   const handleEnroll = () => {
     setIsEnrolled(true);
+    console.log("User enrolled in course:", course.title);
   };
 
   return (
