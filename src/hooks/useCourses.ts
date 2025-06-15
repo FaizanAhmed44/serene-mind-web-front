@@ -48,9 +48,9 @@ export const useCourses = () => {
   });
 };
 
-export const useCourse = (courseId: number) => {
+export const useCourse = (courseId: string | number) => {
   return useQuery({
-    queryKey: ['course', courseId],
+    queryKey: ['course', courseId.toString()],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('courses')
