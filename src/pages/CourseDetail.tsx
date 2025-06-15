@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Star, Clock, Users, BookOpen, Download, ChevronRight, Award, Globe, BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +12,7 @@ import { getCourseById } from "@/data/courses";
 
 const CourseDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [isEnrolled, setIsEnrolled] = useState(false); // Changed from true to false
   const [currentLessonId, setCurrentLessonId] = useState("1-1");
   
@@ -53,9 +53,8 @@ const CourseDetail = () => {
     setCurrentLessonId(lessonId);
   };
 
-  const handleEnroll = () => {
-    setIsEnrolled(true);
-    console.log("User enrolled in course:", course.title);
+  const handleEnrollRedirect = () => {
+    navigate(`/courses/${course.id}/enroll`);
   };
 
   return (
@@ -268,7 +267,7 @@ const CourseDetail = () => {
                       )}
                     </div>
                     
-                    <Button className="w-full mb-4" size="lg" onClick={handleEnroll}>
+                    <Button className="w-full mb-4" size="lg" onClick={handleEnrollRedirect}>
                       Enroll Now
                     </Button>
                     

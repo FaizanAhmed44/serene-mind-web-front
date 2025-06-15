@@ -16,6 +16,7 @@ import ExpertProfile from "./pages/ExpertProfile";
 import SessionDetails from "./pages/SessionDetails";
 import CourseDetail from "./pages/CourseDetail";
 import CourseEnroll from "./pages/CourseEnroll";
+import CourseSuccess from "./pages/CourseSuccess";
 import UserProfile from "./pages/UserProfile";
 import FAQ from "./pages/FAQ";
 import Login from "./pages/Login";
@@ -54,6 +55,7 @@ const App: React.FC = () => {
                         <Route path="/faq" element={<FAQ />} />
                         <Route path="/courses/:id" element={<CourseDetail />} />
                         <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
+                        <Route path="/courses/:id/success" element={<CourseSuccess />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </main>

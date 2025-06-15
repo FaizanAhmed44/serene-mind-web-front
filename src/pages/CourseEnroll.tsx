@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { 
@@ -76,12 +77,20 @@ const CourseEnroll = () => {
     }
 
     toast({
-      title: "Enrollment Successful!",
-      description: "Welcome to the course! You can start learning immediately.",
+      title: "Payment Processing...",
+      description: "Your payment is being processed. Please wait.",
     });
 
+    // Simulate payment processing
     setTimeout(() => {
-      navigate(`/courses/${course.id}`);
+      toast({
+        title: "Payment Successful!",
+        description: "Redirecting to course details...",
+      });
+      
+      setTimeout(() => {
+        navigate(`/courses/${course.id}/success`);
+      }, 1000);
     }, 2000);
   };
 
@@ -373,7 +382,7 @@ const CourseEnroll = () => {
                 </div>
 
                 <Button onClick={handleEnroll} className="w-full" size="lg">
-                  Complete Enrollment
+                  Complete Purchase
                 </Button>
 
                 <div className="text-center text-xs text-muted-foreground">
