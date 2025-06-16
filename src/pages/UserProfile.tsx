@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X, Upload, Settings, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
 import ProfileSettings from "@/components/ProfileSettings";
 import PaymentHistory from "@/components/PaymentHistory";
+import { useUserProfile, useUpdateUserProfile } from "@/hooks/useUserProfile";
 
 interface UserData {
   name: string;
@@ -27,17 +27,60 @@ const UserProfile = () => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [userData, setUserData] = useState<UserData>({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    location: "New York, NY",
-    bio: "Passionate learner focused on mental wellness and personal development. Interested in mindfulness, cognitive behavioral therapy, and building healthy habits.",
-    joinDate: "January 2024",
-    avatar: "/placeholder.svg"
+  
+  const { data: userData, isLoading, error } = useUserProfile();
+  const updateProfileMutation = useUpdateUserProfile();
+  
+  const [editedData, setEditedData] = useState(userData || {
+    name: "",
+    email: "",
+    phone: "",
+    location: "",
+    bio: "",
+    joinDate: "",
+    avatar: ""
   });
 
-  const [editedData, setEditedData] = useState<UserData>(userData);
+  // Update editedData when userData changes
+  React.useEffect(() => {
+    if (userData) {
+      setEditedData(userData);
+    }
+  }, [userData]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="flex items-center justify-center min-h-96">
+          <p className="text-muted-foreground">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !userData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="flex items-center justify-center min-h-96">
+          <p className="text-destructive">Error loading profile. Please try again.</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -50,15 +93,25 @@ const UserProfile = () => {
   };
 
   const handleSave = () => {
-    setUserData(editedData);
-    setIsEditing(false);
-    toast({
-      title: "Profile Updated",
-      description: "Your profile has been successfully updated.",
+    updateProfileMutation.mutate(editedData, {
+      onSuccess: () => {
+        setIsEditing(false);
+        toast({
+          title: "Profile Updated",
+          description: "Your profile has been successfully updated.",
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Update Failed",
+          description: "Failed to update profile. Please try again.",
+          variant: "destructive",
+        });
+      }
     });
   };
 
-  const handleInputChange = (field: keyof UserData, value: string) => {
+  const handleInputChange = (field: keyof typeof editedData, value: string) => {
     setEditedData(prev => ({
       ...prev,
       [field]: value
@@ -121,9 +174,12 @@ const UserProfile = () => {
             </Button>
           ) : (
             <div className="flex space-x-2">
-              <Button onClick={handleSave}>
+              <Button 
+                onClick={handleSave}
+                disabled={updateProfileMutation.isPending}
+              >
                 <Save className="h-4 w-4 mr-2" />
-                Save
+                {updateProfileMutation.isPending ? "Saving..." : "Save"}
               </Button>
               <Button onClick={handleCancel} variant="outline">
                 <X className="h-4 w-4 mr-2" />

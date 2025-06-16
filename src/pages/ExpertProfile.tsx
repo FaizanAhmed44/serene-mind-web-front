@@ -7,39 +7,46 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import BookingModal from "@/components/BookingModal";
+import { useExpert } from "@/hooks/useExperts";
 
 const ExpertProfile = () => {
   const { id } = useParams();
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const { data: expert, isLoading, error } = useExpert(id || "");
 
-  // This would normally come from an API
-  const expert = {
-    id: 2,
-    name: "Mark Thompson",
-    title: "Speech & Confidence Coach",
-    specializations: ["Public Speaking", "Social Anxiety", "Confidence Building"],
-    rating: 4.8,
-    reviews: 89,
-    experience: "8+ years",
-    verified: true,
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
-    bio: "Former corporate trainer turned therapist, helping individuals overcome public speaking fears and build confidence. Mark combines evidence-based therapeutic techniques with practical presentation skills to help clients excel in professional and personal speaking situations.",
-    education: [
-      "M.A. Clinical Psychology - Stanford University",
-      "B.A. Communications - UC Berkeley",
-      "Certified CBT Therapist"
-    ],
-    sessionTypes: [
-      { type: "One-on-One Therapy", duration: "50 min", price: "$120" },
-      { type: "Public Speaking Coaching", duration: "50 min", price: "$100" },
-      { type: "Group Workshop", duration: "90 min", price: "$60" }
-    ],
-    availability: [
-      { date: "Today", times: ["4:30 PM", "6:00 PM"] },
-      { date: "Tomorrow", times: ["10:00 AM", "2:00 PM", "4:00 PM"] },
-      { date: "Friday", times: ["9:00 AM", "11:00 AM", "3:00 PM", "5:00 PM"] }
-    ]
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold text-foreground">Expert Profile</h1>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="flex items-center justify-center min-h-96">
+          <p className="text-muted-foreground">Loading expert profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !expert) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold text-foreground">Expert Profile</h1>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="flex items-center justify-center min-h-96">
+          <p className="text-destructive">Expert not found. Please try again.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
@@ -105,12 +112,18 @@ const ExpertProfile = () => {
                 <div>
                   <h3 className="text-xl font-semibold text-foreground mb-3">Education & Credentials</h3>
                   <ul className="space-y-2">
-                    {expert.education.map((edu, index) => (
-                      <li key={index} className="flex items-center space-x-2">
-                        <Award className="h-4 w-4 text-primary" />
-                        <span className="text-muted-foreground">{edu}</span>
-                      </li>
-                    ))}
+                    <li className="flex items-center space-x-2">
+                      <Award className="h-4 w-4 text-primary" />
+                      <span className="text-muted-foreground">M.A. Clinical Psychology - Stanford University</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <Award className="h-4 w-4 text-primary" />
+                      <span className="text-muted-foreground">B.A. Communications - UC Berkeley</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <Award className="h-4 w-4 text-primary" />
+                      <span className="text-muted-foreground">Certified CBT Therapist</span>
+                    </li>
                   </ul>
                 </div>
               </div>

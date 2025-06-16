@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Search, Star, Calendar, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -10,101 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-
-const experts = [
-  {
-    id: 1,
-    name: "Dr. Sarah Johnson",
-    title: "Licensed Clinical Psychologist",
-    specializations: ["Anxiety Disorders", "CBT", "Mindfulness"],
-    rating: 4.9,
-    reviews: 127,
-    experience: "12+ years",
-    verified: true,
-    nextAvailable: "Tomorrow, 2:00 PM",
-    photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face",
-    bio: "Specializes in cognitive behavioral therapy for anxiety and depression. Expert in mindfulness-based interventions.",
-    sessionTypes: [
-      { type: "One-on-One Therapy", duration: "50 min", price: "$120" },
-      { type: "CBT Session", duration: "50 min", price: "$110" },
-      { type: "Mindfulness Coaching", duration: "45 min", price: "$90" }
-    ],
-    availability: [
-      { date: "Today", times: ["2:00 PM", "4:00 PM"] },
-      { date: "Tomorrow", times: ["10:00 AM", "2:00 PM", "5:00 PM"] },
-      { date: "Friday", times: ["9:00 AM", "1:00 PM", "3:00 PM"] }
-    ]
-  },
-  {
-    id: 2,
-    name: "Mark Thompson",
-    title: "Speech & Confidence Coach",
-    specializations: ["Public Speaking", "Social Anxiety", "Confidence Building"],
-    rating: 4.8,
-    reviews: 89,
-    experience: "8+ years",
-    verified: true,
-    nextAvailable: "Today, 4:30 PM",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
-    bio: "Former corporate trainer turned therapist, helping individuals overcome public speaking fears and build confidence.",
-    sessionTypes: [
-      { type: "Public Speaking Coaching", duration: "50 min", price: "$100" },
-      { type: "Confidence Building", duration: "45 min", price: "$85" },
-      { type: "Group Workshop", duration: "90 min", price: "$60" }
-    ],
-    availability: [
-      { date: "Today", times: ["4:30 PM", "6:00 PM"] },
-      { date: "Tomorrow", times: ["10:00 AM", "2:00 PM", "4:00 PM"] },
-      { date: "Friday", times: ["9:00 AM", "11:00 AM", "3:00 PM"] }
-    ]
-  },
-  {
-    id: 3,
-    name: "Dr. Emily Chen",
-    title: "Behavioral Therapist",
-    specializations: ["Decision Making", "Life Transitions", "Career Counseling"],
-    rating: 4.9,
-    reviews: 156,
-    experience: "15+ years",
-    verified: true,
-    nextAvailable: "Friday, 10:00 AM",
-    photo: "https://images.unsplash.com/photo-1594824248015-88379cfb1b0e?w=300&h=300&fit=crop&crop=face",
-    bio: "Helps individuals navigate major life decisions and career transitions with evidence-based therapeutic approaches.",
-    sessionTypes: [
-      { type: "Life Coaching", duration: "60 min", price: "$130" },
-      { type: "Career Counseling", duration: "50 min", price: "$115" },
-      { type: "Decision Support", duration: "45 min", price: "$95" }
-    ],
-    availability: [
-      { date: "Today", times: ["3:00 PM"] },
-      { date: "Tomorrow", times: ["9:00 AM", "1:00 PM"] },
-      { date: "Friday", times: ["10:00 AM", "2:00 PM", "4:00 PM"] }
-    ]
-  },
-  {
-    id: 4,
-    name: "Dr. Michael Rodriguez",
-    title: "Clinical Psychiatrist",
-    specializations: ["Depression", "Mood Disorders", "Medication Management"],
-    rating: 4.9,
-    reviews: 203,
-    experience: "18+ years",
-    verified: true,
-    nextAvailable: "Monday, 9:00 AM",
-    photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&h=300&fit=crop&crop=face",
-    bio: "Board-certified psychiatrist specializing in treatment-resistant depression and comprehensive mental health care.",
-    sessionTypes: [
-      { type: "Psychiatric Consultation", duration: "60 min", price: "$150" },
-      { type: "Medication Review", duration: "30 min", price: "$75" },
-      { type: "Therapy Session", duration: "50 min", price: "$125" }
-    ],
-    availability: [
-      { date: "Tomorrow", times: ["11:00 AM"] },
-      { date: "Friday", times: ["9:00 AM", "2:00 PM"] },
-      { date: "Monday", times: ["9:00 AM", "11:00 AM", "3:00 PM"] }
-    ]
-  }
-];
+import { useExperts } from "@/hooks/useExperts";
 
 const specializations = ["All", "Anxiety Disorders", "CBT", "Public Speaking", "Depression", "Life Transitions"];
 
@@ -242,6 +149,7 @@ const BookingDialog = ({ expert, onBookingConfirmed }: { expert: any, onBookingC
 const Experts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSpecialization, setSelectedSpecialization] = useState("All");
+  const { data: experts = [], isLoading, error } = useExperts();
 
   const filteredExperts = experts.filter(expert => {
     const matchesSearch = expert.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -255,6 +163,40 @@ const Experts = () => {
   const handleBookingConfirmed = () => {
     // Could add additional logic here if needed
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold text-foreground">Find Experts</h1>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="flex items-center justify-center min-h-96">
+          <p className="text-muted-foreground">Loading experts...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold text-foreground">Find Experts</h1>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="flex items-center justify-center min-h-96">
+          <p className="text-destructive">Error loading experts. Please try again.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
