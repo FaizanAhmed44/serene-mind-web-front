@@ -9,11 +9,6 @@ const iconMap = {
   User,
   TrendingUp,
   CheckCircle,
-  'Calendar': Calendar,
-  'Clock': Clock,
-  'User': User,
-  'TrendingUp': TrendingUp,
-  'CheckCircle': CheckCircle,
 };
 
 export const useDashboardStats = () => {

@@ -52,6 +52,9 @@ export const useCourse = (courseId: string) => {
   return useQuery({
     queryKey: ['course', courseId],
     queryFn: async () => {
+      // Convert string courseId to number for database query
+      const numericCourseId = parseInt(courseId, 10);
+      
       const { data, error } = await supabase
         .from('courses')
         .select(`
@@ -60,7 +63,7 @@ export const useCourse = (courseId: string) => {
           course_modules(*),
           course_reviews(*)
         `)
-        .eq('id', courseId) // Use courseId as string directly since database expects string
+        .eq('id', numericCourseId) // Use numeric id for database query
         .single();
       
       if (error) throw error;
