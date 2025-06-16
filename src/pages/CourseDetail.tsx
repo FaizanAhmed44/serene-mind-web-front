@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { CourseSidebar } from "@/components/CourseSidebar";
-import { getCourseById } from "@/data/courses";
+import { useCourse } from "@/hooks/useCourses";
 
 const CourseDetail = () => {
   const { id } = useParams();
@@ -17,7 +17,7 @@ const CourseDetail = () => {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [currentLessonId, setCurrentLessonId] = useState("1-1");
   
-  const course = getCourseById(id || "1");
+  const { data: course, isLoading, error } = useCourse(id || "1");
 
   useEffect(() => {
     // Check if user is enrolled in this course
@@ -26,9 +26,39 @@ const CourseDetail = () => {
       setIsEnrolled(enrolledCourses.includes(id));
     }
   }, [id]);
-  
-  if (!course) {
-    return <div>Course not found</div>;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold truncate">Loading...</h1>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="container mx-auto px-4 py-6">
+          <div className="text-center">Loading course details...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !course) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold truncate">Course Not Found</h1>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="container mx-auto px-4 py-6">
+          <div className="text-center">Course not found</div>
+        </div>
+      </div>
+    );
   }
 
   // Mock course modules with video lessons
