@@ -9,17 +9,18 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Progress } from "@/components/ui/progress";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { Link } from "react-router-dom";
-import { useIndexCourses, useCategories } from "@/hooks/useIndexCourses";
-import type { IndexCourse } from "@/data/types/index-course";
+import { useCourses } from "@/hooks/useCourses";
+import { useCategories } from "@/hooks/useIndexCourses";
+import type { Course } from "@/data/types/course";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const { data: courses = [], isLoading: coursesLoading } = useIndexCourses();
+  const { data: courses = [], isLoading: coursesLoading } = useCourses();
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
-  const filteredCourses = courses.filter((course: IndexCourse) => {
+  const filteredCourses = courses.filter((course: Course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          course.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
@@ -117,7 +118,7 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredCourses.map((course: IndexCourse) => (
+          {filteredCourses.map((course: Course) => (
             <Card key={course.id} className="hover-lift cursor-pointer group">
               <Link to={`/courses/${course.id}`}>
                 <div className="relative overflow-hidden rounded-t-lg">
@@ -149,7 +150,7 @@ const Index = () => {
                     </div>
                   </div>
                   
-                  {course.progress > 0 && (
+                  {course.progress && course.progress > 0 && (
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Progress</span>
@@ -172,13 +173,13 @@ const Index = () => {
                     </div>
                   </div>
                   
-                  <p className="text-sm text-muted-foreground">by {course.instructor}</p>
+                  <p className="text-sm text-muted-foreground">by {course.instructor.name}</p>
                   
                   <Button 
                     className="w-full" 
-                    variant={course.progress > 0 ? "default" : "outline"}
+                    variant={course.progress && course.progress > 0 ? "default" : "outline"}
                   >
-                    {course.progress > 0 ? "Continue Learning" : "Enroll Now"}
+                    {course.progress && course.progress > 0 ? "Continue Learning" : "Enroll Now"}
                   </Button>
                 </CardContent>
               </Link>

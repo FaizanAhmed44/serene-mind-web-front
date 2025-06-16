@@ -60,7 +60,7 @@ export const useCourse = (courseId: string | number) => {
           course_modules(*),
           course_reviews(*)
         `)
-        .eq('id', Number(courseId))
+        .eq('id', String(courseId))
         .single();
       
       if (error) throw error;
