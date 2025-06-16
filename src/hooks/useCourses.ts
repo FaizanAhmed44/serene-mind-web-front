@@ -48,9 +48,9 @@ export const useCourses = () => {
   });
 };
 
-export const useCourse = (courseId: string | number) => {
+export const useCourse = (courseId: string) => {
   return useQuery({
-    queryKey: ['course', String(courseId)],
+    queryKey: ['course', courseId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('courses')
@@ -60,7 +60,7 @@ export const useCourse = (courseId: string | number) => {
           course_modules(*),
           course_reviews(*)
         `)
-        .eq('id', Number(courseId))
+        .eq('id', Number(courseId)) // Convert string to number for database query
         .single();
       
       if (error) throw error;

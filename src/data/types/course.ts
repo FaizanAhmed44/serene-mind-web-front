@@ -1,6 +1,6 @@
 
 export interface Course {
-  id: number;
+  id: string; // Changed from number to string
   title: string;
   description: string;
   longDescription: string;
