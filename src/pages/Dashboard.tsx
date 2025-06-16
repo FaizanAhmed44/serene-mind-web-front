@@ -6,15 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { upcomingSessionsData, completedSessionsData, Session } from "@/data/sessions";
+import { useUpcomingSessions, useCompletedSessions } from "@/hooks/useSessions";
+import { useDashboardStats } from "@/hooks/useDashboardStats";
 import ReviewDialog from "@/components/ReviewDialog";
 
 const Dashboard = () => {
-  const [upcomingSessions] = useState<Session[]>(upcomingSessionsData);
-  const [completedSessions, setCompletedSessions] = useState<Session[]>(completedSessionsData);
+  const { data: upcomingSessions = [], isLoading: upcomingLoading } = useUpcomingSessions();
+  const { data: completedSessions = [], isLoading: completedLoading } = useCompletedSessions();
+  const { data: dashboardStats = [], isLoading: statsLoading } = useDashboardStats();
+
+  const [completedSessionsState, setCompletedSessionsState] = useState(completedSessions);
+
+  // Update local state when data changes
+  useState(() => {
+    setCompletedSessionsState(completedSessions);
+  });
 
   const handleReviewSubmitted = (sessionId: number) => {
-    setCompletedSessions(prev => 
+    setCompletedSessionsState(prev => 
       prev.map(session => 
         session.id === sessionId 
           ? { ...session, hasReviewed: true }
@@ -23,7 +32,8 @@ const Dashboard = () => {
     );
   };
 
-  const stats = [
+  // Default stats if database is empty
+  const defaultStats = [
     {
       title: "Total Sessions",
       value: upcomingSessions.length + completedSessions.length,
@@ -49,6 +59,25 @@ const Dashboard = () => {
       change: "3 remaining"
     }
   ];
+
+  const stats = dashboardStats.length > 0 ? dashboardStats : defaultStats;
+
+  if (upcomingLoading || completedLoading || statsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
+            <div className="w-10" />
+          </div>
+        </div>
+        <div className="p-6 flex items-center justify-center">
+          <div className="text-lg text-muted-foreground">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
@@ -99,24 +128,28 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {upcomingSessions.map((session) => (
-                <div key={session.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <User className="h-8 w-8 text-primary" />
+              {upcomingSessions.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">No upcoming sessions</p>
+              ) : (
+                upcomingSessions.map((session) => (
+                  <div key={session.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <User className="h-8 w-8 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-foreground">{session.expertName}</h4>
+                        <p className="text-sm text-muted-foreground">{session.type}</p>
+                        <p className="text-sm text-muted-foreground">{session.date}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground">{session.expertName}</h4>
-                      <p className="text-sm text-muted-foreground">{session.type}</p>
-                      <p className="text-sm text-muted-foreground">{session.date}</p>
+                    <div className="text-right">
+                      <Badge variant="outline">{session.duration}</Badge>
+                      <Button size="sm" className="ml-2">Join</Button>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <Badge variant="outline">{session.duration}</Badge>
-                    <Button size="sm" className="ml-2">Join</Button>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </CardContent>
           </Card>
 
@@ -129,41 +162,45 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {completedSessions.map((session) => (
-                <div key={session.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <User className="h-8 w-8 text-primary" />
+              {completedSessionsState.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">No completed sessions</p>
+              ) : (
+                completedSessionsState.map((session) => (
+                  <div key={session.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <User className="h-8 w-8 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-foreground">{session.expertName}</h4>
+                        <p className="text-sm text-muted-foreground">{session.type}</p>
+                        <p className="text-sm text-muted-foreground">{session.date}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground">{session.expertName}</h4>
-                      <p className="text-sm text-muted-foreground">{session.type}</p>
-                      <p className="text-sm text-muted-foreground">{session.date}</p>
+                    <div className="text-right">
+                      <Badge variant="secondary">{session.duration}</Badge>
+                      {session.canReview && !session.hasReviewed && (
+                        <ReviewDialog
+                          expertName={session.expertName}
+                          sessionType={session.type}
+                          onReviewSubmitted={() => handleReviewSubmitted(session.id)}
+                        >
+                          <Button size="sm" variant="outline" className="ml-2">
+                            <Star className="h-4 w-4 mr-1" />
+                            Review
+                          </Button>
+                        </ReviewDialog>
+                      )}
+                      {session.hasReviewed && (
+                        <Badge variant="outline" className="ml-2">
+                          <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
+                          Reviewed
+                        </Badge>
+                      )}
                     </div>
                   </div>
-                  <div className="text-right">
-                    <Badge variant="secondary">{session.duration}</Badge>
-                    {session.canReview && !session.hasReviewed && (
-                      <ReviewDialog
-                        expertName={session.expertName}
-                        sessionType={session.type}
-                        onReviewSubmitted={() => handleReviewSubmitted(session.id)}
-                      >
-                        <Button size="sm" variant="outline" className="ml-2">
-                          <Star className="h-4 w-4 mr-1" />
-                          Review
-                        </Button>
-                      </ReviewDialog>
-                    )}
-                    {session.hasReviewed && (
-                      <Badge variant="outline" className="ml-2">
-                        <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
-                        Reviewed
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </CardContent>
           </Card>
         </div>

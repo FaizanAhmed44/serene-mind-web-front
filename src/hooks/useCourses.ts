@@ -60,7 +60,7 @@ export const useCourse = (courseId: string) => {
           course_modules(*),
           course_reviews(*)
         `)
-        .eq('id', Number(courseId)) // Convert string to number for database query
+        .eq('id', courseId) // Use courseId as string directly since database expects string
         .single();
       
       if (error) throw error;
