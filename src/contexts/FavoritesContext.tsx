@@ -6,8 +6,8 @@ import type { IndexCourse } from '@/data/types/index-course';
 interface FavoritesContextType {
   favorites: Course[];
   addToFavorites: (course: Course | IndexCourse) => void;
-  removeFromFavorites: (courseId: number) => void;
-  isFavorite: (courseId: number) => boolean;
+  removeFromFavorites: (courseId: string) => void;
+  isFavorite: (courseId: string) => boolean;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
@@ -36,6 +36,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
       // Convert IndexCourse to Course if needed
       const fullCourse: Course = 'longDescription' in course ? course as Course : {
         ...course,
+        id: String(course.id), // Ensure id is string
         longDescription: course.description,
         price: "Free",
         originalPrice: undefined,
@@ -57,11 +58,11 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     });
   };
 
-  const removeFromFavorites = (courseId: number) => {
+  const removeFromFavorites = (courseId: string) => {
     setFavorites(prev => prev.filter(course => course.id !== courseId));
   };
 
-  const isFavorite = (courseId: number) => {
+  const isFavorite = (courseId: string) => {
     return favorites.some(course => course.id === courseId);
   };
 

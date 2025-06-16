@@ -19,14 +19,15 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
 }) => {
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { toast } = useToast();
-  const isCourseFavorite = isFavorite(course.id);
+  const courseId = String(course.id); // Ensure courseId is string
+  const isCourseFavorite = isFavorite(courseId);
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (isCourseFavorite) {
-      removeFromFavorites(course.id);
+      removeFromFavorites(courseId);
       toast({
         title: "Removed from Interest",
         description: `${course.title} has been removed from your interests.`,
