@@ -70,7 +70,7 @@ export const useCourse = (courseId: string) => {
       
       // Transform the data to match the Course type
       const course: Course = {
-        id: String(data.id), // Convert number to string
+        id: String(data.id), // Convert number to string for Course type
         title: data.title,
         description: data.description,
         longDescription: data.long_description,
