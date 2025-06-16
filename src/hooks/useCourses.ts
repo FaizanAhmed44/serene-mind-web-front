@@ -18,7 +18,7 @@ export const useCourses = () => {
       
       // Transform the data to match the Course type
       return data.map((course: any): Course => ({
-        id: course.id,
+        id: String(course.id), // Convert number to string
         title: course.title,
         description: course.description,
         longDescription: course.long_description,
@@ -67,7 +67,7 @@ export const useCourse = (courseId: string | number) => {
       
       // Transform the data to match the Course type
       const course: Course = {
-        id: data.id,
+        id: String(data.id), // Convert number to string
         title: data.title,
         description: data.description,
         longDescription: data.long_description,
