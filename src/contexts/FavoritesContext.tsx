@@ -5,6 +5,7 @@ import type { IndexCourse } from '@/data/types/index-course';
 
 interface FavoritesContextType {
   favorites: Course[];
+  favoriteIds: string[];
   addToFavorites: (course: Course | IndexCourse) => void;
   removeFromFavorites: (courseId: string) => void;
   isFavorite: (courseId: string) => boolean;
@@ -26,6 +27,8 @@ interface FavoritesProviderProps {
 
 export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }) => {
   const [favorites, setFavorites] = useState<Course[]>([]);
+
+  const favoriteIds = favorites.map(course => course.id);
 
   const addToFavorites = (course: Course | IndexCourse) => {
     setFavorites(prev => {
@@ -69,6 +72,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
   return (
     <FavoritesContext.Provider value={{
       favorites,
+      favoriteIds,
       addToFavorites,
       removeFromFavorites,
       isFavorite
