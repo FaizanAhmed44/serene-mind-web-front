@@ -55,6 +55,10 @@ export const useCourse = (courseId: string) => {
       // Convert string courseId to number for database query
       const numericCourseId = parseInt(courseId, 10);
       
+      if (isNaN(numericCourseId)) {
+        throw new Error('Invalid course ID');
+      }
+      
       const { data, error } = await supabase
         .from('courses')
         .select(`

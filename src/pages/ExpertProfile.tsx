@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Star, Calendar, Clock, CheckCircle, MessageSquare, Video, Award } from "lucide-react";
@@ -6,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import BookingModal from "@/components/BookingModal";
 import { useExpert } from "@/hooks/useExperts";
 
 const ExpertProfile = () => {
@@ -46,6 +46,15 @@ const ExpertProfile = () => {
       </div>
     );
   }
+
+  // Transform expert data to match BookingModal expectations
+  const bookingExpert = {
+    id: parseInt(expert.id.replace(/-/g, '').substring(0, 8), 16), // Convert UUID to number for BookingModal
+    name: expert.name,
+    title: expert.title,
+    photo: expert.photo,
+    sessionTypes: expert.sessionTypes
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
@@ -218,6 +227,13 @@ const ExpertProfile = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        expert={bookingExpert}
+      />
     </div>
   );
 };

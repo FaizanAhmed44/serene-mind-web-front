@@ -55,6 +55,10 @@ export const useExpert = (expertId: string) => {
   return useQuery({
     queryKey: ['expert', expertId],
     queryFn: async () => {
+      if (!expertId) {
+        throw new Error('Expert ID is required');
+      }
+      
       const { data: expert, error } = await supabase
         .from('experts')
         .select(`
