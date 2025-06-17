@@ -85,7 +85,7 @@ const ExpertProfile = () => {
                   <span className="text-muted-foreground">{expert.experience}</span>
                 </div>
                 <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-6">
-                  {expert.specializations.map((spec) => (
+                  {expert.specializations.map((spec: string) => (
                     <Badge key={spec} variant="secondary">
                       {spec}
                     </Badge>
@@ -141,7 +141,7 @@ const ExpertProfile = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {expert.sessionTypes.map((session, index) => (
+              {expert.sessionTypes.map((session: any, index: number) => (
                 <div key={index} className="flex justify-between items-center p-4 bg-muted/50 rounded-lg">
                   <div>
                     <h4 className="font-semibold text-foreground">{session.type}</h4>
@@ -164,11 +164,11 @@ const ExpertProfile = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {expert.availability.map((day) => (
+              {expert.availability.map((day: any) => (
                 <div key={day.date} className="p-4 bg-muted/50 rounded-lg">
                   <h4 className="font-semibold text-foreground mb-2">{day.date}</h4>
                   <div className="flex flex-wrap gap-2">
-                    {day.times.map((time) => (
+                    {day.times.map((time: string) => (
                       <Badge key={time} variant="outline" className="text-sm">
                         {time}
                       </Badge>

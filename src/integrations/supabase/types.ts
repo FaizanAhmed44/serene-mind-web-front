@@ -230,6 +230,121 @@ export type Database = {
           },
         ]
       }
+      expert_availability: {
+        Row: {
+          created_at: string
+          date: string
+          expert_id: string | null
+          id: string
+          times: string[]
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          expert_id?: string | null
+          id?: string
+          times?: string[]
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          expert_id?: string | null
+          id?: string
+          times?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_availability_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_session_types: {
+        Row: {
+          created_at: string
+          duration: string
+          expert_id: string | null
+          id: string
+          price: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          duration: string
+          expert_id?: string | null
+          id?: string
+          price: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          duration?: string
+          expert_id?: string | null
+          id?: string
+          price?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_session_types_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experts: {
+        Row: {
+          bio: string | null
+          created_at: string
+          experience: string
+          id: string
+          name: string
+          next_available: string | null
+          photo: string | null
+          rating: number
+          reviews: number
+          specializations: string[]
+          title: string
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          experience: string
+          id?: string
+          name: string
+          next_available?: string | null
+          photo?: string | null
+          rating?: number
+          reviews?: number
+          specializations?: string[]
+          title: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          experience?: string
+          id?: string
+          name?: string
+          next_available?: string | null
+          photo?: string | null
+          rating?: number
+          reviews?: number
+          specializations?: string[]
+          title?: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       instructors: {
         Row: {
           bio: string
