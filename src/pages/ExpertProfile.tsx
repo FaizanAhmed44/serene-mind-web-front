@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import BookingModal from "@/components/BookingModal";
 import { useExpert } from "@/hooks/useExperts";
 
 const ExpertProfile = () => {
@@ -219,13 +218,6 @@ const ExpertProfile = () => {
           </CardContent>
         </Card>
       </div>
-
-      {/* Booking Modal */}
-      <BookingModal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        expert={expert}
-      />
     </div>
   );
 };

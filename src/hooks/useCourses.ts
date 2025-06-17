@@ -64,9 +64,10 @@ export const useCourse = (courseId: string) => {
           course_reviews(*)
         `)
         .eq('id', numericCourseId) // Use numeric id for database query
-        .single();
+        .maybeSingle(); // Use maybeSingle to avoid errors when no data found
       
       if (error) throw error;
+      if (!data) return null;
       
       // Transform the data to match the Course type
       const course: Course = {

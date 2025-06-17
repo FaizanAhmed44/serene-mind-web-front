@@ -62,10 +62,11 @@ export const useExpert = (expertId: string) => {
           sessionTypes:expert_session_types(*),
           availability:expert_availability(*)
         `)
-        .eq('id', expertId)
-        .single();
+        .eq('id', expertId) // Use string id directly since experts table uses UUID
+        .maybeSingle(); // Use maybeSingle to avoid errors when no data found
       
       if (error) throw error;
+      if (!expert) return null;
       
       // Transform the data to match the expected format
       return {
