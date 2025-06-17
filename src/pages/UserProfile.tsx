@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef,useEffect  } from "react";
 import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X, Upload, Settings, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,7 +42,7 @@ const UserProfile = () => {
   });
 
   // Update editedData when userData changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (userData) {
       setEditedData(userData);
     }

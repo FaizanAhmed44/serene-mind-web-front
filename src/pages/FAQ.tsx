@@ -188,12 +188,7 @@ const FAQ = () => {
               >
                 Email Support
               </a>
-              <a
-                href="#"
-                className="inline-flex items-center justify-center px-6 py-3 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
-              >
-                Live Chat
-              </a>
+              
             </div>
           </CardContent>
         </Card>
