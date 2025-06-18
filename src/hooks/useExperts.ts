@@ -74,7 +74,7 @@ export const useExpert = (expertId: string) => {
       
       // Transform the data to match the expected format
       return {
-        id: expert.id,
+        id: expertId, // Keep original string expertId for consistency
         name: expert.name,
         title: expert.title,
         specializations: expert.specializations,
