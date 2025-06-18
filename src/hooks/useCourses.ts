@@ -53,7 +53,7 @@ export const useCourse = (courseId: string) => {
     queryKey: ['course', courseId],
     queryFn: async () => {
       // Convert string courseId to number for database query
-      const numericCourseId = parseInt(courseId, 10);
+      const numericCourseId = Number(courseId);
       
       if (isNaN(numericCourseId)) {
         throw new Error('Invalid course ID');
