@@ -88,7 +88,8 @@ export const useExpert = (expertId: string) => {
         sessionTypes: expert.sessionTypes.map((session: any) => ({
           type: session.type,
           duration: session.duration,
-          price: session.price
+          price: session.price,
+          session_id: session.id
         })),
         availability: expert.availability.reduce((acc: any, avail: any) => {
           const existingDay = acc.find((day: any) => day.date === avail.date);

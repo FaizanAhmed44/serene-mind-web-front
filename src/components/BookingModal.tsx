@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { format, addDays, isSameDay } from "date-fns";
 import { Calendar, Clock, FileText, CreditCard } from "lucide-react";
@@ -10,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -23,8 +23,11 @@ interface BookingModalProps {
       type: string;
       duration: string;
       price: string;
+      session_id: number;
     }>;
+    availability: Array<{ date: string; times: Array<string> }>;
   };
+  sessionId: number;
 }
 
 const BookingModal = ({ isOpen, onClose, expert }: BookingModalProps) => {
@@ -35,21 +38,17 @@ const BookingModal = ({ isOpen, onClose, expert }: BookingModalProps) => {
   const [step, setStep] = useState(1);
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  // Mock available times for the selected date
-  const getAvailableTimes = (date: Date) => {
-    if (!date) return [];
-    const today = new Date();
-    const isToday = isSameDay(date, today);
-    
-    if (isToday) {
-      return ["4:00 PM", "5:00 PM", "6:00 PM"];
-    }
-    return ["9:00 AM", "10:00 AM", "11:00 AM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
+  // Helper to get available times for the selected date from expert.availability
+  const getAvailableTimes = (date: Date | undefined) => {
+    console.log(date);
+    if (!date || !expert.availability) return [];
+    const dateStr = format(date, "EEEE").toLowerCase(); // e.g., "monday", "tuesday"
+    const day = expert.availability.find((d: any) => d.date.toLowerCase() === dateStr.toLowerCase());
+    return day ? day.times : [];
   };
-
+  
   const selectedSession = expert.sessionTypes.find(session => session.type === selectedSessionType);
-
+  
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
     setSelectedTime(""); // Reset time when date changes
@@ -61,12 +60,46 @@ const BookingModal = ({ isOpen, onClose, expert }: BookingModalProps) => {
     }
   };
 
-  const handleBack = () => {
-    setStep(1);
-  };
+  const handleConfirmBooking = async () => {
+    // Book one session into the database and return the session ID using Supabase
+    console.log(selectedSession?.session_id);
+      // Import supabase client (assumes you have it set up in your project)
+      // import { supabase } from "@/lib/supabaseClient"; // If not already imported at the top
+      // Prepare session data
+      const sessionData = {
+        session_id: selectedSession?.session_id,      
+        // user_id: user?.id,
+        created_at: new Date().toISOString(),
+        session_time: selectedDate && selectedTime
+          ? new Date(
+              selectedDate.getFullYear(),
+              selectedDate.getMonth(),
+              selectedDate.getDate(),
+              parseInt(selectedTime.split(":")[0], 10),
+              parseInt(selectedTime.split(":")[1], 10)
+            ).toISOString()
+          : null,
+        notes: notes,        
+      };
 
-  const handleConfirmBooking = () => {
-    // In a real app, this would make an API call to book the session
+      // Insert session into the "sessions" table
+      const { data, error } = await supabase
+        .from("booked_sessions")
+        .insert([sessionData])
+        .select("id")
+        .single();
+
+      if (error) {
+        toast({
+          title: "Booking Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Use the returned session ID for navigation
+      const sessionId = data?.id;
     toast({
       title: "Session Booked Successfully!",
       description: `Your ${selectedSession?.type} with ${expert.name} has been confirmed.`,
@@ -75,20 +108,23 @@ const BookingModal = ({ isOpen, onClose, expert }: BookingModalProps) => {
     // Navigate to session details page
     navigate("/session/SESS-2024-001");
     onClose();
-  };
+  }
 
-  const resetModal = () => {
-    setStep(1);
-    setSelectedDate(undefined);
-    setSelectedTime("");
-    setSelectedSessionType("");
-    setNotes("");
-  };
+  
 
-  const handleClose = () => {
-    resetModal();
-    onClose();
-  };
+
+const resetModal = () => {
+  setStep(1);
+  setSelectedDate(undefined);
+  setSelectedTime("");
+  setSelectedSessionType("");
+  setNotes("");
+};
+
+const handleClose = () => {
+  resetModal();
+  onClose();
+};
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -249,7 +285,7 @@ const BookingModal = ({ isOpen, onClose, expert }: BookingModalProps) => {
             </div>
 
             <div className="flex justify-between space-x-2 pt-4">
-              <Button variant="outline" onClick={handleBack}>
+              <Button variant="outline" onClick={()=>setStep(1)}>
                 Back
               </Button>
               <Button onClick={handleConfirmBooking} className="flex-1">
@@ -262,5 +298,6 @@ const BookingModal = ({ isOpen, onClose, expert }: BookingModalProps) => {
     </Dialog>
   );
 };
+
 
 export default BookingModal;

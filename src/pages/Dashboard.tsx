@@ -9,12 +9,25 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUpcomingSessions, useCompletedSessions } from "@/hooks/useSessions";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import ReviewDialog from "@/components/ReviewDialog";
+import { useUserProfile } from "@/hooks/useUserProfile";
+
+
+interface UserData {
+  name: string;
+  email: string;
+  phone: string;
+  location: string;
+  bio: string;
+  joinDate: string;
+  avatar: string;
+}
 
 const Dashboard = () => {
   const { data: upcomingSessions = [], isLoading: upcomingLoading } = useUpcomingSessions();
   const { data: completedSessions = [], isLoading: completedLoading } = useCompletedSessions();
   const { data: dashboardStats = [], isLoading: statsLoading } = useDashboardStats();
 
+  const { data: userData, isLoading, error } = useUserProfile();
   const [completedSessionsState, setCompletedSessionsState] = useState(completedSessions);
 
   // Update local state when data changes
@@ -93,7 +106,7 @@ const Dashboard = () => {
         {/* Welcome Section */}
         <div className="text-center py-4 animate-fade-in">
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            Welcome back, Sarah!
+            Welcome back, {userData?.name}!
           </h1>
           <p className="text-lg text-muted-foreground">
             Continue your mental wellness journey

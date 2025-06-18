@@ -1,18 +1,16 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Star, Calendar, Clock, CheckCircle, MessageSquare, Video, Award } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import BookingModal from "@/components/BookingModal";
 import { useExpert } from "@/hooks/useExperts";
-
+import BookingModal from "@/components/BookingModal";
 const ExpertProfile = () => {
   const { id } = useParams();
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const { data: expert, isLoading, error } = useExpert(id || "");
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
@@ -53,9 +51,11 @@ const ExpertProfile = () => {
     name: expert.name,
     title: expert.title,
     photo: expert.photo,
-    sessionTypes: expert.sessionTypes
+    sessionTypes: expert.sessionTypes,
+    availability: expert.availability,
   };
 
+  console.log(bookingExpert);
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
@@ -233,7 +233,8 @@ const ExpertProfile = () => {
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
         expert={bookingExpert}
-      />
+        sessionId={expert.sessionTypes[0].session_id}
+        />
     </div>
   );
 };

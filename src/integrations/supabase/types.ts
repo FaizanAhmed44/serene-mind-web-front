@@ -450,6 +450,30 @@ export type Database = {
         }
         Relationships: []
       }
+      booked_sessions: {
+        Row: {
+          id: number;
+          session_id: string;
+          user_id: string;
+          created_at: string;
+          session_time: string;
+          notes: string | null;
+        };
+        Insert: {
+          session_id: string;
+          user_id: string;
+          created_at?: string;
+          session_time: string;
+          notes?: string | null;
+        };
+        Update: {
+          session_id?: string;
+          user_id?: string;
+          created_at?: string;
+          session_time?: string;
+          notes?: string | null;
+        };
+      }
     }
     Views: {
       [_ in never]: never
