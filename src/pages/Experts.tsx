@@ -154,7 +154,7 @@ const Experts = () => {
   const filteredExperts = experts.filter(expert => {
     const matchesSearch = expert.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          expert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         expert.specializations.some(spec => spec.toLowerCase().includes(searchQuery.toLowerCase()));
+                         expert.specializations.some((spec: string) => spec.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesSpecialization = selectedSpecialization === "All" || 
                                  expert.specializations.includes(selectedSpecialization);
     return matchesSearch && matchesSpecialization;
@@ -263,7 +263,7 @@ const Experts = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex flex-wrap gap-1">
-                  {expert.specializations.map((spec) => (
+                  {expert.specializations.map((spec: string) => (
                     <Badge key={spec} variant="secondary" className="text-xs">
                       {spec}
                     </Badge>

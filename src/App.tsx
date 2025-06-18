@@ -8,6 +8,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
+import { AuthProvider } from "@/hooks/useAuth";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Experts from "./pages/Experts";
 import Dashboard from "./pages/Dashboard";
@@ -29,42 +31,46 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <FavoritesProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              {/* Authentication routes without sidebar */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              
-              {/* Main app routes with sidebar */}
-              <Route path="/*" element={
-                <SidebarProvider>
-                  <div className="min-h-screen flex w-full">
-                    <AppSidebar />
-                    <main className="flex-1 overflow-hidden">
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/experts" element={<Experts />} />
-                        <Route path="/experts/:id" element={<ExpertProfile />} />
-                        <Route path="/session/:id" element={<SessionDetails />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/favorites" element={<Favorites />} />
-                        <Route path="/profile" element={<UserProfile />} />
-                        <Route path="/faq" element={<FAQ />} />
-                        <Route path="/courses/:id" element={<CourseDetail />} />
-                        <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
-                        <Route path="/courses/:id/success" element={<CourseSuccess />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </main>
-                  </div>
-                </SidebarProvider>
-              } />
-            </Routes>
-          </BrowserRouter>
-        </FavoritesProvider>
+        <AuthProvider>
+          <FavoritesProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                {/* Authentication routes without sidebar */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                
+                {/* Protected routes with sidebar */}
+                <Route path="/*" element={
+                  <ProtectedRoute>
+                    <SidebarProvider>
+                      <div className="min-h-screen flex w-full">
+                        <AppSidebar />
+                        <main className="flex-1 overflow-hidden">
+                          <Routes>
+                            <Route path="/" element={<Index />} />
+                            <Route path="/experts" element={<Experts />} />
+                            <Route path="/experts/:id" element={<ExpertProfile />} />
+                            <Route path="/session/:id" element={<SessionDetails />} />
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/favorites" element={<Favorites />} />
+                            <Route path="/profile" element={<UserProfile />} />
+                            <Route path="/faq" element={<FAQ />} />
+                            <Route path="/courses/:id" element={<CourseDetail />} />
+                            <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
+                            <Route path="/courses/:id/success" element={<CourseSuccess />} />
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </main>
+                      </div>
+                    </SidebarProvider>
+                  </ProtectedRoute>
+                } />
+              </Routes>
+            </BrowserRouter>
+          </FavoritesProvider>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

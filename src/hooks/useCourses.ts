@@ -53,7 +53,11 @@ export const useCourse = (courseId: string) => {
     queryKey: ['course', courseId],
     queryFn: async () => {
       // Convert string courseId to number for database query
-      const numericCourseId = parseInt(courseId, 10);
+      const numericCourseId = Number(courseId);
+      
+      if (isNaN(numericCourseId)) {
+        throw new Error('Invalid course ID');
+      }
       
       const { data, error } = await supabase
         .from('courses')
@@ -64,13 +68,14 @@ export const useCourse = (courseId: string) => {
           course_reviews(*)
         `)
         .eq('id', numericCourseId) // Use numeric id for database query
-        .single();
+        .maybeSingle(); // Use maybeSingle to avoid errors when no data found
       
       if (error) throw error;
+      if (!data) return null;
       
       // Transform the data to match the Course type
       const course: Course = {
-        id: String(data.id), // Convert number to string for Course type
+        id: String(data.id), // Convert back to string for consistency
         title: data.title,
         description: data.description,
         longDescription: data.long_description,

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Star, Calendar, Clock, CheckCircle, MessageSquare, Video, Award } from "lucide-react";
@@ -48,6 +47,15 @@ const ExpertProfile = () => {
     );
   }
 
+  // Transform expert data to match BookingModal expectations
+  const bookingExpert = {
+    id: parseInt(expert.id.replace(/-/g, '').substring(0, 8), 16), // Convert UUID to number for BookingModal
+    name: expert.name,
+    title: expert.title,
+    photo: expert.photo,
+    sessionTypes: expert.sessionTypes
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
@@ -85,7 +93,7 @@ const ExpertProfile = () => {
                   <span className="text-muted-foreground">{expert.experience}</span>
                 </div>
                 <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-6">
-                  {expert.specializations.map((spec) => (
+                  {expert.specializations.map((spec: string) => (
                     <Badge key={spec} variant="secondary">
                       {spec}
                     </Badge>
@@ -141,7 +149,7 @@ const ExpertProfile = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {expert.sessionTypes.map((session, index) => (
+              {expert.sessionTypes.map((session: any, index: number) => (
                 <div key={index} className="flex justify-between items-center p-4 bg-muted/50 rounded-lg">
                   <div>
                     <h4 className="font-semibold text-foreground">{session.type}</h4>
@@ -164,11 +172,11 @@ const ExpertProfile = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {expert.availability.map((day) => (
+              {expert.availability.map((day: any) => (
                 <div key={day.date} className="p-4 bg-muted/50 rounded-lg">
                   <h4 className="font-semibold text-foreground mb-2">{day.date}</h4>
                   <div className="flex flex-wrap gap-2">
-                    {day.times.map((time) => (
+                    {day.times.map((time: string) => (
                       <Badge key={time} variant="outline" className="text-sm">
                         {time}
                       </Badge>
@@ -224,7 +232,7 @@ const ExpertProfile = () => {
       <BookingModal
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
-        expert={expert}
+        expert={bookingExpert}
       />
     </div>
   );
