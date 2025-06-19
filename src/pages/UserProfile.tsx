@@ -253,7 +253,7 @@ const UserProfile = () => {
                     
                     <div className="flex items-center justify-center text-sm text-muted-foreground mb-4">
                       <Calendar className="h-4 w-4 mr-2" />
-                      <span>Joined {userData.joinDate}</span>
+                      {/* <span>Joined {userData.joinDate}</span> */}
                     </div>
 
                     <div className="space-y-3 text-sm">

@@ -23,7 +23,7 @@ interface BookingModalProps {
       type: string;
       duration: string;
       price: string;
-      session_id: number;
+      session_id: string;
     }>;
     availability: Array<{ date: string; times: Array<string> }>;
   };
