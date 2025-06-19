@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      booked_sessions: {
+        Row: {
+          created_at: string
+          id: number
+          notes: string | null
+          session_id: string | null
+          session_time: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          notes?: string | null
+          session_id?: string | null
+          session_time: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          notes?: string | null
+          session_id?: string | null
+          session_time?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booked_sessions_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "expert_session_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booked_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_modules: {
         Row: {
           course_id: number | null
@@ -449,30 +491,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
-      }
-      booked_sessions: {
-        Row: {
-          id: number;
-          session_id: string;
-          user_id: string;
-          created_at: string;
-          session_time: string;
-          notes: string | null;
-        };
-        Insert: {
-          session_id: string;
-          user_id: string;
-          created_at?: string;
-          session_time: string;
-          notes?: string | null;
-        };
-        Update: {
-          session_id?: string;
-          user_id?: string;
-          created_at?: string;
-          session_time?: string;
-          notes?: string | null;
-        };
       }
     }
     Views: {

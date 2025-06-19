@@ -1,11 +1,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Expert } from '@/data/types/expert';
 
 export const useExperts = () => {
   return useQuery({
     queryKey: ['experts'],
-    queryFn: async () => {
+    queryFn: async (): Promise<Expert[]> => {
       const { data: experts, error } = await supabase
         .from('experts')
         .select(`
@@ -17,7 +18,7 @@ export const useExperts = () => {
       if (error) throw error;
       
       // Transform the data to match the expected format
-      return experts.map((expert: any) => ({
+      return experts.map((expert: any): Expert => ({
         id: expert.id,
         name: expert.name,
         title: expert.title,
@@ -54,7 +55,7 @@ export const useExperts = () => {
 export const useExpert = (expertId: string) => {
   return useQuery({
     queryKey: ['expert', expertId],
-    queryFn: async () => {
+    queryFn: async (): Promise<Expert | null> => {
       if (!expertId) {
         throw new Error('Expert ID is required');
       }
@@ -66,15 +67,15 @@ export const useExpert = (expertId: string) => {
           sessionTypes:expert_session_types(*),
           availability:expert_availability(*)
         `)
-        .eq('id', expertId) // Use string id directly since experts table uses UUID
-        .maybeSingle(); // Use maybeSingle to avoid errors when no data found
+        .eq('id', expertId)
+        .maybeSingle();
       
       if (error) throw error;
       if (!expert) return null;
       
       // Transform the data to match the expected format
       return {
-        id: String(expert.id), // Ensure string consistency
+        id: String(expert.id),
         name: expert.name,
         title: expert.title,
         specializations: expert.specializations,
