@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import ProfileSettings from "@/components/ProfileSettings";
 import PaymentHistory from "@/components/PaymentHistory";
 import { useUserProfile, useUpdateUserProfile } from "@/hooks/useUserProfile";
+import { useAuth } from '@/hooks/useAuth';
 
 interface UserData {
   name: string;
@@ -27,7 +28,7 @@ const UserProfile = () => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  
+  const { user } = useAuth();
   const { data: userData, isLoading, error } = useUserProfile();
   const updateProfileMutation = useUpdateUserProfile();
   

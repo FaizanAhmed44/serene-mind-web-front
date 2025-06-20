@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ interface BookingModalProps {
 
 const BookingModal = ({ isOpen, onClose, expert }: BookingModalProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>();
+  const { user } = useAuth();
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedSessionType, setSelectedSessionType] = useState("");
   const [notes, setNotes] = useState("");
@@ -68,7 +70,7 @@ const BookingModal = ({ isOpen, onClose, expert }: BookingModalProps) => {
       // Prepare session data
       const sessionData = {
         session_id: selectedSession?.session_id,      
-        // user_id: ,
+        user_id: user?.id,
         created_at: new Date().toISOString(),
         session_time: selectedDate && selectedTime
           ? new Date(

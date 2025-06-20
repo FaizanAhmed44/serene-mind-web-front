@@ -26,9 +26,13 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
 import { getCourseById } from "@/data/courses";
 import { getPricingPlans } from "@/data/pricing";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { Progress } from "@radix-ui/react-progress";
 
 const CourseEnroll = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedPlan, setSelectedPlan] = useState("full");
@@ -75,18 +79,42 @@ const CourseEnroll = () => {
       });
       return;
     }
+    // Simulate payment processing
+    setTimeout( async ()=> {
+      toast({
+        title: "Payment Successful!",
+        description: "Redirecting to course details...",
+      });
+
+      const { data: enrollment, error: enrollmentError } = await supabase
+      .from('enrolled_courses')
+      .insert([{
+        course_id: parseInt(course.id),
+        user_id: user?.id,
+        progress: 0,
+        next_lesson: course.modules[0],
+        time_spent: "00:00:00",
+        updated_at: new Date().toISOString(),
+        enrolled_at: new Date().toISOString(),
+      }])
+      .select("id")
+      .single();
+
+    if (enrollmentError) {
+      toast({
+        title: "Enrollment Failed",
+        description: "Failed to record enrollment. Please try again.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     toast({
       title: "Payment Processing...",
       description: "Your payment is being processed. Please wait.",
     });
 
-    // Simulate payment processing
-    setTimeout(() => {
-      toast({
-        title: "Payment Successful!",
-        description: "Redirecting to course details...",
-      });
+      
       
       setTimeout(() => {
         navigate(`/courses/${course.id}/success`);
@@ -360,7 +388,7 @@ const CourseEnroll = () => {
                   <div className="flex items-center space-x-2">
                     <Calendar className="h-4 w-4 text-green-500" />
                     <span>30-day money-back guarantee</span>
-                  </div>
+                  </div>  
                 </div>
 
                 {/* Pricing */}
