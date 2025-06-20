@@ -79,7 +79,7 @@ export const useExpert = (expertId: string) => {
         name: expert.name,
         title: expert.title,
         specializations: expert.specializations,
-        rating: parseFloat(expert.rating),
+        rating: parseFloat(expert.rating.toString()),
         reviews: expert.reviews,
         experience: expert.experience,
         verified: expert.verified,

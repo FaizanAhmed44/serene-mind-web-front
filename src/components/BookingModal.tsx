@@ -68,7 +68,7 @@ const BookingModal = ({ isOpen, onClose, expert }: BookingModalProps) => {
       // Prepare session data
       const sessionData = {
         session_id: selectedSession?.session_id,      
-        // user_id: user?.id,
+        // user_id: ,
         created_at: new Date().toISOString(),
         session_time: selectedDate && selectedTime
           ? new Date(

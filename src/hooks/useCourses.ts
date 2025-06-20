@@ -88,7 +88,7 @@ export const useCourse = (courseId: string) => {
           bio: data.instructor.bio,
           photo: data.instructor.photo
         },
-        rating: parseFloat(data.rating),
+        rating: parseFloat(data.rating.toString()),
         students: data.students,
         progress: data.progress || 0,
         price: data.price,
