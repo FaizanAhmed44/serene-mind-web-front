@@ -25,6 +25,7 @@ interface UserData {
 }
 
 const UserProfile = () => {
+  
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -93,8 +94,68 @@ const UserProfile = () => {
     setEditedData(userData);
   };
 
+  // const handleSave = () => {
+  //   updateProfileMutation.mutate(editedData, {
+  //     onSuccess: () => {
+  //       setIsEditing(false);
+  //       toast({
+  //         title: "Profile Updated",
+  //         description: "Your profile has been successfully updated.",
+  //       });
+  //     },
+  //     onError: () => {
+  //       toast({
+  //         title: "Update Failed",
+  //         description: "Failed to update profile. Please try again.",
+  //         variant: "destructive",
+  //       });
+  //     }
+  //   });
+  // };
+
+  // const handleSave = () => {
+  //   // Create a clean payload based on editedData
+  //   const cleanedData = {
+  //     ...editedData,
+  //     phone: editedData.phone?.trim() || undefined,
+  //     avatar: editedData.avatar?.startsWith('http') ? editedData.avatar : undefined,
+  //   };
+  
+  //   updateProfileMutation.mutate(cleanedData, {
+  //     onSuccess: () => {
+  //       setIsEditing(false);
+  //       toast({
+  //         title: "Profile Updated",
+  //         description: "Your profile has been successfully updated.",
+  //       });
+  //     },
+  //     onError: (err: any) => {
+  //       toast({
+  //         title: "Update Failed",
+  //         description: err?.response?.data?.error || "Failed to update profile. Please try again.",
+  //         variant: "destructive",
+  //       });
+  //     }
+  //   });
+  // };
+  
   const handleSave = () => {
-    updateProfileMutation.mutate(editedData, {
+    const cleanedData: Partial<UserData> = {};
+  
+    Object.entries(editedData).forEach(([key, value]) => {
+      if (value !== null && value !== "") {
+        // Special handling for avatar
+        if (key === "avatar") {
+          if (typeof value === "string" && value.startsWith("http")) {
+            cleanedData[key as keyof UserData] = value;
+          }
+        } else {
+          cleanedData[key as keyof UserData] = value as string;
+        }
+      }
+    });
+  
+    updateProfileMutation.mutate(cleanedData, {
       onSuccess: () => {
         setIsEditing(false);
         toast({
@@ -102,15 +163,20 @@ const UserProfile = () => {
           description: "Your profile has been successfully updated.",
         });
       },
-      onError: () => {
+      onError: (err: any) => {
+        console.error("Update error:", err);
         toast({
           title: "Update Failed",
-          description: "Failed to update profile. Please try again.",
+          description:
+            err?.response?.data?.error ||
+            "Failed to update profile. Please try again.",
           variant: "destructive",
         });
-      }
+      },
     });
   };
+  
+
 
   const handleInputChange = (field: keyof typeof editedData, value: string) => {
     setEditedData(prev => ({
