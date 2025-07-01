@@ -117,23 +117,21 @@ const ExpertProfile = () => {
                   <p className="text-muted-foreground leading-relaxed">{expert.bio}</p>
                 </div>
                 
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground mb-3">Education & Credentials</h3>
-                  <ul className="space-y-2">
-                    <li className="flex items-center space-x-2">
-                      <Award className="h-4 w-4 text-primary" />
-                      <span className="text-muted-foreground">M.A. Clinical Psychology - Stanford University</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <Award className="h-4 w-4 text-primary" />
-                      <span className="text-muted-foreground">B.A. Communications - UC Berkeley</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <Award className="h-4 w-4 text-primary" />
-                      <span className="text-muted-foreground">Certified CBT Therapist</span>
-                    </li>
-                  </ul>
-                </div>
+                {expert.credentials && expert.credentials.length > 0 && (
+  <div>
+    <h3 className="text-xl font-semibold text-foreground mb-3">Education & Credentials</h3>
+    <ul className="space-y-2">
+      {expert.credentials.map((cred, index) => (
+        <li key={index} className="flex items-center space-x-2">
+          <Award className="h-4 w-4 text-primary" />
+          <span className="text-muted-foreground">{cred}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+               
               </div>
             </div>
           </CardContent>
@@ -229,12 +227,12 @@ const ExpertProfile = () => {
       </div>
 
       {/* Booking Modal */}
-      <BookingModal
+      {/* <BookingModal
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
         expert={bookingExpert}
         sessionId={expert.sessionTypes[0].session_id}
-        />
+        /> */}
     </div>
   );
 };
