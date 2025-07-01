@@ -104,6 +104,8 @@
 
 import api from '../lib/axios';
 import { CoursesResponse, CourseResponse, Course, BackendCourse, BackendModule, BackendLesson } from '../data/types/course';
+import { expertApi } from '@/lib/expert_api';
+import { CoursesExpertAPI } from '@/api/courses';
 
 // Utility to validate duration
 const validateDuration = (duration: string): string => {
@@ -129,7 +131,7 @@ const mapToFrontendCourse = (backendCourse: BackendCourse): Course => ({
       }
     : { name: 'Unknown', title: 'Instructor', bio: '', photo: '' },
   rating: backendCourse.rating || 0,
-  students: backendCourse.enrolledStudents || 0,
+  enrolledStudents: backendCourse.enrolledStudents || 0,
   progress: 0,
   price: '$99',
   originalPrice: 0,
@@ -182,8 +184,9 @@ export const getCategories = async (): Promise<string[]> => {
 };
 
 export const enrollCourse = async (courseId: string, userId: string): Promise<void> => {
+  console.log(courseId, userId);
   try {
-    const response = await api.put(`/courses/${courseId}/enroll`, { userId });
+    const response = await CoursesExpertAPI.enrollCourse(courseId, userId);
     if (!response.data.success) {
       throw new Error(response.data.message || 'Failed to enroll in course');
     }
@@ -192,7 +195,7 @@ export const enrollCourse = async (courseId: string, userId: string): Promise<vo
   }
 };
 
-export const getUserEnrolledCourses = async (userId: string): Promise<Course[]> => {
+export const getUserEnrolledCourses = async (userId: string): Promise<any> => {
   try {
     const response = await api.get(`/courses/${userId}/enrolled`);
     const enrollments = response.data.data || [];

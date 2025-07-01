@@ -206,16 +206,28 @@ import { useCourses, useCategories } from "@/hooks/useCourses";
 import type { BackendCourse, Course } from "@/data/types/course";
 import { CoursesExpertAPI } from "@/api/courses";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-
+  const userId = localStorage.getItem("userId");
   const { data: courses, isLoading: coursesLoading } = useQuery({
     queryKey: ["courses"],
     queryFn: () => CoursesExpertAPI.getCourses(),
   });
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
+
+
+  const {user} = useAuth();
+  
+  const {data: enrolledCourses, isLoading: enrolledCoursesLoading} = useQuery({
+    queryKey: ["enrolledCourses", user?.id],
+    queryFn: () => CoursesExpertAPI.getEnrollment(user?.id || ""),
+    enabled: !!user?.id,
+  });
+
+  console.log(enrolledCourses?.data?.some((enrolledCourse: BackendCourse) => enrolledCourse.id === courses[0].id) );
 
   const filteredCourses = courses?.filter((course: Course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -313,7 +325,7 @@ const Index = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map((course: BackendCourse) => (
             <Card key={course.id} className="hover-lift cursor-pointer group">
               <Link to={`/courses/${course.id}`}>
@@ -370,9 +382,9 @@ const Index = () => {
                   </p> */}
                   <Button
                     className="w-full"
-                    variant={course.enrolledStudents > 0 ? "default" : "outline"}
+                    variant={enrolledCourses?.data?.some((enrolledCourse: any) => enrolledCourse?.course?.id === course.id) ? "default" : "outline"}
                   >
-                    {course.enrolledStudents > 0 ? "Continue Learning" : `Enroll for Price`}
+                    {enrolledCourses?.data?.some((enrolledCourse: any) => enrolledCourse?.course?.id === course.id) ? "Continue Learning" : `Enroll for Price`}
                   </Button>
                 </CardContent>
               </Link>

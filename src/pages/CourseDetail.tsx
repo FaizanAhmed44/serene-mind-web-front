@@ -651,7 +651,7 @@ const CourseDetail = () => {
 
   useEffect(() => {
     if (id && enrolledCourses) {
-      setIsEnrolled(enrolledCourses.some((c) => c.id === id));
+      setIsEnrolled(enrolledCourses?.data?.some((enrolledCourse: any) => enrolledCourse?.course?.id === id));
     }
   }, [id, enrolledCourses]);
 
