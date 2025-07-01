@@ -851,7 +851,7 @@ const CourseDetail = () => {
                     <div className="flex items-center space-x-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span className="font-medium">{course.rating.toFixed(1)}</span>
-                      <span className="text-muted-foreground">({course.students} students)</span>
+                      <span className="text-muted-foreground">({course.enrolledStudents} students)</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <Clock className="h-4 w-4" />
@@ -930,7 +930,7 @@ const CourseDetail = () => {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Users className="h-4 w-4 text-primary" />
-                        <span>{course.students} students enrolled</span>
+                        <span>{course.enrolledStudents} students enrolled</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <BarChart3 className="h-4 w-4 text-primary" />

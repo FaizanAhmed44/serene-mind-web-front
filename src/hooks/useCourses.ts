@@ -190,11 +190,12 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { getAllCourses, getCourseById, getCategories, enrollCourse, getUserEnrolledCourses } from '../services/courseApi';
 import type { Course } from '../data/types/course';
+import { CoursesExpertAPI } from '@/api/courses';
 
 export const useCourses = () => {
   return useQuery({
     queryKey: ['courses'],
-    queryFn: getAllCourses,
+    queryFn: () => CoursesExpertAPI.getCourses(),
   });
 };
 
