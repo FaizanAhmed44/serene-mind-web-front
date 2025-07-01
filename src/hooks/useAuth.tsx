@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     axios
       .get("/profile")
       .then((res) => {
-        setUser(res.data);
+        setUser(res.data.user);
       })
       .catch(() => {
         localStorage.removeItem("token");

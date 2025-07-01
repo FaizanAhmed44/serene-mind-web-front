@@ -203,16 +203,33 @@ import { Progress } from "@/components/ui/progress";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { Link } from "react-router-dom";
 import { useCourses, useCategories } from "@/hooks/useCourses";
-import type { Course } from "@/data/types/course";
+import type { BackendCourse, Course } from "@/data/types/course";
+import { CoursesExpertAPI } from "@/api/courses";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-
-  const { data: courses = [], isLoading: coursesLoading } = useCourses();
+  const userId = localStorage.getItem("userId");
+  const { data: courses, isLoading: coursesLoading } = useQuery({
+    queryKey: ["courses"],
+    queryFn: () => CoursesExpertAPI.getCourses(),
+  });
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
-  const filteredCourses = courses.filter((course: Course) => {
+
+  const {user} = useAuth();
+  
+  const {data: enrolledCourses, isLoading: enrolledCoursesLoading} = useQuery({
+    queryKey: ["enrolledCourses", user?.id],
+    queryFn: () => CoursesExpertAPI.getEnrollment(user?.id || ""),
+    enabled: !!user?.id,
+  });
+
+  console.log(enrolledCourses?.data?.some((enrolledCourse: BackendCourse) => enrolledCourse.id === courses[0].id) );
+
+  const filteredCourses = courses?.filter((course: Course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          course.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
@@ -308,22 +325,22 @@ const Index = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredCourses.map((course: Course) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCourses.map((course: BackendCourse) => (
             <Card key={course.id} className="hover-lift cursor-pointer group">
               <Link to={`/courses/${course.id}`}>
                 <div className="relative overflow-hidden rounded-t-lg">
                   <img
-                    src={course.image}
+                    src={course.thumbnail}
                     alt={course.title}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
+                  {/* <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
                     {course.category}
-                  </Badge>
-                  <div className="absolute top-3 right-3">
+                  </Badge> */}
+                  {/* <div className="absolute top-3 right-3">
                     <FavoriteButton course={course} variant="ghost" />
-                  </div>
+                  </div> */}
                 </div>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
@@ -337,7 +354,7 @@ const Index = () => {
                     </div>
                     <div className="flex items-center space-x-1">
                       <Book className="h-4 w-4" />
-                      <span>{course.modules} modules</span>
+                      <span>{course.modules.length} modules</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
@@ -347,27 +364,27 @@ const Index = () => {
                     </div>
                     <div className="flex items-center space-x-1">
                       <User className="h-4 w-4" />
-                      <span>{course.students.toLocaleString()} students</span>
+                      <span>{course?.enrolledStudents} students</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <div className="flex items-center space-x-1">
+                    {/* <div className="flex items-center space-x-1">
                       <Globe className="h-4 w-4" />
-                      <span>{course.language}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
+                      <span>{course.modules[0].lessons[0].language}</span>
+                    </div> */}
+                    {/* <div className="flex items-center space-x-1">
                       <BarChart3 className="h-4 w-4" />
-                      <span>{course.level}</span>
-                    </div>
+                      <span>{course.modules[0].lessons[0].level}</span>
+                    </div> */}
                   </div>
                   {/* <p className="text-sm text-muted-foreground">
                     by {course.instructor.name} ({course.instructor.title})
                   </p> */}
                   <Button
                     className="w-full"
-                    variant={course.progress && course.progress > 0 ? "default" : "outline"}
+                    variant={enrolledCourses?.data?.some((enrolledCourse: any) => enrolledCourse?.course?.id === course.id) ? "default" : "outline"}
                   >
-                    {course.progress && course.progress > 0 ? "Continue Learning" : `Enroll for ${course.price}`}
+                    {enrolledCourses?.data?.some((enrolledCourse: any) => enrolledCourse?.course?.id === course.id) ? "Continue Learning" : `Enroll for Price`}
                   </Button>
                 </CardContent>
               </Link>

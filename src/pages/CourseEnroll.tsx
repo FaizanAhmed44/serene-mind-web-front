@@ -870,7 +870,7 @@
 
 // export default CourseEnroll;
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { 
   Clock, 
@@ -951,6 +951,10 @@ const CourseEnroll = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   const handleEnroll = async () => {
     if (!formData.agreeTerms) {
       toast({
@@ -985,9 +989,11 @@ const CourseEnroll = () => {
       description: "Your payment is being processed. Please wait.",
     });
 
+    console.log(user)
+
     try {
       // Call backend enrollment API
-      await enrollMutation.mutateAsync({ courseId: course.id, userId: user.id });
+      await enrollMutation.mutateAsync({ courseId: course.id });
 
       // Update localStorage for UI consistency
       const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');

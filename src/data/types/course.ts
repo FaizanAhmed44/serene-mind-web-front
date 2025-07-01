@@ -316,7 +316,7 @@ export interface Course {
     photo: string;
   };
   rating: number;
-  students: number;
+  enrolledStudents: number;
   progress?: number;
   price: string;
   originalPrice?: number;

@@ -190,14 +190,15 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { getAllCourses, getCourseById, getCategories, enrollCourse, getUserEnrolledCourses } from '../services/courseApi';
 import type { Course } from '../data/types/course';
+import { CoursesExpertAPI } from '@/api/courses';
+import { useAuth } from './useAuth';
 
 export const useCourses = () => {
   return useQuery({
     queryKey: ['courses'],
-    queryFn: getAllCourses,
+    queryFn: () => CoursesExpertAPI.getCourses(),
   });
 };
-
 export const useCourse = (courseId: string) => {
   return useQuery({
     queryKey: ['course', courseId],
@@ -214,10 +215,11 @@ export const useCategories = () => {
 };
 
 export const useEnrollCourse = () => {
+  const {user} = useAuth();
   return useMutation({
-    mutationFn: ({ courseId, userId }: { courseId: string; userId: string }) => enrollCourse(courseId, userId),
+    mutationFn: ({ courseId }: { courseId: string}) => enrollCourse(courseId, user?.id),
   });
-};
+};  
 
 export const useUserEnrolledCourses = (userId: string) => {
   return useQuery({
