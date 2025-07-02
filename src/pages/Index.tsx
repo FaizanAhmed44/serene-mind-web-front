@@ -227,7 +227,6 @@ const Index = () => {
     enabled: !!user?.id,
   });
 
-  console.log(enrolledCourses?.data?.some((enrolledCourse: BackendCourse) => enrolledCourse.id === courses[0].id) );
 
   const filteredCourses = courses?.filter((course: Course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
