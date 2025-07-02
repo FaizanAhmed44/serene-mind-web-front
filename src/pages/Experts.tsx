@@ -254,9 +254,9 @@ const Experts = () => {
                     alt={expert.name}
                     className="w-24 h-24 rounded-full object-cover mx-auto group-hover:scale-105 transition-transform duration-300"
                   />
-                  {expert.verified && (
+                  {/* {expert.verified && (
                     <CheckCircle className="absolute -bottom-1 -right-1 h-6 w-6 text-primary bg-background rounded-full" />
-                  )}
+                  )} */}
                 </div>
                 <h3 className="text-xl font-semibold text-foreground">{expert.name}</h3>
                 <p className="text-muted-foreground">{expert.title}</p>

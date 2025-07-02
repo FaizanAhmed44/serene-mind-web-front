@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import axios from "@/lib/axios"; // already configured Axios with auth headers, etc.
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,38 +47,147 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
     weeklyDigest: false
   });
 
-  const handlePasswordChange = () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast({
-        title: "Password Mismatch",
-        description: "New password and confirmation don't match.",
-        variant: "destructive",
-      });
-      return;
-    }
+  // const handlePasswordChange = () => {
+  //   if (passwordData.newPassword !== passwordData.confirmPassword) {
+  //     toast({
+  //       title: "Password Mismatch",
+  //       description: "New password and confirmation don't match.",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
 
-    if (passwordData.newPassword.length < 8) {
-      toast({
-        title: "Password Too Short",
-        description: "Password must be at least 8 characters long.",
-        variant: "destructive",
-      });
-      return;
-    }
+  //   if (passwordData.newPassword.length < 8) {
+  //     toast({
+  //       title: "Password Too Short",
+  //       description: "Password must be at least 8 characters long.",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
+
+  //   toast({
+  //     title: "Password Updated",
+  //     description: "Your password has been successfully updated.",
+  //   });
+
+  //   setPasswordData({
+  //     currentPassword: "",
+  //     newPassword: "",
+  //     confirmPassword: ""
+  //   });
+
+  //   onPasswordUpdate?.();
+  // };
+
+
+// const handlePasswordChange = async () => {
+//   if (passwordData.newPassword !== passwordData.confirmPassword) {
+//     toast({
+//       title: "Password Mismatch",
+//       description: "New password and confirmation don't match.",
+//       variant: "destructive",
+//     });
+//     return;
+//   }
+
+//   if (passwordData.newPassword.length < 8) {
+//     toast({
+//       title: "Password Too Short",
+//       description: "Password must be at least 8 characters long.",
+//       variant: "destructive",
+//     });
+//     return;
+//   }
+
+//   try {
+//     await axios.post("/profile/change-password", {
+//       currentPassword: passwordData.currentPassword,
+//       newPassword: passwordData.newPassword,
+//     });
+
+//     toast({
+//       title: "Password Updated",
+//       description: "Your password has been successfully changed.",
+//     });
+
+//     // Clear form
+//     setPasswordData({
+//       currentPassword: "",
+//       newPassword: "",
+//       confirmPassword: "",
+//     });
+
+//     onPasswordUpdate?.();
+//   } catch (error: any) {
+//     toast({
+//       title: "Password Update Failed",
+//       description: error?.response?.data?.error || "Something went wrong. Please try again.",
+//       variant: "destructive",
+//     });
+//   }
+// };
+
+const handlePasswordChange = async () => {
+  if (passwordData.newPassword !== passwordData.confirmPassword) {
+    toast({
+      title: "Password Mismatch",
+      description: "New password and confirmation don't match.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  if (passwordData.newPassword.length < 8) {
+    toast({
+      title: "Password Too Short",
+      description: "Password must be at least 8 characters long.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  try {
+    await axios.post("/profile/change-password", {
+      currentPassword: passwordData.currentPassword,
+      newPassword: passwordData.newPassword,
+    });
 
     toast({
       title: "Password Updated",
-      description: "Your password has been successfully updated.",
+      description: "Your password has been successfully changed.",
     });
 
     setPasswordData({
       currentPassword: "",
       newPassword: "",
-      confirmPassword: ""
+      confirmPassword: "",
     });
 
     onPasswordUpdate?.();
-  };
+  } catch (error: any) {
+    const response = error?.response?.data;
+
+    // If we have validation error details from backend
+    if (Array.isArray(response?.details)) {
+      response.details.forEach((detail: { msg: string }) => {
+        toast({
+          title: "Validation Error",
+          description: detail.msg,
+          variant: "destructive",
+        });
+      });
+    } else {
+      // Fallback message
+      toast({
+        title: "Password Update Failed",
+        description: response?.error || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    }
+  }
+};
+
 
   const handleNotificationChange = (key: keyof typeof notifications) => {
     setNotifications(prev => ({

@@ -1,38 +1,47 @@
+import { TrainingSession } from "./training";
+import { Enrollment } from "./training";
 
 export interface Course {
-  id: string; // Changed from number to string
+  id: string;
   title: string;
-  description: string;
-  longDescription: string;
-  duration: string;
-  modules: number;
-  category: string;
-  instructor: {
-    name: string;
-    title: string;
-    bio: string;
-    photo: string;
-  };
-  rating: number;
-  students: number;
-  progress?: number;
-  price: string;
-  originalPrice?: number;
-  language: string;
-  level: string;
-  certificate: boolean;
-  image: string;
-  outcomes: string[];
-  modules_detail: {
-    week: number;
-    title: string;
-    lessons: string[];
-    duration: string;
-  }[];
-  reviews: {
-    name: string;
-    rating: number;
-    comment: string;
-    date: string;
-  }[];
+  description?: string;
+  duration?: string;
+  thumbnail?: string;
+  rating?: number;
+  enrolledStudents?: number;
+  status?: string;
+  verified?: boolean;
+  expertId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  expert?: string; // relation to ExpertProfile.id
+  modules?: Module[];
+  trainingSessions?: TrainingSession[];
+  Enrollment?: Enrollment[];
+}
+
+export interface Module {
+  id: string;
+  title: string;
+  description?: string;
+  duration?: string;
+  orderIndex: number;
+  courseId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  lessons?: Lesson[];
+}
+
+export interface Lesson {
+  id: string;
+  title: string;
+  type: string; // could be enum: video, text, quiz, etc.
+  content?: string;
+  textContent?: string;
+  videoUrl?: string;
+  duration?: string;
+  orderIndex: number;
+  moduleId?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
