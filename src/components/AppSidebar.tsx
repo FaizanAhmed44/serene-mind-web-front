@@ -73,7 +73,7 @@ export function AppSidebar() {
             />
           </div>
           <div className="flex-1">
-            <h1 className="text-md font-bold text-primary leading-tight">Core Cognitive</h1>
+            <h1 className="text-[18px] font-bold text-primary leading-tight">Core Cognitive</h1>
             <p className="text-sm text-gray-500">Success is a formula</p>
           </div>
         </div>
