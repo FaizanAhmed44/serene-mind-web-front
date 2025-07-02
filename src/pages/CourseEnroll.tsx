@@ -923,7 +923,7 @@ const CourseEnroll = () => {
         {
           id: "full",
           name: "Full Course Access",
-          price: parseInt(course.price.replace('$', '')),
+          price: 420,
           description: "One-time payment for lifetime access to all course content",
           features: [
             "Full course access",
@@ -935,7 +935,7 @@ const CourseEnroll = () => {
         {
           id: "subscription",
           name: "Monthly Subscription",
-          price: Math.ceil(parseInt(course.price.replace('$', '')) / 12),
+          price: Math.ceil(420/12),
           description: "Pay monthly for access to all course content",
           features: [
             "Full course access",
@@ -1076,18 +1076,18 @@ const CourseEnroll = () => {
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
                   <img
-                    src={course.image}
+                    src={course.thumbnail}
                     alt={course.title}
                     className="w-24 h-16 object-cover rounded-lg"
                   />
                   <div className="flex-1">
-                    <Badge className="mb-2">{course.category}</Badge>
+                    <Badge className="mb-2">Category</Badge>
                     <h2 className="text-xl font-semibold mb-1">{course.title}</h2>
                     <p className="text-sm text-muted-foreground mb-2">{course.description}</p>
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       <div className="flex items-center space-x-1">
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span>{course.rating.toFixed(1)}</span>
+                        <span>{course.rating?.toFixed(1)}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Clock className="h-4 w-4" />
@@ -1095,7 +1095,7 @@ const CourseEnroll = () => {
                       </div>
                       <div className="flex items-center space-x-1">
                         <Book className="h-4 w-4" />
-                        <span>{course.modules} modules</span>
+                        <span>{course.modules?.length} modules</span>
                       </div>
                     </div>
                   </div>
@@ -1272,13 +1272,13 @@ const CourseEnroll = () => {
                 {/* Instructor Info */}
                 <div className="flex items-center space-x-3">
                   <img
-                    src={course.instructor.photo}
-                    alt={course.instructor.name}
+                    src={course.expert?.avatar}
+                    alt={course.expert?.name}
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
-                    <p className="font-medium text-sm">{course.instructor.name}</p>
-                    <p className="text-xs text-muted-foreground">{course.instructor.title}</p>
+                    <p className="font-medium text-sm">{course.expert?.name}</p>
+                    <p className="text-xs text-muted-foreground">{course.expert?.title}</p>
                   </div>
                 </div>
 
