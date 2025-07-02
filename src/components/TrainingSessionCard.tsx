@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, Users, Video } from 'lucide-react';
-import type { TrainingSession } from '@/data/types/trainingSession';
+import { TrainingSession } from '@/data/types';
 
 interface TrainingSessionCardProps {
   session: TrainingSession;

@@ -1,16 +1,23 @@
 export interface TrainingSession {
   id: string;
   title: string;
-  description?: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  createdAt?: string;
-  updatedAt?: string;
-  expertId?: string;
-  courseId?: string;
-  bookings?: Booking[];
+  description: string;
+  type: "live" | "online";           // can be extended to an enum if you wish
+  date: string;                     // e.g. "2024-07-15"
+  time: string;                     // e.g. "14:00"
+  duration: string;                 // e.g. "1 hour"
+  location: string | null;
+  meetingLink: string | null;
+  maxParticipants: number;
+  currentParticipants: number;
+  status: "scheduled" | "ongoing" | "completed" | "cancelled"; // best to use enum
+  expertId: string;
+  courseId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  verified: boolean;
 }
+
 
 export interface SessionType {
   id: string;
@@ -43,3 +50,10 @@ export interface Enrollment {
   progress?: number;
   completed?: boolean;
 }
+
+export interface GetTrainingSessionsResponse {
+  success: boolean;
+  data: TrainingSession[];
+  count: number;
+}
+
