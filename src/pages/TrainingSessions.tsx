@@ -7,16 +7,16 @@ import { Separator } from '@/components/ui/separator';
 import { TrainingSessionCard } from '@/components/TrainingSessionCard';
 import { useTrainingSessions } from '@/hooks/useTrainingSessions';
 import { Calendar, Filter, Search } from 'lucide-react';
-
+import { sampleTrainingSessions } from '@/data/trainingSessions';
 const TrainingSessions: React.FC = () => {
-  const { data: response, isLoading, error } = useTrainingSessions();
+  // const { trainingSessions, loadingTrainingSessions, trainingSessionsError} = useTrainingSessions();
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedType, setSelectedType] = useState<string>('all');
 
-  const sessions = response?.data || [];
-  const totalSessions = response?.count || 0;
+  // const sessions = trainingSessions?.data || [];
+  // const totalSessions = trainingSessions?.count || 0;
 
-  const filteredSessions = sessions.filter(session => {
+  const filteredSessions = sampleTrainingSessions.filter(session => {
     const statusFilter = selectedStatus === 'all' || session.status === selectedStatus;
     const typeFilter = selectedType === 'all' || session.type === selectedType;
     return statusFilter && typeFilter;
@@ -40,32 +40,32 @@ const TrainingSessions: React.FC = () => {
     { value: 'live', label: 'Live' },
   ];
 
-  if (isLoading) {
-    return (
-      <div className="p-6 space-y-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-64 bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (loadingTrainingSessions) {
+  //   return (
+  //     <div className="p-6 space-y-6">
+  //       <div className="animate-pulse space-y-4">
+  //         <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+  //         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  //           {[...Array(6)].map((_, i) => (
+  //             <div key={i} className="h-64 bg-gray-200 rounded-lg"></div>
+  //           ))}
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <div className="p-6">
-        <Card className="border-red-200">
-          <CardContent className="pt-6">
-            <p className="text-red-600">Error loading training sessions. Please try again later.</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // if (trainingSessionsError) {
+  //   return (
+  //     <div className="p-6">
+  //       <Card className="border-red-200">
+  //         <CardContent className="pt-6">
+  //           <p className="text-red-600">Error loading training sessions. Please try again later.</p>
+  //         </CardContent>
+  //       </Card>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -86,7 +86,7 @@ const TrainingSessions: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Sessions Available</p>
-              <p className="text-2xl font-bold text-primary">{totalSessions}</p>
+              <p className="text-2xl font-bold text-primary">{10}</p>
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-600">Filtered Results</p>
