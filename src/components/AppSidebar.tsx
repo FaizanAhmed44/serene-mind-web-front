@@ -35,6 +35,11 @@ const menuItems = [
     icon: Search,
   },
   {
+    title: "Training Sessions",
+    url: "/training-sessions",
+    icon: Calendar,
+  },
+  {
     title: "FAQ & Help",
     url: "/faq",
     icon: HelpCircle,
