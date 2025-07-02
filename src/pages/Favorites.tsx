@@ -15,16 +15,13 @@ import { useCategories } from "@/hooks/useIndexCourses";
 const Favorites = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
   
   const { data: favoriteCourses = [], isLoading, error } = useFavoriteCourses();
-  const { data: categories = [] } = useCategories();
 
   const filteredCourses = favoriteCourses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          course.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
   if (isLoading) {
@@ -85,21 +82,6 @@ const Favorites = () => {
               className="w-full"
             />
           </div>
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="icon">
-            <Filter className="h-4 w-4" />
-          </Button>
         </div>
 
         {/* Content */}
@@ -112,7 +94,7 @@ const Favorites = () => {
                 <p className="text-muted-foreground mb-4">
                   Start exploring courses and add them to your interests to see them here.
                 </p>
-                <Button onClick={() => navigate("/")}>Browse Courses</Button>
+                <Button onClick={() => navigate("/courses")}>Browse Courses</Button>
               </div>
             </CardContent>
           </Card>
@@ -133,7 +115,7 @@ const Favorites = () => {
                 >
                   <div className="relative">
                     <img 
-                      src={course.image} 
+                      src={course.thumbnail} 
                       alt={course.title}
                       className="w-full h-48 object-cover"
                     />
@@ -141,7 +123,7 @@ const Favorites = () => {
                       <FavoriteButton course={course} />
                     </div>
                     <Badge className="absolute top-2 left-2">
-                      {course.category}
+                      {course.status}
                     </Badge>
                   </div>
                   
@@ -155,7 +137,7 @@ const Favorites = () => {
                       <div className="flex items-center space-x-1">
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                         <span className="font-medium">{course.rating}</span>
-                        <span className="text-muted-foreground">({course.students})</span>
+                        <span className="text-muted-foreground">({course.enrolledStudents})</span>
                       </div>
                       <div className="flex items-center space-x-1 text-muted-foreground">
                         <Clock className="h-4 w-4" />
@@ -166,10 +148,10 @@ const Favorites = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                         <Users className="h-4 w-4" />
-                        <span>{course.instructor.name}</span>
+                        <span>{course.expert}</span>
                       </div>
                       <div className="text-lg font-semibold text-primary">
-                        {course.price}
+                        {course.enrolledStudents}
                       </div>
                     </div>
                   </CardContent>

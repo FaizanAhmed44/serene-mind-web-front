@@ -1,3 +1,4 @@
+import { ExpertProfile } from "./expert";
 import { TrainingSession } from "./training";
 import { Enrollment } from "./training";
 
@@ -14,7 +15,7 @@ export interface Course {
   expertId?: string;
   createdAt?: string;
   updatedAt?: string;
-  expert?: string; // relation to ExpertProfile.id
+  expert?: ExpertProfile; // relation to ExpertProfile.id
   modules?: Module[];
   trainingSessions?: TrainingSession[];
   Enrollment?: Enrollment[];
