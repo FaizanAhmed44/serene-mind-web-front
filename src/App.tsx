@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -24,6 +23,7 @@ import FAQ from "./pages/FAQ";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
+import TrainingSessions from "./pages/TrainingSessions";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +53,7 @@ const App: React.FC = () => {
                             <Route path="/experts" element={<Experts />} />
                             <Route path="/experts/:id" element={<ExpertProfile />} />
                             <Route path="/session/:id" element={<SessionDetails />} />
+                            <Route path="/training-sessions" element={<TrainingSessions />} />
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/favorites" element={<Favorites />} />
                             <Route path="/profile" element={<UserProfile />} />
