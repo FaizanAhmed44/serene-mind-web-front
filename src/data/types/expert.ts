@@ -1,8 +1,3 @@
-import { Course } from "./course";
-import { TrainingSession } from "./training";
-import { SessionType } from "./training";
-import { Booking } from "./training";
-
 export interface ExpertProfile {
   id: string;
   email: string;
@@ -21,12 +16,6 @@ export interface ExpertProfile {
   createdAt?: string;
   updatedAt?: string;
   verified?: boolean;
-  courses?: Course[];
-  trainingSessions?: TrainingSession[];
-  sessionTypes?: SessionType[];
-  bookings?: Booking[];
-  availabilitySlots?: AvailabilitySlot[];
-  blockedDates?: BlockedDate[];
 }
 
 export interface AvailabilitySlot {
@@ -39,6 +28,34 @@ export interface AvailabilitySlot {
   expertId?: string;
 }
 
+export interface SessionType {
+  id: string;
+  expertId: string;
+  name: string;
+  description: string;
+  durationMinutes: number;
+  price: string;
+  currency: string;
+  isActive: boolean;
+  maxParticipants: number;
+  sessionFormat: string;
+  requirements: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Booking {
+    id: string;
+    expertId: string;
+    sessionTypeId: string;
+    userId: string;
+    sessionDate: string;
+    startTime: string;
+    endTime: string;
+    durationMinutes: number;
+    notes: string;
+}
+
 export interface BlockedDate {
   id: string;
   date: string;
@@ -47,5 +64,5 @@ export interface BlockedDate {
   updatedAt?: string;
   expertId?: string;
 }
-   
+
 

@@ -1,5 +1,6 @@
 
 
+
 import { useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Clock, BookOpen, ChevronRight } from "lucide-react";
@@ -118,8 +119,6 @@ const CourseDetail = () => {
   const handleEnrollRedirect = () => {
     navigate(`/courses/${course.id}/enroll`);
   };
-
-  console.log(isEnrolled);
 
   return (
     <div className="min-h-screen bg-background">
