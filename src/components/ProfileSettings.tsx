@@ -507,7 +507,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-primary">
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.4 }}
@@ -601,7 +601,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-primary">
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.4 }}

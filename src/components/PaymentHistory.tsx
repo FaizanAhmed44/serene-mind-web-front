@@ -305,7 +305,7 @@ const PaymentHistory = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-primary">
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.4 }}
@@ -358,7 +358,7 @@ const PaymentHistory = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-primary">
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.4 }}
@@ -382,13 +382,13 @@ const PaymentHistory = () => {
                   <div className="flex-1">
                     <div className="flex items-center space-x-4">
                       <div className="flex-1">
-                        <motion.h4 
-                          className="font-medium text-foreground"
+                        <motion.h5 
+                          className=" text-foreground"
                           whileHover={{ x: 5 }}
                           transition={{ duration: 0.2 }}
                         >
-                          {transaction.description}
-                        </motion.h4>
+                          {transaction.description }
+                        </motion.h5>
                         <div className="flex items-center space-x-2 mt-1">
                           <motion.div
                             whileHover={{ rotate: 360 }}
