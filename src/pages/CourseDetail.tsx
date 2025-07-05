@@ -97,7 +97,7 @@ const CourseDetail = () => {
                 completed: false,
                 current: true,
                 locked: !isEnrolled,
-                videoUrl: null,
+                videoUrl: "https://youtu.be/NLKwRW2y-sg?si=vJlY-M5zyZzoVFb1",
               },
             ],
           },
@@ -135,7 +135,7 @@ const CourseDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               {currentLesson.videoUrl && <VideoPlayer
-                videoUrl={currentLesson.videoUrl || "#"}
+                videoUrl={"https://youtu.be/NLKwRW2y-sg?si=vJlY-M5zyZzoVFb1"}
                 title={currentLesson.title}
                 duration={currentLesson.duration}
                 hasNext={courseModules.some((m) =>
