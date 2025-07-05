@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, Users, Video, CheckCircle } from 'lucide-react';
-import { TrainingSession } from '@/data/types';
+import { TrainingSession } from '@/data/types/training';
 
 interface TrainingSessionCardProps {
   session: TrainingSession;
@@ -49,7 +49,7 @@ export const TrainingSessionCard: React.FC<TrainingSessionCardProps> = ({
   const participantPercentage = (session.currentParticipants / session.maxParticipants) * 100;
 
   return (
-    <Card className="group h-full border-0 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
+    <Card className="group h-full border-md shadow-sm hover:shadow-md transition-all duration-300 bg-white">
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">

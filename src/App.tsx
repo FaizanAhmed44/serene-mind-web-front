@@ -24,6 +24,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import TrainingSessions from "./pages/TrainingSessions";
+import LandingPage from "./pages/landing";
+import Courses from "./pages/Courses";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,7 @@ const App: React.FC = () => {
                 {/* Authentication routes without sidebar */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/" element={<LandingPage />} />
                 
                 {/* Protected routes with sidebar */}
                 <Route path="/*" element={
@@ -49,12 +52,12 @@ const App: React.FC = () => {
                         <AppSidebar />
                         <main className="flex-1 overflow-hidden">
                           <Routes>
-                            <Route path="/" element={<Index />} />
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/courses" element={<Courses />} />
                             <Route path="/experts" element={<Experts />} />
                             <Route path="/experts/:id" element={<ExpertProfile />} />
                             <Route path="/session/:id" element={<SessionDetails />} />
                             <Route path="/training-sessions" element={<TrainingSessions />} />
-                            <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/favorites" element={<Favorites />} />
                             <Route path="/profile" element={<UserProfile />} />
                             <Route path="/faq" element={<FAQ />} />
