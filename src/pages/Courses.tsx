@@ -4,6 +4,7 @@ import React from "react";
 import { Course } from "@/data/types/course";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { CoursesExpertAPI } from "@/api/courses";
+import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -106,6 +107,7 @@ export default function Courses() {
   return (
     <>
       {/* Header */}
+      
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
         <div className="flex items-center justify-between p-4">
           <SidebarTrigger />
@@ -113,7 +115,36 @@ export default function Courses() {
           <div className="w-10" />
         </div>
       </div>
-      <div className="my-10">
+      <div className="p-6 space-y-8">
+        {/* Header */}
+        <motion.div
+          className="text-center py-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+        >
+          <motion.h1
+            className="text-3xl font-bold text-primary mb-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
+            Mental Wellness Courses
+          </motion.h1>
+          <motion.p
+            className="text-lg text-muted-foreground"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            Explore curated courses designed to elevate your skills and career.
+          </motion.p>
+        </motion.div>
+
+        {/* Experts Grid */}
+    
+      </div>
+      <div className="">
         <div className="container mx-auto grid grid-cols-1 gap-x-2 gap-y-24 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-6">
           {courses.map((course : Course) => (
             <>
