@@ -1,3 +1,6 @@
+
+import { TrainingSession } from '@/data/types/trainingSession';
+
 export const sampleTrainingSessions: TrainingSession[] = [
   {
     id: "1",
