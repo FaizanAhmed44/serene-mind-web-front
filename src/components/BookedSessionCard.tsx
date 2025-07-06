@@ -54,7 +54,7 @@ export const BookedSessionCard: React.FC<BookedSessionCardProps> = ({ session })
       whileHover={{ y: -2, scale: 1.01 }}
       className="h-full"
     >
-      <Card className="group h-full border-0 shadow-sm hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background to-muted/10 overflow-hidden relative">
+      <Card className="group h-full border shadow-sm hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background to-muted/10 overflow-hidden relative">
         {/* Decorative background element */}
         <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${statusConfig.gradient} rounded-full -mr-12 -mt-12 opacity-50`} />
         
