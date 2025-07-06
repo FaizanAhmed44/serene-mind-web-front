@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { User, Calendar, Clock, CheckCircle, Clock4, FileText, Video, MessageCircle } from 'lucide-react';
 import { BookedSession } from '@/data/types/bookedSession';
 
@@ -41,6 +42,10 @@ export const BookedSessionCard: React.FC<BookedSessionCardProps> = ({ session })
     });
   };
 
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -62,9 +67,16 @@ export const BookedSessionCard: React.FC<BookedSessionCardProps> = ({ session })
               transition={{ duration: 0.4, delay: 0.1 }}
             >
               <div className="relative">
-                <div className="w-14 h-14 bg-gradient-to-br from-primary/15 to-primary/5 rounded-2xl flex items-center justify-center border border-primary/10">
-                  <User className="w-7 h-7 text-primary" />
-                </div>
+                <Avatar className="w-16 h-16 border-2 border-primary/10 shadow-md">
+                  <AvatarImage 
+                    src={session.avatar} 
+                    alt={session.expertName}
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-gradient-to-br from-primary/15 to-primary/5 text-primary font-semibold text-lg">
+                    {getInitials(session.expertName)}
+                  </AvatarFallback>
+                </Avatar>
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-background" />
               </div>
               <div className="flex-1 min-w-0">

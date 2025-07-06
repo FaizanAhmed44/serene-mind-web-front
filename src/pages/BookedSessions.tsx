@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +12,7 @@ const dummyBookedSessions: BookedSession[] = [
   {
     id: '1',
     expertName: 'Dr. Ayesha Khan',
+    avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
     date: 'July 10, 2025',
     time: '3:00 PM',
     status: 'upcoming',
@@ -21,6 +21,7 @@ const dummyBookedSessions: BookedSession[] = [
   {
     id: '2',
     expertName: 'Dr. Ali Hamza',
+    avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face',
     date: 'June 20, 2025',
     time: '12:00 PM',
     status: 'completed',
@@ -29,6 +30,7 @@ const dummyBookedSessions: BookedSession[] = [
   {
     id: '3',
     expertName: 'Dr. Sana Fatima',
+    avatar: 'https://images.unsplash.com/photo-1594824395815-59fdc9e62c3e?w=150&h=150&fit=crop&crop=face',
     date: 'July 8, 2025',
     time: '5:30 PM',
     status: 'completed'
@@ -36,6 +38,7 @@ const dummyBookedSessions: BookedSession[] = [
   {
     id: '4',
     expertName: 'Dr. Hamna Qureshi',
+    avatar: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=150&h=150&fit=crop&crop=face',
     date: 'July 15, 2025',
     time: '10:00 AM',
     status: 'upcoming',
