@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -24,6 +25,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import TrainingSessions from "./pages/TrainingSessions";
+import BookedSessions from "./pages/BookedSessions";
 import LandingPage from "./pages/landing";
 import Courses from "./pages/Courses";
 
@@ -57,6 +59,7 @@ const App: React.FC = () => {
                             <Route path="/experts" element={<Experts />} />
                             <Route path="/experts/:id" element={<ExpertProfile />} />
                             <Route path="/session/:id" element={<SessionDetails />} />
+                            <Route path="/booked-sessions" element={<BookedSessions />} />
                             <Route path="/training-sessions" element={<TrainingSessions />} />
                             <Route path="/favorites" element={<Favorites />} />
                             <Route path="/profile" element={<UserProfile />} />
