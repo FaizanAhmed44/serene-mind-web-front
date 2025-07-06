@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { User, Calendar, Clock, CheckCircle, Clock4, FileText, Video, MessageCircle, Star, MapPin, Shield } from 'lucide-react';
+import { User, Calendar, Clock, CheckCircle, Clock4, FileText, Video, MessageCircle } from 'lucide-react';
 import { BookedSession } from '@/data/types/bookedSession';
 
 interface BookedSessionCardProps {
@@ -51,158 +51,157 @@ export const BookedSessionCard: React.FC<BookedSessionCardProps> = ({ session })
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      whileHover={{ y: -4, scale: 1.02 }}
+      whileHover={{ y: -2, scale: 1.01 }}
       className="h-full"
     >
-      <Card className="group h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white overflow-hidden relative">
-        {/* Background gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
-        {/* Status indicator bar */}
-        <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${isUpcoming ? 'from-amber-400 to-amber-500' : 'from-green-400 to-green-500'}`} />
+      <Card className="group h-full border-0 shadow-sm hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background to-muted/10 overflow-hidden relative">
+        {/* Decorative background element */}
+        <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${statusConfig.gradient} rounded-full -mr-12 -mt-12 opacity-50`} />
         
         <CardHeader className="pb-4 relative z-10">
           <div className="flex items-start justify-between gap-4">
-            {/* Expert info section */}
-            <div className="flex items-center gap-4 flex-1 min-w-0">
+            <motion.div
+              className="flex items-center gap-4 flex-1 min-w-0"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
               <div className="relative">
-                <Avatar className="w-20 h-20 border-3 border-white shadow-lg">
+                <Avatar className="w-16 h-16 border-2 border-primary/10 shadow-md">
                   <AvatarImage 
                     src={session.avatar} 
                     alt={session.expertName}
                     className="object-cover"
                   />
-                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold text-xl">
+                  <AvatarFallback className="bg-gradient-to-br from-primary/15 to-primary/5 text-primary font-semibold text-lg">
                     {getInitials(session.expertName)}
                   </AvatarFallback>
                 </Avatar>
-                {/* Online status indicator */}
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-3 border-white shadow-sm" />
-                {/* Verified badge */}
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-md">
-                  <Shield className="w-4 h-4 text-white" />
-                </div>
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-background" />
               </div>
-              
               <div className="flex-1 min-w-0">
-                <CardTitle className="text-2xl font-bold text-gray-900 leading-tight group-hover:text-primary transition-colors duration-200 truncate">
+                <CardTitle className="text-xl font-semibold text-foreground leading-tight group-hover:text-primary transition-colors duration-200 truncate">
                   {session.expertName}
                 </CardTitle>
-                <p className="text-sm text-gray-600 mt-1 font-medium">Mental Health Expert</p>
-                
-                {/* Rating and experience */}
-                <div className="flex items-center gap-4 mt-2">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-semibold text-gray-700">4.9</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-gray-400" />
-                    <span className="text-xs text-gray-500">5+ years exp</span>
-                  </div>
-                </div>
+                <p className="text-sm text-muted-foreground mt-1">Mental Health Expert</p>
               </div>
-            </div>
+            </motion.div>
             
-            {/* Status badge */}
-            <Badge 
-              variant="outline" 
-              className={`${statusConfig.color} font-semibold shrink-0 px-4 py-2 text-sm border-0 shadow-sm`}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
             >
-              {statusConfig.icon}
-              {statusConfig.label}
-            </Badge>
+              <Badge 
+                variant="outline" 
+                className={`${statusConfig.color} font-medium shrink-0 px-3 py-1.5 text-sm border-0 shadow-sm`}
+              >
+                {statusConfig.icon}
+                {statusConfig.label}
+              </Badge>
+            </motion.div>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-6 relative z-10">
-          {/* Session details in expert card style */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 p-4 rounded-2xl border border-blue-100">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-md">
-                  <Calendar className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-xs text-blue-600 font-semibold uppercase tracking-wide">Session Date</p>
-                  <p className="font-bold text-blue-900 text-sm">{formatDate(session.date)}</p>
-                </div>
+          {/* Session Details with Enhanced Design */}
+          <div className="grid grid-cols-1 gap-4">
+            <motion.div
+              className="flex items-center gap-4 p-3 rounded-xl bg-muted/20 border border-muted/30"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              whileHover={{ scale: 1.02, backgroundColor: "rgba(0,0,0,0.02)" }}
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
+                <Calendar className="w-5 h-5 text-primary" />
               </div>
-            </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Session Date</p>
+                <p className="font-semibold text-foreground">{formatDate(session.date)}</p>
+              </div>
+            </motion.div>
             
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 p-4 rounded-2xl border border-purple-100">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center shadow-md">
-                  <Clock className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-xs text-purple-600 font-semibold uppercase tracking-wide">Time</p>
-                  <p className="font-bold text-purple-900 text-sm">{session.time}</p>
-                </div>
+            <motion.div
+              className="flex items-center gap-4 p-3 rounded-xl bg-muted/20 border border-muted/30"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.5 }}
+              whileHover={{ scale: 1.02, backgroundColor: "rgba(0,0,0,0.02)" }}
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
+                <Clock className="w-5 h-5 text-primary" />
               </div>
-            </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Session Time</p>
+                <p className="font-semibold text-foreground">{session.time}</p>
+              </div>
+            </motion.div>
           </div>
 
-          {/* Session notes */}
+          {/* Enhanced Notes Section */}
           {session.notes && (
-            <div className="bg-gradient-to-r from-gray-50 to-gray-100/50 p-5 rounded-2xl border border-gray-200">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-gray-500 rounded-lg flex items-center justify-center mt-0.5">
-                  <FileText className="w-5 h-5 text-white" />
+            <motion.div
+              className="space-y-3"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+                  <FileText className="w-4 h-4 text-primary" />
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900 mb-2">Session Notes</h4>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {session.notes}
-                  </p>
-                </div>
+                <span className="font-medium text-foreground">Session Notes</span>
               </div>
-            </div>
+              <div className="p-4 bg-gradient-to-r from-muted/30 to-muted/20 rounded-xl border-l-4 border-primary/30">
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {session.notes}
+                </p>
+              </div>
+            </motion.div>
           )}
 
-          {/* Action buttons inspired by expert card */}
-          <div className="flex gap-3 pt-2">
+          {/* Enhanced Action Buttons */}
+          <motion.div
+            className="flex gap-3 pt-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.7 }}
+          >
             {isUpcoming ? (
               <>
-                <Button 
-                  className="flex-1 h-12 font-semibold text-base bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-2xl"
-                  size="lg"
-                >
-                  <Video className="w-5 h-5 mr-2" />
-                  Join Session
-                </Button>
-                <Button 
-                  variant="outline"
-                  size="lg"
-                  className="h-12 px-5 border-2 border-gray-200 hover:border-primary hover:bg-primary/5 transition-all duration-200 rounded-2xl"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                </Button>
+                <motion.div className="flex-1" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button 
+                    className="w-full h-11 font-medium text-base bg-primary hover:bg-primary/90 transition-all duration-200 rounded-xl shadow-sm"
+                    size="lg"
+                  >
+                    <Video className="w-4 h-4 mr-2" />
+                    Join Session
+                  </Button>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button 
+                    variant="outline"
+                    size="lg"
+                    className="h-11 px-4 border-0 bg-muted/30 hover:bg-muted/50 transition-all duration-200 rounded-xl"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                  </Button>
+                </motion.div>
               </>
             ) : (
-              <Button 
-                variant="outline"
-                className="w-full h-12 font-semibold text-base border-2 border-gray-200 hover:border-primary hover:bg-primary/5 transition-all duration-200 rounded-2xl"
-                size="lg"
-              >
-                <FileText className="w-5 h-5 mr-2" />
-                View Session Summary
-              </Button>
+              <motion.div className="w-full" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button 
+                  variant="outline"
+                  className="w-full h-11 font-medium text-base border-0 bg-muted/20 hover:bg-muted/30 transition-all duration-200 rounded-xl"
+                  size="lg"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  View Summary
+                </Button>
+              </motion.div>
             )}
-          </div>
-
-          {/* Specializations tags */}
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 px-3 py-1 rounded-full">
-              Anxiety
-            </Badge>
-            <Badge variant="secondary" className="bg-secondary/10 text-secondary hover:bg-secondary/20 px-3 py-1 rounded-full">
-              Depression
-            </Badge>
-            <Badge variant="secondary" className="bg-green-100 text-green-700 hover:bg-green-200 px-3 py-1 rounded-full">
-              Therapy
-            </Badge>
-          </div>
+          </motion.div>
         </CardContent>
       </Card>
     </motion.div>
