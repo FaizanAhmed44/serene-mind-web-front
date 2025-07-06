@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BookedSessionCard } from '@/components/BookedSessionCard';
 import { BookedSession } from '@/data/types/bookedSession';
-import { CalendarCheck, Filter, Clock, CheckCircle, TrendingUp, Users } from 'lucide-react';
+import { CalendarCheck, Filter, Clock, CheckCircle, TrendingUp, Users, Calendar, Star } from 'lucide-react';
 
 const dummyBookedSessions: BookedSession[] = [
   {
@@ -43,7 +44,7 @@ const dummyBookedSessions: BookedSession[] = [
 ];
 
 const BookedSessions: React.FC = () => {
-  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState<string>('all');
 
   const upcomingSessions = dummyBookedSessions.filter(session => session.status === 'upcoming');
   const pastSessions = dummyBookedSessions.filter(session => session.status === 'completed');
@@ -59,115 +60,123 @@ const BookedSessions: React.FC = () => {
     }
   };
 
-  const filteredSessions = getSessionsForTab(selectedStatus);
+  const filteredSessions = getSessionsForTab(activeTab);
 
-  const statusOptions = [
-    { value: 'all', label: 'All Sessions' },
-    { value: 'upcoming', label: 'Upcoming' },
-    { value: 'past', label: 'Past' },
+  const stats = [
+    {
+      title: "Total Sessions",
+      value: dummyBookedSessions.length,
+      icon: <Users className="w-6 h-6" />,
+      gradient: "from-primary/10 via-primary/5 to-transparent",
+      iconBg: "bg-primary/10",
+      textColor: "text-primary",
+      description: "All time sessions"
+    },
+    {
+      title: "Upcoming",
+      value: upcomingSessions.length,
+      icon: <Clock className="w-6 h-6" />,
+      gradient: "from-amber-50 via-amber-25 to-transparent",
+      iconBg: "bg-amber-100",
+      textColor: "text-amber-700",
+      description: "Sessions scheduled"
+    },
+    {
+      title: "Completed",
+      value: pastSessions.length,
+      icon: <CheckCircle className="w-6 h-6" />,
+      gradient: "from-green-50 via-green-25 to-transparent",
+      iconBg: "bg-green-100",
+      textColor: "text-green-700",
+      description: "Successfully finished"
+    },
+    {
+      title: "Success Rate",
+      value: "96%",
+      icon: <TrendingUp className="w-6 h-6" />,
+      gradient: "from-blue-50 via-blue-25 to-transparent",
+      iconBg: "bg-blue-100",
+      textColor: "text-blue-700",
+      description: "Session completion"
+    }
   ];
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20"
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="min-h-screen bg-gradient-to-br from-background via-muted/5 to-muted/10"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
     >
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-        {/* Header Section */}
+        {/* Enhanced Header Section */}
         <motion.div
-          className="space-y-3"
-          initial={{ opacity: 0, y: 20 }}
+          className="text-center space-y-6 mb-12"
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+          transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center gap-4 mb-4">
             <motion.div
-              className="flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 text-primary"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-              whileHover={{ scale: 1.1, rotate: 360 }}
+              className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/10"
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+              whileHover={{ scale: 1.05, rotate: 5 }}
             >
-              <CalendarCheck className="w-7 h-7" />
+              <CalendarCheck className="w-8 h-8 text-primary" />
             </motion.div>
-            <div>
-              <motion.h1
-                className="text-4xl font-bold text-foreground tracking-tight"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                My Booked Sessions
-              </motion.h1>
-              <motion.p
-                className="text-muted-foreground mt-2 text-lg"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                Manage and track your one-on-one sessions with mental health experts
-              </motion.p>
-            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <motion.h1
+              className="text-5xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              My Booked Sessions
+            </motion.h1>
+            <motion.p
+              className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Track and manage your one-on-one sessions with our expert mental health professionals
+            </motion.p>
           </div>
         </motion.div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              title: "Total Sessions",
-              value: dummyBookedSessions.length,
-              icon: <Users className="w-6 h-6 text-primary" />,
-              bg: "from-primary/5 to-primary/10",
-            },
-            {
-              title: "Upcoming",
-              value: upcomingSessions.length,
-              icon: <Clock className="w-6 h-6 text-amber-600" />,
-              bg: "from-amber-50 to-amber-100",
-            },
-            {
-              title: "Completed",
-              value: pastSessions.length,
-              icon: <CheckCircle className="w-6 h-6 text-green-600" />,
-              bg: "from-green-50 to-green-100",
-            },
-          ].map((stat, index) => (
+        {/* Enhanced Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => (
             <motion.div
               key={stat.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 + index * 0.1, ease: "easeOut" }}
-              whileHover={{ y: -4, boxShadow: "0 8px 25px rgba(0,0,0,0.12)" }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+              whileHover={{ y: -4, scale: 1.02 }}
             >
-              <Card className={`border-0 shadow-soft bg-gradient-to-br ${stat.bg}`}>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <motion.p
-                        className="text-sm font-medium text-muted-foreground uppercase tracking-wide"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                      >
+              <Card className={`border-0 shadow-sm hover:shadow-md transition-all duration-300 bg-gradient-to-br ${stat.gradient} overflow-hidden relative`}>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent rounded-full -mr-16 -mt-16" />
+                <CardContent className="p-6 relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                         {stat.title}
-                      </motion.p>
-                      <motion.p
-                        className={`text-3xl font-bold ${stat.title === "Total Sessions" ? "text-primary" : stat.title === "Upcoming" ? "text-amber-600" : "text-green-600"} mt-2`}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
-                      >
+                      </p>
+                      <p className={`text-3xl font-bold ${stat.textColor}`}>
                         {stat.value}
-                      </motion.p>
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {stat.description}
+                      </p>
                     </div>
                     <motion.div
-                      className="flex items-center justify-center w-12 h-12 rounded-full bg-white/80"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.5, type: "spring", stiffness: 100, delay: 0.8 + index * 0.1 }}
+                      className={`flex items-center justify-center w-14 h-14 rounded-xl ${stat.iconBg} ${stat.textColor}`}
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.6 }}
                     >
                       {stat.icon}
                     </motion.div>
@@ -178,123 +187,140 @@ const BookedSessions: React.FC = () => {
           ))}
         </div>
 
-        {/* Filters Section */}
+        {/* Enhanced Tabs Section */}
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.8, ease: "easeOut" }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.9 }}
         >
-          <Card className="border-0 shadow-soft">
-            <CardHeader className="pb-4">
-              <motion.div
-                className="flex items-center gap-3"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.9 }}
-              >
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <Filter className="w-5 h-5 text-primary" />
-                </motion.div>
-                <CardTitle className="text-xl font-semibold">Filter Sessions</CardTitle>
-              </motion.div>
+          <Card className="border-0 shadow-sm bg-card/50 backdrop-blur-sm">
+            <CardHeader className="pb-6">
+              <CardTitle className="text-2xl font-semibold flex items-center gap-3">
+                <Filter className="w-6 h-6 text-primary" />
+                Session Management
+              </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0">
-              <div className="flex flex-wrap gap-3">
-                {statusOptions.map((option, index) => (
-                  <motion.div
-                    key={option.value}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 1.0 + index * 0.05 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+            <CardContent>
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-3 bg-muted/30 p-1 rounded-xl">
+                  <TabsTrigger 
+                    value="all" 
+                    className="rounded-lg font-medium transition-all duration-200 data-[state=active]:bg-background data-[state=active]:shadow-sm"
                   >
-                    <Button
-                      variant={selectedStatus === option.value ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedStatus(option.value)}
-                      className="h-10 px-6 rounded-full transition-all duration-200 font-medium"
-                    >
-                      {option.label}
-                      {option.value !== 'all' && (
-                        <span className="ml-2 px-2 py-0.5 bg-background/20 rounded-full text-xs">
-                          {option.value === 'upcoming' ? upcomingSessions.length : pastSessions.length}
-                        </span>
-                      )}
-                    </Button>
-                  </motion.div>
-                ))}
+                    <Calendar className="w-4 h-4 mr-2" />
+                    All Sessions
+                    <span className="ml-2 px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-semibold">
+                      {dummyBookedSessions.length}
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="upcoming" 
+                    className="rounded-lg font-medium transition-all duration-200 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <Clock className="w-4 h-4 mr-2" />
+                    Upcoming
+                    <span className="ml-2 px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">
+                      {upcomingSessions.length}
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="past" 
+                    className="rounded-lg font-medium transition-all duration-200 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Past
+                    <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                      {pastSessions.length}
+                    </span>
+                  </TabsTrigger>
+                </TabsList>
+
+                <div className="mt-8">
+                  <TabsContent value="all" className="mt-0">
+                    <SessionGrid sessions={dummyBookedSessions} />
+                  </TabsContent>
+                  <TabsContent value="upcoming" className="mt-0">
+                    <SessionGrid sessions={upcomingSessions} />
+                  </TabsContent>
+                  <TabsContent value="past" className="mt-0">
+                    <SessionGrid sessions={pastSessions} />
+                  </TabsContent>
+                </div>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
+
+interface SessionGridProps {
+  sessions: BookedSession[];
+}
+
+const SessionGrid: React.FC<SessionGridProps> = ({ sessions }) => {
+  return (
+    <AnimatePresence mode="wait">
+      {sessions.length > 0 ? (
+        <motion.div
+          key="sessions-grid"
+          className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {sessions.map((session, index) => (
+            <motion.div
+              key={session.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+            >
+              <BookedSessionCard session={session} />
+            </motion.div>
+          ))}
+        </motion.div>
+      ) : (
+        <motion.div
+          key="empty-state"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-muted/20 to-muted/5">
+            <CardContent className="py-16 text-center">
+              <div className="flex flex-col items-center space-y-6">
+                <motion.div
+                  className="flex items-center justify-center w-20 h-20 rounded-2xl bg-muted/20"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, type: "spring" }}
+                >
+                  <CalendarCheck className="h-10 w-10 text-muted-foreground" />
+                </motion.div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-semibold text-foreground">No sessions found</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    You don't have any sessions in this category yet. Book a session with our expert therapists to get started.
+                  </p>
+                </div>
+                <Button 
+                  size="lg" 
+                  className="mt-4 px-8 py-3 rounded-xl font-medium bg-primary hover:bg-primary/90 transition-all duration-200"
+                >
+                  <Star className="w-4 h-4 mr-2" />
+                  Find Experts
+                </Button>
               </div>
             </CardContent>
           </Card>
         </motion.div>
-
-        {/* Sessions Grid */}
-        <AnimatePresence>
-          {filteredSessions.length > 0 ? (
-            <motion.div
-              className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.2 }}
-            >
-              {filteredSessions.map((session, index) => (
-                <motion.div
-                  key={session.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 50 }}
-                  transition={{ duration: 0.5, delay: 1.3 + index * 0.1, ease: "easeOut" }}
-                >
-                  <BookedSessionCard session={session} />
-                </motion.div>
-              ))}
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              <Card className="border-0 shadow-soft">
-                <CardContent className="py-16 text-center">
-                  <div className="flex flex-col items-center space-y-4">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-                    >
-                      <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50">
-                        <CalendarCheck className="h-8 w-8 text-muted-foreground" />
-                      </div>
-                    </motion.div>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.2 }}
-                    >
-                      <h3 className="text-xl font-semibold text-foreground">No sessions found</h3>
-                    </motion.div>
-                    <motion.p
-                      className="text-muted-foreground max-w-md"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.3 }}
-                    >
-                      Try adjusting your filters or book a new session with our expert therapists.
-                    </motion.p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
