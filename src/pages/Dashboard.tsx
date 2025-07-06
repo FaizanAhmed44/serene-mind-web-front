@@ -95,7 +95,7 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         {/* Welcome Section */}
         <div className="text-center py-6">
-          <h1 className="text-4xl font-bold text-foreground mb-3 tracking-tight">
+          <h1 className="text-4xl font-bold mb-3 tracking-tight text-primary">
             Welcome back, {userData?.name}!
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -131,7 +131,7 @@ const Dashboard = () => {
           {/* Upcoming Sessions */}
           <Card className="border-0 shadow-sm">
             <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-3 text-xl font-semibold">
+              <CardTitle className="flex items-center gap-3 text-xl text-primary font-semibold">
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
                   <Calendar className="h-5 w-5 text-primary" />
                 </div>
@@ -172,7 +172,7 @@ const Dashboard = () => {
           {/* Completed Sessions */}
           <Card className="border-0 shadow-sm">
             <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-3 text-xl font-semibold">
+              <CardTitle className="flex items-center gap-3 text-xl text-primary  font-semibold">
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-secondary/10">
                   <CheckCircle className="h-5 w-5 text-secondary" />
                 </div>
@@ -231,7 +231,7 @@ const Dashboard = () => {
         {/* Progress Section */}
         <Card className="border-0 shadow-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-3 text-xl font-semibold">
+            <CardTitle className="flex items-center gap-3 text-xl text-primary font-semibold">
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/10">
                 <BookOpen className="h-5 w-5 text-accent" />
               </div>

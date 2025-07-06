@@ -204,28 +204,38 @@ export default function Courses() {
       <div className="p-6 space-y-8">
         {/* Header */}
         <motion.div
-          className="text-center py-4"
-          initial={{ opacity: 0, y: 20 }}
+          className="text-center space-y-6 mb-12"
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <motion.h1
-            className="text-3xl font-bold text-primary mb-2"
+          
+          <div className="space-y-3">
+          <motion.div
+            className="flex items-center justify-center gap-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
           >
+           
+
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
             Mental Wellness Courses
-          </motion.h1>
-          <motion.p
-            className="text-lg text-muted-foreground"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            Explore curated courses designed to elevate your skills and career.
-          </motion.p>
-        </motion.div>
+            </h1>
+          </motion.div>
+
+      <motion.p
+        className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
+        Explore curated courses designed to elevate your skills and career.
+      </motion.p>
+    </div>
+
+          
+        </motion.div>        
 
         {/* Courses Grid */}
         <motion.div

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BookedSessionCard } from '@/components/BookedSessionCard';
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { BookedSession } from '@/data/types/bookedSession';
 import { CalendarCheck, Filter, Clock, CheckCircle, TrendingUp, Users, Calendar, Star } from 'lucide-react';
 
@@ -33,7 +34,9 @@ const dummyBookedSessions: BookedSession[] = [
     avatar: 'https://images.unsplash.com/photo-1594824395815-59fdc9e62c3e?w=150&h=150&fit=crop&crop=face',
     date: 'July 8, 2025',
     time: '5:30 PM',
-    status: 'completed'
+    status: 'completed',
+    notes: 'Follow-up session for stress management and goal setting'
+
   },
   {
     id: '4',
@@ -111,7 +114,33 @@ const BookedSessions: React.FC = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-6 py-1 space-y-8">
+      
+      <motion.div
+        className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <div className="flex items-center justify-between p-4">
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.4 }}
+          >
+            <SidebarTrigger />
+          </motion.div>
+          <motion.h1
+            className="text-xl font-semibold text-foreground"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            My Booked Sessions
+          </motion.h1>
+          <div className="w-10" />
+        </div>
+      </motion.div>
+
         {/* Enhanced Header Section */}
         <motion.div
           className="text-center space-y-6 mb-12"
@@ -119,36 +148,32 @@ const BookedSessions: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <motion.div
-              className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/10"
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
-              whileHover={{ scale: 1.05, rotate: 5 }}
-            >
-              <CalendarCheck className="w-8 h-8 text-primary" />
-            </motion.div>
-          </div>
           
           <div className="space-y-3">
-            <motion.h1
-              className="text-5xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              My Booked Sessions
-            </motion.h1>
-            <motion.p
-              className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Track and manage your one-on-one sessions with our expert mental health professionals
-            </motion.p>
-          </div>
+          <motion.div
+            className="flex items-center justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+           
+
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
+            Your Scheduled Wellness Sessions
+            </h1>
+          </motion.div>
+
+      <motion.p
+        className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
+        Track and manage your one-on-one sessions with our expert mental health professionals
+      </motion.p>
+    </div>
+
+          
         </motion.div>
 
         {/* Enhanced Stats Overview */}

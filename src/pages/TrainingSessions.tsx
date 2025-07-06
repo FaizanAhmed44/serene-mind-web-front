@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { TrainingSessionCard } from '@/components/TrainingSessionCard';
 import { useTrainingSessions } from '@/hooks/useTrainingSessions';
 import { Calendar, Filter, Search, TrendingUp } from 'lucide-react';
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { sampleTrainingSessions } from '@/data/trainingSessions';
 
 const TrainingSessions: React.FC = () => {
@@ -39,49 +40,74 @@ const TrainingSessions: React.FC = () => {
   ];
 
   return (
+
+    
     <motion.div
       className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
     >
+<motion.div
+        className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <div className="flex items-center justify-between p-4">
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.4 }}
+          >
+            <SidebarTrigger />
+          </motion.div>
+          <motion.h1
+            className="text-xl font-semibold text-foreground"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            Training Sessions
+          </motion.h1>
+          <div className="w-10" />
+        </div>
+      </motion.div>
+
+
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-        {/* Header Section */}
+        {/* Header Section */}        
         <motion.div
-          className="space-y-3"
-          initial={{ opacity: 0, y: 20 }}
+          className="text-center space-y-6 mb-12"
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+          transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <div className="flex items-center gap-3">
-            <motion.div
-              className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-              whileHover={{ scale: 1.1, rotate: 360 }}
-            >
-              <Calendar className="h-6 w-6" />
-            </motion.div>
-            <div>
-              <motion.h1
-                className="text-3xl font-bold text-foreground tracking-tight"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                Training Sessions
-              </motion.h1>
-              <motion.p
-                className="text-muted-foreground mt-1 text-lg"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                Join expert-led sessions to enhance your mental wellness journey
-              </motion.p>
-            </div>
-          </div>
+          
+          <div className="space-y-3">
+          <motion.div
+            className="flex items-center justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+           
+
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
+            Strategic Mental Wealth Training
+            </h1>
+          </motion.div>
+
+      <motion.p
+        className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
+        Join expert-led sessions to enhance your mental wellness journey
+      </motion.p>
+    </div>
+
+          
         </motion.div>
 
         {/* Stats Overview */}
@@ -90,19 +116,25 @@ const TrainingSessions: React.FC = () => {
             {
               title: "Total Sessions",
               value: sampleTrainingSessions.length,
-              icon: <Calendar className="h-6 w-6 text-primary" />,
+              icon: <Calendar className="h-6 w-6 text-primary " />,
+              iconBg: "bg-primary/10",
+              gradient: "from-primary/10 via-primary/5 to-transparent",
               bg: "from-primary/5 to-primary/10",
             },
             {
               title: "Available Now",
               value: filteredSessions.length,
-              icon: <TrendingUp className="h-6 w-6 text-secondary" />,
+              icon: <TrendingUp className="h-6 w-6 text-green-700 " />,
+              iconBg: "bg-green-100",
+              gradient: "from-green-50 via-green-50 to-transparent",         
               bg: "from-secondary/5 to-secondary/10",
             },
             {
               title: "Completion Rate",
               value: "94%",
-              icon: <Search className="h-6 w-6 text-accent" />,
+              icon: <Search className="h-6 w-6 text-amber-700" />,
+              gradient: "from-amber-50 via-amber-25 to-transparent",
+              iconBg: "bg-amber-100",
               bg: "from-accent/5 to-accent/10",
             },
           ].map((stat, index) => (
@@ -113,7 +145,7 @@ const TrainingSessions: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.5 + index * 0.1, ease: "easeOut" }}
               whileHover={{ y: -10, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
             >
-              <Card className={`border-0 shadow-sm bg-gradient-to-br ${stat.bg}`}>
+              <Card className={`border-0 shadow-sm bg-gradient-to-br ${stat.gradient}`}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -135,7 +167,7 @@ const TrainingSessions: React.FC = () => {
                       </motion.p>
                     </div>
                     <motion.div
-                      className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
+                      className={`flex items-center justify-center w-12 h-12 rounded-full ${stat.iconBg}`}
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ duration: 0.5, type: "spring", stiffness: 100, delay: 0.8 + index * 0.1 }}
