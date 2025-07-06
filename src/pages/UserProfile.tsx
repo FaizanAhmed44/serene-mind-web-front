@@ -1169,10 +1169,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
+// Assuming these components are available or you'd create them
 import ProfileSettings from "@/components/ProfileSettings";
 import PaymentHistory from "@/components/PaymentHistory";
+// Assuming these hooks are correctly implemented for your backend
 import { useUserProfile, useUpdateUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from '@/hooks/useAuth';
 
@@ -1184,17 +1190,35 @@ interface UserData {
   bio: string;
   joinDate: string;
   avatar: string;
+  coursesEnrolled?: number;
+  coursesCompleted?: number;
+  hoursLearned?: number;
+  userRole?: string;
 }
+
+// --- Tailwind CSS Custom Colors (Make sure these are in your tailwind.config.js) ---
+// theme: {
+//   extend: {
+//     colors: {
+//       'primary-dark-teal': '#184349',
+//       'secondary-deep-blue': '#202a42', // Used as a gradient end color or for specific dark elements
+//       'accent-charcoal': '#272829', // Used for primary text/dark details
+//       'white-background': '#FFFFFF',
+//       'light-gray-bg': '#F9FAFB', // For the main content background
+//     },
+//     // ... existing animations and keyframes
+//   },
+// },
 
 const UserProfile = () => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const { user } = useAuth();
-  const { data: userData, isLoading, error } = useUserProfile();
+  const { user, logout } = useAuth();
+  const { data: userData, isLoading, error, refetch } = useUserProfile();
   const updateProfileMutation = useUpdateUserProfile();
-  
-  const [editedData, setEditedData] = useState(userData || {
+
+  const [editedData, setEditedData] = useState<UserData>(() => ({
     name: "",
     email: "",
     phone: "",
@@ -1206,7 +1230,13 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (userData) {
-      setEditedData(userData);
+      setEditedData({
+        ...userData,
+        coursesEnrolled: userData.coursesEnrolled || 0,
+        coursesCompleted: userData.coursesCompleted || 0,
+        hoursLearned: userData.hoursLearned || 0,
+        userRole: userData.userRole || "Learner",
+      });
     }
   }, [userData]);
 
@@ -1306,7 +1336,15 @@ const UserProfile = () => {
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditedData(userData);
+    if (userData) {
+      setEditedData({
+        ...userData,
+        coursesEnrolled: userData.coursesEnrolled || 0,
+        coursesCompleted: userData.coursesCompleted || 0,
+        hoursLearned: userData.hoursLearned || 0,
+        userRole: userData.userRole || "Learner",
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -1316,7 +1354,7 @@ const UserProfile = () => {
 
   const handleSave = () => {
     const cleanedData: Partial<UserData> = {};
-  
+
     Object.entries(editedData).forEach(([key, value]) => {
       if (value !== null && value !== "") {
         if (key === "avatar") {
@@ -1324,11 +1362,17 @@ const UserProfile = () => {
             cleanedData[key as keyof UserData] = value;
           }
         } else {
-          cleanedData[key as keyof UserData] = value as string;
+          cleanedData[key as keyof UserData] = value as any;
         }
       }
     });
-  
+
+    delete cleanedData.joinDate;
+    delete cleanedData.coursesEnrolled;
+    delete cleanedData.coursesCompleted;
+    delete cleanedData.hoursLearned;
+    delete cleanedData.userRole; // Role is display-only for now, not directly editable here
+
     updateProfileMutation.mutate(cleanedData, {
       onSuccess: () => {
         setIsEditing(false);
@@ -1336,6 +1380,7 @@ const UserProfile = () => {
           title: "Profile Updated",
           description: "Your profile has been successfully updated.",
         });
+        refetch();
       },
       onError: (err: any) => {
         console.error("Update error:", err);
@@ -1372,7 +1417,7 @@ const UserProfile = () => {
       if (!file.type.startsWith('image/')) {
         toast({
           title: "Invalid file type",
-          description: "Please select a valid image file.",
+          description: "Please select a valid image file (e.g., JPG, PNG).",
           variant: "destructive",
         });
         return;
@@ -1387,7 +1432,7 @@ const UserProfile = () => {
         }));
         toast({
           title: "Image uploaded",
-          description: "Profile picture has been updated. Don't forget to save your changes.",
+          description: "Profile picture has been updated. Don't forget to save your changes!",
         });
       };
       reader.readAsDataURL(file);
