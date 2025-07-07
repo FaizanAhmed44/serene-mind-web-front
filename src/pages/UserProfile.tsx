@@ -461,7 +461,7 @@ const UserProfile = () => {
                       </AnimatePresence>
                       
                       <motion.h2 
-                        className="text-2xl font-bold text-foreground mb-2"
+                        className="text-2xl font-bold text-primary mb-2"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: 0.3 }}
@@ -493,7 +493,7 @@ const UserProfile = () => {
                             whileHover={{ rotate: 360 }}
                             transition={{ duration: 0.4 }}
                           >
-                            <Phone className="h-4 w-4 mr-2" />
+                            <Phone className="h-4 w-4 mr-2 text-primary" />
                           </motion.div>
                           <span>{userData.phone}</span>
                         </motion.div>
@@ -506,7 +506,7 @@ const UserProfile = () => {
                             whileHover={{ rotate: 360 }}
                             transition={{ duration: 0.4 }}
                           >
-                            <MapPin className="h-4 w-4 mr-2" />
+                            <MapPin className="h-4 w-4 mr-2 text-primary" />
                           </motion.div>
                           <span>{userData.location}</span>
                         </motion.div>
