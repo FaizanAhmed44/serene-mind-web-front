@@ -1,5 +1,5 @@
 
-import { Book, Home, User, Calendar, Search, Heart, UserCog, HelpCircle, CalendarCheck, BookOpen } from "lucide-react";
+import { Book, Home, User, Calendar, Search, Heart, UserCog, HelpCircle, CalendarCheck } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -23,11 +23,6 @@ const menuItems = [
     title: "Courses",
     url: "/courses",
     icon: Book,
-  },
-  {
-    title: "My Enrolled Courses",
-    url: "/enrolled-courses",
-    icon: BookOpen,
   },
   {
     title: "Interest",
