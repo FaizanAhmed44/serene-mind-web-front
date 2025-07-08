@@ -1,4 +1,3 @@
-// export default Dashboard;
 import { useState } from "react";
 import { Calendar, Clock, User, BookOpen, Star, TrendingUp, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
