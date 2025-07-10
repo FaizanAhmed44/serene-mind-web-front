@@ -143,11 +143,11 @@ const CourseEnroll = () => {
     );
   }
 
-  if (isEnrollError || !course) {
+  if (!course) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Course Not Found</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-4">Course Not Founds</h1>
           <Button asChild>
             <Link to="/">Back to Courses</Link>
           </Button>
@@ -218,7 +218,7 @@ const CourseEnroll = () => {
             </Card>
 
             {/* Pricing Plans */}
-            <Card className="animate-slide-up">
+            {/* <Card className="animate-slide-up">
               <CardHeader>
                 <CardTitle>Choose Your Plan</CardTitle>
               </CardHeader>
@@ -253,7 +253,7 @@ const CourseEnroll = () => {
                   ))}
                 </RadioGroup>
               </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Personal Information */}
             <Card className="animate-slide-up">

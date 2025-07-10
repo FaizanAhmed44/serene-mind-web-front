@@ -1,4 +1,5 @@
 import { expertApi } from "@/lib/expert_api";
+import { GetTrainingSessionsResponse, TrainingSession } from "@/data/types/training";
 
 export const CoursesExpertAPI = {
   getCourses: async () => expertApi.get("/courses").then((res) => res.data.data.courses),

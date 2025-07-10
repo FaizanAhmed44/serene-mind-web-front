@@ -34,7 +34,10 @@ const CourseSuccess = () => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          navigate(`/courses/${id}`);
+          // navigate(`/courses/${id}` );
+          navigate(`/courses/${id}`, {
+            state: { isEnrolled: true }, // or false
+          });
           return 0;
         }
         return prev - 1;
@@ -101,7 +104,7 @@ const CourseSuccess = () => {
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row items-start space-y-6 md:space-y-0 md:space-x-6">
               <img
-                src={course.image}
+                src={course.thumbnail}
                 alt={course.title}
                 className="w-full md:w-48 h-32 object-cover rounded-lg"
               />

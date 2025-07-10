@@ -2,7 +2,7 @@ export interface TrainingSession {
   id: string;
   title: string;
   description: string;
-  type: "live" | "online";           // can be extended to an enum if you wish
+  type: "live" | "online" | "webinar";           // can be extended to an enum if you wish
   date: string;                     // e.g. "2024-07-15"
   time: string;                     // e.g. "14:00"
   duration: string;                 // e.g. "1 hour"
