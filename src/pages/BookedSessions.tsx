@@ -9,9 +9,9 @@ import { BookedSessionCard } from '@/components/BookedSessionCard';
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
-import { CoursesExpertAPI } from '@/api/courses';
 import { Calendar, Filter, Clock, CheckCircle, BookOpen } from 'lucide-react';
 import { Session, BookedSession } from '@/data/types/bookedSession';
+import { BookingSessionsAPI } from '@/api/bookingSessions';
 
 
 const BookedSessions: React.FC = () => {
@@ -20,7 +20,7 @@ const BookedSessions: React.FC = () => {
 
   const { data: apiSessions = [], isLoading, error } = useQuery<Session[]>({
     queryKey: ['bookedSessions', user?.id],
-    queryFn: () => CoursesExpertAPI.getBooking(user?.id || ""),
+    queryFn: () => BookingSessionsAPI.getBooking(user?.id || ""),
     enabled: !!user?.id,
 
   });
