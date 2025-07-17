@@ -8,6 +8,8 @@ export interface Course {
   description?: string;
   duration?: string;
   thumbnail?: string;
+  price: string,
+  currency: string,
   rating?: number;
   enrolledStudents?: number;
   status?: string;

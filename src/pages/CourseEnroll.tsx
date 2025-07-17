@@ -143,18 +143,18 @@ const CourseEnroll = () => {
     );
   }
 
-  if (!course) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Course Not Founds</h1>
-          <Button asChild>
-            <Link to="/">Back to Courses</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  // if (!course) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <h1 className="text-2xl font-bold text-foreground mb-4">Course Not Founds</h1>
+  //         <Button asChild>
+  //           <Link to="/">Back to Courses</Link>
+  //         </Button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const selectedPlanData = pricingPlans.find(plan => plan.id === selectedPlan);
 
@@ -216,44 +216,6 @@ const CourseEnroll = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Pricing Plans */}
-            {/* <Card className="animate-slide-up">
-              <CardHeader>
-                <CardTitle>Choose Your Plan</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan}>
-                  {pricingPlans.map((plan) => (
-                    <div key={plan.id} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <RadioGroupItem value={plan.id} id={plan.id} />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <Label htmlFor={plan.id} className="text-base font-semibold cursor-pointer">
-                            {plan.name}
-                          </Label>
-                          <div className="text-right">
-                            <div className="text-lg font-bold">
-                              ${plan.price}
-                              {plan.id === "subscription" && <span className="text-sm font-normal">/month</span>}
-                            </div>
-                          </div>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
-                        <div className="grid grid-cols-2 gap-1 text-xs">
-                          {plan.features.map((feature, index) => (
-                            <div key={index} className="flex items-center space-x-1">
-                              <CheckCircle className="h-3 w-3 text-green-500" />
-                              <span>{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </CardContent>
-            </Card> */}
 
             {/* Personal Information */}
             <Card className="animate-slide-up">
@@ -424,11 +386,11 @@ const CourseEnroll = () => {
                 <div className="space-y-2 pt-4 border-t">
                   <div className="flex justify-between">
                     <span>{selectedPlanData?.name}</span>
-                    <span>${selectedPlanData?.price}</span>
+                    <span>${course.price}</span>
                   </div>
                   <div className="flex justify-between font-bold text-lg pt-2 border-t">
                     <span>Total</span>
-                    <span>${selectedPlanData?.price}</span>
+                    <span>${course.price}</span>
                   </div>
                 </div>
 

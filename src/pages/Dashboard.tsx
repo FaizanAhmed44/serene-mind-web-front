@@ -8,14 +8,14 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUpcomingSessions, useCompletedSessions } from "@/hooks/useSessions";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
-import ReviewDialog from "@/components/ReviewDialog";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import ReviewDialog from "@/components/ReviewDialog";
 
 const Dashboard = () => {
   const { data: upcomingSessions = [], isLoading: upcomingLoading } = useUpcomingSessions();
   const { data: completedSessions = [], isLoading: completedLoading } = useCompletedSessions();
   const { data: dashboardStats = [], isLoading: statsLoading } = useDashboardStats();
-  const { data: userData, isLoading, error } = useUserProfile();
+  const { data: userData, isLoading } = useUserProfile();
   const [completedSessionsState, setCompletedSessionsState] = useState(completedSessions);
 
   useState(() => {
@@ -69,32 +69,28 @@ const Dashboard = () => {
     return (
       <motion.div
         className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20"
-        initial={{ opacity: 0, rotateY: 10 }}
-        animate={{ opacity: 1, rotateY: 0 }}
-        transition={{ duration: 0.7, type: "spring", stiffness: 80 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <motion.div
           className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
-          initial={{ y: -50, opacity: 0, filter: "blur(5px)" }}
-          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-          transition={{ duration: 0.5, delay: 0.2, type: "spring", stiffness: 100 }}
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
         >
           <div className="flex items-center justify-between p-6">
             <motion.div
-              whileHover={{ rotate: 360, scale: 1.2 }}
-              transition={{ duration: 0.4, type: "spring", stiffness: 120 }}
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               <SidebarTrigger />
             </motion.div>
             <motion.h1
               className="text-xl font-semibold text-foreground"
-              initial={{ x: -30, opacity: 0 }}
-              animate={{ x: 0, opacity: 1, scale: [1, 1.05, 1] }}
-              transition={{
-                duration: 0.5,
-                delay: 0.3,
-                scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
-              }}
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2, ease: "easeInOut" }}
             >
               Dashboard
             </motion.h1>
@@ -103,22 +99,13 @@ const Dashboard = () => {
         </motion.div>
         <motion.div
           className="p-6 flex items-center justify-center"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
         >
-          <motion.div
-            className="text-lg text-muted-foreground"
-            animate={{
-              scale: [1, 1.1, 1],
-              opacity: [0.5, 1, 0.5],
-              rotate: [0, 2, -2, 0],
-              textShadow: "0 0 8px rgba(59, 130, 246, 0.5)"
-            }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          >
+          <div className="text-lg text-muted-foreground">
             Loading...
-          </motion.div>
+          </div>
         </motion.div>
       </motion.div>
     );
@@ -127,32 +114,28 @@ const Dashboard = () => {
   return (
     <motion.div
       className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20"
-      initial={{ opacity: 0, y: 50, rotateY: 10 }}
-      animate={{ opacity: 1, y: 0, rotateY: 0 }}
-      transition={{ duration: 0.7, type: "spring", stiffness: 80 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
     >
       <motion.div
         className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
-        initial={{ y: -50, opacity: 0, filter: "blur(5px)" }}
-        animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-        transition={{ duration: 0.5, delay: 0.2, type: "spring", stiffness: 100 }}
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
       >
         <div className="flex items-center justify-between p-6">
           <motion.div
-            whileHover={{ rotate: 360, scale: 1.2 }}
-            transition={{ duration: 0.4, type: "spring", stiffness: 120 }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             <SidebarTrigger />
           </motion.div>
           <motion.h1
             className="text-xl font-semibold text-foreground"
-            initial={{ x: -30, opacity: 0 }}
-            animate={{ x: 0, opacity: 1, scale: [1, 1.05, 1] }}
-            transition={{
-              duration: 0.5,
-              delay: 0.3,
-              scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
-            }}
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.2, ease: "easeInOut" }}
           >
             Dashboard
           </motion.h1>
@@ -164,23 +147,23 @@ const Dashboard = () => {
         {/* Welcome Section */}
         <motion.div
           className="text-center py-6"
-          initial={{ opacity: 0, y: 30, rotateX: 10 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{ duration: 0.6, delay: 0.4, type: "spring", stiffness: 90 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
         >
           <motion.h1
             className="text-4xl font-bold mb-3 tracking-tight text-primary"
-            initial={{ opacity: 0, y: 20, rotate: 5 }}
-            animate={{ opacity: 1, y: 0, rotate: 0 }}
-            transition={{ duration: 0.5, delay: 0.5, type: "spring", stiffness: 100 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.4, ease: "easeInOut" }}
           >
             Welcome back, {userData?.name}!
           </motion.h1>
           <motion.p
             className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 20, rotate: -5 }}
-            animate={{ opacity: 1, y: 0, rotate: 0 }}
-            transition={{ duration: 0.5, delay: 0.6, type: "spring", stiffness: 100 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.5, ease: "easeInOut" }}
           >
             Continue your mental wellness journey with personalized insights and expert guidance
           </motion.p>
@@ -191,21 +174,20 @@ const Dashboard = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
+          transition={{ duration: 0.4, delay: 0.6, ease: "easeInOut" }}
         >
           <AnimatePresence>
             {stats.map((stat, index) => (
               <motion.div
                 key={stat.title}
-                initial={{ opacity: 0, y: 50, rotateX: 10 }}
-                animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                transition={{ duration: 0.6, delay: 0.8 + index * 0.15, type: "spring", stiffness: 90 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.4, delay: 0.7 + index * 0.1, ease: "easeInOut" }}
                 whileHover={{
                   y: -5,
-                  rotateX: 5,
-                  boxShadow: "0 12px 24px rgba(0,0,0,0.2)",
-                  transition: { duration: 0.3 }
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.3, ease: "easeInOut" }
                 }}
               >
                 <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-muted/20 hover:shadow-md transition-all duration-300">
@@ -214,7 +196,7 @@ const Dashboard = () => {
                       className="flex items-center justify-between"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, delay: 0.9 + index * 0.15 }}
+                      transition={{ duration: 0.4, delay: 0.8 + index * 0.1, ease: "easeInOut" }}
                     >
                       <div className="space-y-1">
                         <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
@@ -224,8 +206,8 @@ const Dashboard = () => {
                       </div>
                       <motion.div
                         className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10"
-                        whileHover={{ scale: 1.2, rotate: 360 }}
-                        transition={{ duration: 0.4 }}
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
                       >
                         <stat.icon className="h-6 w-6 text-primary" />
                       </motion.div>
@@ -236,7 +218,7 @@ const Dashboard = () => {
                       className="text-sm text-muted-foreground font-medium"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 1.0 + index * 0.15 }}
+                      transition={{ duration: 0.4, delay: 0.9 + index * 0.1, ease: "easeInOut" }}
                     >
                       {stat.change}
                     </motion.p>
@@ -250,9 +232,9 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
           {/* Upcoming Sessions */}
           <motion.div
-            initial={{ opacity: 0, y: 50, rotateX: 10 }}
-            animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ duration: 0.6, delay: 1.2, type: "spring", stiffness: 90 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 1.0, ease: "easeInOut" }}
           >
             <Card className="border-0 shadow-sm">
               <CardHeader className="pb-4">
@@ -260,12 +242,12 @@ const Dashboard = () => {
                   className="flex items-center gap-3 text-xl text-primary font-semibold"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 1.3 }}
+                  transition={{ duration: 0.4, delay: 1.1, ease: "easeInOut" }}
                 >
                   <motion.div
                     className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10"
-                    whileHover={{ scale: 1.2 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
                     <Calendar className="h-5 w-5 text-primary" />
                   </motion.div>
@@ -276,22 +258,18 @@ const Dashboard = () => {
                 {upcomingSessions.length === 0 ? (
                   <motion.div
                     className="text-center py-8"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 1.4 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 1.2, ease: "easeInOut" }}
                   >
-                    <motion.div
-                      className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4"
-                      animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    >
+                    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
                       <Calendar className="h-8 w-8 text-muted-foreground" />
-                    </motion.div>
+                    </div>
                     <motion.p
                       className="text-muted-foreground font-medium"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 1.5 }}
+                      transition={{ duration: 0.4, delay: 1.3, ease: "easeInOut" }}
                     >
                       No upcoming sessions
                     </motion.p>
@@ -301,23 +279,23 @@ const Dashboard = () => {
                     {upcomingSessions.map((session, index) => (
                       <motion.div
                         key={session.id}
-                        initial={{ opacity: 0, x: -30 }}
+                        initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -30 }}
-                        transition={{ duration: 0.5, delay: 1.6 + index * 0.1, type: "spring", stiffness: 100 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.4, delay: 1.4 + index * 0.1, ease: "easeInOut" }}
                         className="flex items-center justify-between p-4 bg-gradient-to-r from-muted/30 to-transparent rounded-xl border border-border/50"
-                        whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                        whileHover={{ scale: 1.02 }}
                       >
                         <motion.div
                           className="flex items-center gap-4"
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 1.7 + index * 0.1 }}
+                          transition={{ duration: 0.4, delay: 1.5 + index * 0.1, ease: "easeInOut" }}
                         >
                           <motion.div
                             className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
-                            whileHover={{ scale: 1.2, rotate: 360 }}
-                            transition={{ duration: 0.4 }}
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
                             <User className="h-6 w-6 text-primary" />
                           </motion.div>
@@ -331,25 +309,19 @@ const Dashboard = () => {
                           className="flex items-center gap-3"
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 1.8 + index * 0.1 }}
+                          transition={{ duration: 0.4, delay: 1.6 + index * 0.1, ease: "easeInOut" }}
                         >
                           <motion.div
                             whileHover={{ scale: 1.1 }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
                             <Badge variant="outline" className="font-medium">{session.duration}</Badge>
                           </motion.div>
                           <motion.div
-                            className="relative overflow-hidden"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                           >
-                            <motion.div
-                              className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent opacity-0 group-hover:opacity-100"
-                              animate={{ x: [-100, 100] }}
-                              transition={{ duration: 0.5, repeat: Infinity, repeatType: "loop" }}
-                            />
-                            <Button size="sm" className="h-9 px-4 relative z-10">Join</Button>
+                            <Button size="sm" className="h-9 px-4">Join</Button>
                           </motion.div>
                         </motion.div>
                       </motion.div>
@@ -362,9 +334,9 @@ const Dashboard = () => {
 
           {/* Completed Sessions */}
           <motion.div
-            initial={{ opacity: 0, y: 50, rotateX: 10 }}
-            animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ duration: 0.6, delay: 1.3, type: "spring", stiffness: 90 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 1.7, ease: "easeInOut" }}
           >
             <Card className="border-0 shadow-sm">
               <CardHeader className="pb-4">
@@ -372,12 +344,12 @@ const Dashboard = () => {
                   className="flex items-center gap-3 text-xl text-primary font-semibold"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 1.4 }}
+                  transition={{ duration: 0.4, delay: 1.8, ease: "easeInOut" }}
                 >
                   <motion.div
                     className="flex items-center justify-center w-10 h-10 rounded-lg bg-secondary/10"
-                    whileHover={{ scale: 1.2 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
                     <CheckCircle className="h-5 w-5 text-secondary" />
                   </motion.div>
@@ -388,22 +360,18 @@ const Dashboard = () => {
                 {completedSessionsState.length === 0 ? (
                   <motion.div
                     className="text-center py-8"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 1.5 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 1.9, ease: "easeInOut" }}
                   >
-                    <motion.div
-                      className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4"
-                      animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    >
+                    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
                       <CheckCircle className="h-8 w-8 text-muted-foreground" />
-                    </motion.div>
+                    </div>
                     <motion.p
                       className="text-muted-foreground font-medium"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 1.6 }}
+                      transition={{ duration: 0.4, delay: 2.0, ease: "easeInOut" }}
                     >
                       No completed sessions
                     </motion.p>
@@ -413,23 +381,23 @@ const Dashboard = () => {
                     {completedSessionsState.map((session, index) => (
                       <motion.div
                         key={session.id}
-                        initial={{ opacity: 0, x: -30 }}
+                        initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -30 }}
-                        transition={{ duration: 0.5, delay: 1.7 + index * 0.1, type: "spring", stiffness: 100 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.4, delay: 2.1 + index * 0.1, ease: "easeInOut" }}
                         className="flex items-center justify-between p-4 bg-gradient-to-r from-muted/30 to-transparent rounded-xl border border-border/50"
-                        whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                        whileHover={{ scale: 1.02 }}
                       >
                         <motion.div
                           className="flex items-center gap-4"
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 1.8 + index * 0.1 }}
+                          transition={{ duration: 0.4, delay: 2.2 + index * 0.1, ease: "easeInOut" }}
                         >
                           <motion.div
                             className="flex items-center justify-center w-12 h-12 rounded-full bg-secondary/10"
-                            whileHover={{ scale: 1.2, rotate: 360 }}
-                            transition={{ duration: 0.4 }}
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
                             <User className="h-6 w-6 text-secondary" />
                           </motion.div>
@@ -443,31 +411,25 @@ const Dashboard = () => {
                           className="flex items-center gap-3"
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 1.9 + index * 0.1 }}
+                          transition={{ duration: 0.4, delay: 2.3 + index * 0.1, ease: "easeInOut" }}
                         >
                           <motion.div
                             whileHover={{ scale: 1.1 }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
                             <Badge variant="secondary" className="font-medium">{session.duration}</Badge>
                           </motion.div>
                           {session.canReview && !session.hasReviewed && (
                             <motion.div
-                              className="relative overflow-hidden"
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                             >
-                              <motion.div
-                                className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent opacity-0 group-hover:opacity-100"
-                                animate={{ x: [-100, 100] }}
-                                transition={{ duration: 0.5, repeat: Infinity, repeatType: "loop" }}
-                              />
                               <ReviewDialog
                                 expertName={session.expertName}
                                 sessionType={session.type}
                                 onReviewSubmitted={() => handleReviewSubmitted(session.id)}
                               >
-                                <Button size="sm" variant="outline" className="h-9 px-4 relative z-10">
+                                <Button size="sm" variant="outline" className="h-9 px-4">
                                   <Star className="h-4 w-4 mr-2" />
                                   Review
                                 </Button>
@@ -477,7 +439,7 @@ const Dashboard = () => {
                           {session.hasReviewed && (
                             <motion.div
                               whileHover={{ scale: 1.1 }}
-                              transition={{ duration: 0.3 }}
+                              transition={{ duration: 0.3, ease: "easeInOut" }}
                             >
                               <Badge
                                 variant="outline"
@@ -500,9 +462,9 @@ const Dashboard = () => {
 
         {/* Progress Section */}
         <motion.div
-          initial={{ opacity: 0, y: 50, rotateX: 10 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{ duration: 0.6, delay: 1.4, type: "spring", stiffness: 90 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 2.4, ease: "easeInOut" }}
         >
           <Card className="border-0 shadow-sm">
             <CardHeader className="pb-4">
@@ -510,12 +472,12 @@ const Dashboard = () => {
                 className="flex items-center gap-3 text-xl text-primary font-semibold"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 1.5 }}
+                transition={{ duration: 0.4, delay: 2.5, ease: "easeInOut" }}
               >
                 <motion.div
                   className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/10"
-                  whileHover={{ scale: 1.2 }}
-                  transition={{ duration: 0.3 }}
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
                 >
                   <BookOpen className="h-5 w-5 text-accent" />
                 </motion.div>
@@ -527,13 +489,13 @@ const Dashboard = () => {
                 className="space-y-3"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 1.6, type: "spring", stiffness: 100 }}
+                transition={{ duration: 0.4, delay: 2.6, ease: "easeInOut" }}
               >
                 <motion.div
                   className="flex justify-between items-center"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 1.7 }}
+                  transition={{ duration: 0.4, delay: 2.7, ease: "easeInOut" }}
                 >
                   <span className="text-sm font-medium text-muted-foreground">Overall Mental Wellness</span>
                   <span className="text-lg font-bold text-foreground">85%</span>
@@ -541,8 +503,7 @@ const Dashboard = () => {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
-                  transition={{ duration: 1, delay: 1.8, ease: "easeOut" }}
-                  whileHover={{ scale: 1.02, boxShadow: "0 0 8px rgba(59, 130, 246, 0.3)" }}
+                  transition={{ duration: 0.8, delay: 2.8, ease: "easeInOut" }}
                 >
                   <Progress value={85} className="h-3" />
                 </motion.div>
@@ -552,13 +513,13 @@ const Dashboard = () => {
                 className="space-y-3"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 1.9, type: "spring", stiffness: 100 }}
+                transition={{ duration: 0.4, delay: 2.9, ease: "easeInOut" }}
               >
                 <motion.div
                   className="flex justify-between items-center"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 2.0 }}
+                  transition={{ duration: 0.4, delay: 3.0, ease: "easeInOut" }}
                 >
                   <span className="text-sm font-medium text-muted-foreground">Anxiety Management</span>
                   <span className="text-lg font-bold text-foreground">58%</span>
@@ -566,8 +527,7 @@ const Dashboard = () => {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
-                  transition={{ duration: 1, delay: 2.1, ease: "easeOut" }}
-                  whileHover={{ scale: 1.02, boxShadow: "0 0 8px rgba(59, 130, 246, 0.3)" }}
+                  transition={{ duration: 0.8, delay: 3.1, ease: "easeInOut" }}
                 >
                   <Progress value={58} className="h-3" />
                 </motion.div>
@@ -577,13 +537,13 @@ const Dashboard = () => {
                 className="space-y-3"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 2.2, type: "spring", stiffness: 100 }}
+                transition={{ duration: 0.4, delay: 3.2, ease: "easeInOut" }}
               >
                 <motion.div
                   className="flex justify-between items-center"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 2.3 }}
+                  transition={{ duration: 0.4, delay: 3.3, ease: "easeInOut" }}
                 >
                   <span className="text-sm font-medium text-muted-foreground">Confidence Building</span>
                   <span className="text-lg font-bold text-foreground">92%</span>
@@ -591,8 +551,7 @@ const Dashboard = () => {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
-                  transition={{ duration: 1, delay: 2.4, ease: "easeOut" }}
-                  whileHover={{ scale: 1.02, boxShadow: "0 0 8px rgba(59, 130, 246, 0.3)" }}
+                  transition={{ duration: 0.8, delay: 3.4, ease: "easeInOut" }}
                 >
                   <Progress value={92} className="h-3" />
                 </motion.div>
