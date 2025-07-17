@@ -36,28 +36,25 @@ export const useFavoriteCourses = () => {
         id: String(course.id), // Convert number to string
         title: course.title,
         description: course.description,
-        longDescription: course.long_description,
         duration: course.duration,
-        modules: course.modules,
-        category: course.category,
-        instructor: {
-          name: course.instructor.name,
-          title: course.instructor.title,
-          bio: course.instructor.bio,
-          photo: course.instructor.photo
-        },
-        rating: parseFloat(course.rating),
-        students: course.students,
-        progress: course.progress || 0,
+        thumbnail: course.image,
         price: course.price,
-        originalPrice: course.original_price,
-        language: course.language,
-        level: course.level,
-        certificate: course.certificate,
-        image: course.image,
-        outcomes: course.outcomes || [],
-        modules_detail: [], // Will be loaded separately if needed
-        reviews: [] // Will be loaded separately if needed
+        currency: "USD",
+        rating: parseFloat(course.rating),
+        enrolledStudents: course.students,
+        status: course.level,
+        verified: course.certificate,
+        expert: {
+          id: course.instructor?.id || "unknown",
+          email: course.instructor?.email || "",
+          password: "",
+          name: course.instructor?.name || "Unknown",
+          title: course.instructor?.title || "",
+          bio: course.instructor?.bio || "",
+          avatar: course.instructor?.avatar || "",
+          specializations: [],
+          credentials: []
+        }
       }));
     },
     enabled: favoriteIds.length > 0,

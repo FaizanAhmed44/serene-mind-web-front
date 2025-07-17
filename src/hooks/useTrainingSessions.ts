@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { trainingSessionAPI } from "@/api/trainingSessions";
+import { TrainingSessionAPI } from "@/api/trainingsession";
 import { useToast } from "@/hooks/use-toast";
 
 export const useTrainingSessions = () => {
@@ -13,7 +13,7 @@ export const useTrainingSessions = () => {
     refetch: refetchTrainingSessions,
   } = useQuery({
     queryKey: ["training-sessions"],
-    queryFn: trainingSessionAPI.getTrainingSessions,
+    queryFn: TrainingSessionAPI.getTrainingSessions,
   });
 
   // Query: Fetch training session by ID (disabled by default)

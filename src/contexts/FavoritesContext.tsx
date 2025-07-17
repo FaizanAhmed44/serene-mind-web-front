@@ -37,23 +37,28 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
       }
       
       // Convert IndexCourse to Course if needed
-      const fullCourse: Course = 'longDescription' in course ? course as Course : {
-        ...course,
+      const fullCourse: Course = 'expert' in course ? course as Course : {
         id: String(course.id), // Ensure id is string
-        longDescription: course.description,
+        title: course.title,
+        description: course.description,
+        duration: course.duration,
+        thumbnail: (course as IndexCourse).image,
         price: "Free",
-        originalPrice: undefined,
-        language: "English",
-        level: "Beginner",
-        certificate: true,
-        outcomes: [],
-        modules_detail: [],
-        reviews: [],
-        instructor: {
-          name: course.instructor,
+        currency: "USD",
+        rating: course.rating,
+        enrolledStudents: (course as IndexCourse).students,
+        status: (course as IndexCourse).category,
+        verified: false,
+        expert: {
+          id: "unknown",
+          email: "",
+          password: "",
+          name: (course as IndexCourse).instructor,
           title: "",
           bio: "",
-          photo: ""
+          avatar: "",
+          specializations: [],
+          credentials: []
         }
       };
       

@@ -148,10 +148,10 @@ const Favorites = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                         <Users className="h-4 w-4" />
-                        <span>{course.expert}</span>
+                        <span>{course.expert?.name || "Unknown"}</span>
                       </div>
                       <div className="text-lg font-semibold text-primary">
-                        {course.enrolledStudents}
+                        ${course.price || "Free"}
                       </div>
                     </div>
                   </CardContent>
