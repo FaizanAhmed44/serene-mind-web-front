@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { CourseSidebar } from "@/components/CourseSidebar";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import { useQuery } from "@tanstack/react-query";
 import { CoursesExpertAPI } from "@/api/courses";
 import type { Course } from "@/data/types/course";
@@ -119,13 +120,13 @@ const CourseDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
-        <div className="flex items-center justify-between p-4">
-          <SidebarTrigger />
-          <h1 className="text-xl font-semibold truncate">{course.title}</h1>
-          <div className="w-10" />
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
+          <div className="flex items-center justify-between p-4">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold truncate">{course.title}</h1>
+            <FavoriteButton course={course} />
+          </div>
         </div>
-      </div>
 
       <div className="container mx-auto px-4 py-6">
         {isEnrolled ? (
@@ -335,6 +336,12 @@ const CourseDetail = () => {
                   <CardContent className="p-6">
                     <div className="text-center mb-6">
                       <div className="text-3xl font-bold text-primary mb-2">
+                        ${course.price || "Free"}
+                      </div>
+                      <div className="text-sm text-muted-foreground mb-4">
+                        Course Price
+                      </div>
+                      <div className="text-2xl font-bold text-primary mb-2">
                         {typeof course.enrolledStudents === "number"
                           ? course.enrolledStudents
                           : 0}
