@@ -148,7 +148,7 @@ const BookingModal = ({
                         </p>
                       </div>
                       <Badge variant="secondary">
-                        {session.currency} {session.price}
+                        {session.currency}  {session.price}
                       </Badge>
                     </div>
                   </div>
@@ -330,7 +330,7 @@ const BookingSummary = ({ expert, selectedSession, selectedDate,
                 <div className="flex justify-between border-t pt-2 mt-2">
                   <span className="font-medium">Total:</span>
                   <span className="font-bold text-primary">
-                    {selectedSession?.price}
+                  {selectedSession.currency} {selectedSession?.price}
                   </span>
                 </div>
               </div>
@@ -368,7 +368,7 @@ const BookingSummary = ({ expert, selectedSession, selectedDate,
                 Back
               </Button>
               <Button onClick={handleConfirmBooking} className="flex-1">
-                Confirm Booking - {selectedSession?.price}
+                Confirm Booking - {selectedSession?.currency} {selectedSession?.price}
               </Button>
             </div>
           </div>

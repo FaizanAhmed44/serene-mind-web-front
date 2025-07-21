@@ -143,18 +143,18 @@ const CourseEnroll = () => {
     );
   }
 
-  // if (!course) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
-  //       <div className="text-center">
-  //         <h1 className="text-2xl font-bold text-foreground mb-4">Course Not Founds</h1>
-  //         <Button asChild>
-  //           <Link to="/">Back to Courses</Link>
-  //         </Button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
+        {/* <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Course Not Founds</h1>
+          <Button asChild>
+            <Link to="/">Back to Courses</Link>
+          </Button>
+        </div> */}
+      </div>
+    );
+  }
 
   const selectedPlanData = pricingPlans.find(plan => plan.id === selectedPlan);
 
