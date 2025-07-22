@@ -1,5 +1,3 @@
-
-// export default FAQ;
 import { useEffect, useState } from "react";
 import { Search, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

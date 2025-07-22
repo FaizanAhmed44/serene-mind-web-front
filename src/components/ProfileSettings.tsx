@@ -1,14 +1,14 @@
-
 import { useState } from "react";
-import { Shield, Bell, Trash2, CreditCard, Eye, EyeOff } from "lucide-react";
+import { Shield, Bell, Trash2, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Link,useLocation } from "react-router-dom";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import axios from "@/lib/axios"; // already configured Axios with auth headers, etc.
+import axios from "@/lib/axios"; 
 
 import {
   AlertDialog,
@@ -30,8 +30,9 @@ interface ProfileSettingsProps {
 const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsProps) => {
   const { toast } = useToast();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);  
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const location = useLocation();
   
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -47,66 +48,65 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
     weeklyDigest: false
   });
 
-const handlePasswordChange = async () => {
-  if (passwordData.newPassword !== passwordData.confirmPassword) {
-    toast({
-      title: "Password Mismatch",
-      description: "New password and confirmation don't match.",
-      variant: "destructive",
-    });
-    return;
-  }
-
-  if (passwordData.newPassword.length < 8) {
-    toast({
-      title: "Password Too Short",
-      description: "Password must be at least 8 characters long.",
-      variant: "destructive",
-    });
-    return;
-  }
-
-  try {
-    await axios.post("/profile/change-password", {
-      currentPassword: passwordData.currentPassword,
-      newPassword: passwordData.newPassword,
-    });
-
-    toast({
-      title: "Password Updated",
-      description: "Your password has been successfully changed.",
-    });
-
-    setPasswordData({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-
-    onPasswordUpdate?.();
-  } catch (error: any) {
-    const response = error?.response?.data;
-
-    // If we have validation error details from backend
-    if (Array.isArray(response?.details)) {
-      response.details.forEach((detail: { msg: string }) => {
-        toast({
-          title: "Validation Error",
-          description: detail.msg,
-          variant: "destructive",
-        });
-      });
-    } else {
-      // Fallback message
+  const handlePasswordChange = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast({
-        title: "Password Update Failed",
-        description: response?.error || "Something went wrong. Please try again.",
+        title: "Password Mismatch",
+        description: "New password and confirmation don't match.",
         variant: "destructive",
       });
+      return;
     }
-  }
-};
 
+    if (passwordData.newPassword.length < 8) {
+      toast({
+        title: "Password Too Short",
+        description: "Password must be at least 8 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await axios.post("/profile/change-password", {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
+
+      toast({
+        title: "Password Updated",
+        description: "Your password has been successfully changed.",
+      });
+
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+
+      onPasswordUpdate?.();
+    } catch (error: any) {
+      const response = error?.response?.data;
+
+      // If we have validation error details from backend
+      if (Array.isArray(response?.details)) {
+        response.details.forEach((detail: { msg: string }) => {
+          toast({
+            title: "Validation Error",
+            description: detail.msg,
+            variant: "destructive",
+          });
+        });
+      } else {
+        // Fallback message
+        toast({
+          title: "Password Update Failed",
+          description: response?.error || "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   const handleNotificationChange = (key: keyof typeof notifications) => {
     setNotifications(prev => ({
@@ -120,13 +120,29 @@ const handlePasswordChange = async () => {
     });
   };
 
-  const handleDeleteAccount = () => {
-    toast({
-      title: "Account Deletion Requested",
-      description: "Your account deletion request has been submitted.",
-      variant: "destructive",
-    });
-    onAccountDelete?.();
+  const handleDeleteAccount = async () => {
+    try {
+      await axios.delete("/auth/delete-account");
+      toast({
+        title: "Account Deactivated",
+        description: "Your account has been deactivated successfully.",
+        variant: "destructive",
+      });
+      // Clear JWT token from localStorage (assuming token is stored there)
+      localStorage.removeItem("token");
+      // Trigger onAccountDelete for navigation or state cleanup
+      onAccountDelete?.();
+      
+      window.location.href = "/login";
+
+    } catch (error: any) {
+      const response = error?.response?.data;
+      toast({
+        title: "Account Deletion Failed",
+        description: response?.error || "Failed to deactivate account. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
