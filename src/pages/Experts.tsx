@@ -606,15 +606,14 @@ const ExpertCard = ({ expert }: { expert: ExpertProfile }) => {
           </motion.div>
 
           <div className="flex space-x-2 pt-2">
-           <Button
+          <Button
             asChild
-            variant="secondary"
-            className="flex-1 font-semibold border border-primary/30 hover:bg-primary transition"
+            className="flex-1 font-bold uppercase text-white text-xs py-3 px-6 rounded-lg bg-primary hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] transition-all"
             tabIndex={-1}
             aria-label={`View profile of ${expert.name}`}
-          >
+            >
             <Link to={`/experts/${expert.id}`}>View Profile</Link>
-          </Button>
+          </Button>           
         </div>
          
         </CardContent>
