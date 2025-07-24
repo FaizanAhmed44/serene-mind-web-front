@@ -34,9 +34,8 @@ const CourseSuccess = () => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          // navigate(`/courses/${id}` );
           navigate(`/courses/${id}`, {
-            state: { isEnrolled: true }, // or false
+            state: { isEnrolled: true },
           });
           return 0;
         }
@@ -69,6 +68,8 @@ const CourseSuccess = () => {
       </div>
     );
   }
+
+  console.log(course);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 dark:from-background dark:to-muted/30">
@@ -131,14 +132,14 @@ const CourseSuccess = () => {
                   <div className="text-center">
                     <div className="flex items-center justify-center mb-1">
                       <Book className="h-4 w-4 mr-1" />
-                      <span className="font-semibold">{course.modules}</span>
+                      <span className="font-semibold">{course.modules.length}</span>
                     </div>
                     <div className="text-xs text-muted-foreground">Modules</div>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center mb-1">
                       <Users className="h-4 w-4 mr-1" />
-                      <span className="font-semibold">{course.students}</span>
+                      <span className="font-semibold">{course.enrolledStudents}</span>
                     </div>
                     <div className="text-xs text-muted-foreground">Students</div>
                   </div>
@@ -237,7 +238,7 @@ const CourseSuccess = () => {
                   1
                 </div>
                 <div>
-                  <h4 className="font-medium">Start with the first module</h4>
+                  <h5 className="font-medium">Start with the first module</h5>
                   <p className="text-sm text-muted-foreground">Begin your learning journey with the introduction module</p>
                 </div>
               </div>
@@ -246,7 +247,7 @@ const CourseSuccess = () => {
                   2
                 </div>
                 <div>
-                  <h4 className="font-medium">Track your progress</h4>
+                  <h5 className="font-medium">Track your progress</h5>
                   <p className="text-sm text-muted-foreground">Mark lessons as complete to track your learning progress</p>
                 </div>
               </div>
@@ -255,7 +256,7 @@ const CourseSuccess = () => {
                   3
                 </div>
                 <div>
-                  <h4 className="font-medium">Earn your certificate</h4>
+                  <h5 className="font-medium">Earn your certificate</h5>
                   <p className="text-sm text-muted-foreground">Complete all modules to receive your certificate of completion</p>
                 </div>
               </div>
