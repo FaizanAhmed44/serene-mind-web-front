@@ -1,5 +1,6 @@
 import { expertApi } from "@/lib/expert_api";
 import { GetTrainingSessionsResponse, TrainingSession } from "@/data/types/training";
+import axios from "../lib/axios";
 
 
 export const CoursesExpertAPI = {
@@ -8,5 +9,12 @@ export const CoursesExpertAPI = {
   getEnrollment: async (userId: string) => expertApi.get(`/courses/${userId}/enrolled/`).then((res) => res.data.data),
   enrollCourse: async (courseId: string, userId: string) => expertApi.put(`/courses/${courseId}/enroll/`, { userId }).then((res) => res.data),
   getBooking: async (userId: string) => expertApi.get(`/bookings/user-bookings/${userId}`).then((res) => res.data.data),  
-}
-
+  getCourseProgress: async (courseId: string) => {
+    const response = await axios.get(`/progress/courses/${courseId}/progress`);
+    return response.data;
+  },
+  markLessonComplete: async (courseId: string, lessonId: string) => {
+    const response = await axios.post(`/progress/courses/${courseId}/lessons/${lessonId}/complete`);
+    return response.data;
+  },
+};

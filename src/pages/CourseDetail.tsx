@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Clock, BookOpen, ChevronRight } from "lucide-react";
@@ -14,17 +15,23 @@ import type { Course } from "@/data/types/course";
 const CourseDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
   const isEnrolled = location.state?.isEnrolled;
   const [currentLessonId, setCurrentLessonId] = useState<string | null>(null);
 
-  const { data: course, isLoading, error } = useQuery<Course>({
+  const { data: course, isLoading: courseLoading, error: courseError } = useQuery<Course>({
     queryKey: ["courses", id],
     queryFn: () => CoursesExpertAPI.getCourse(id),
     enabled: !!id,
   });
 
-  if (isLoading) {
+  const { data: progress = [], isLoading: progressLoading, error: progressError } = useQuery({
+    queryKey: ["progress", id],
+    queryFn: () => CoursesExpertAPI.getCourseProgress(id),
+    enabled: !!id && isEnrolled,
+  });
+
+  if (courseLoading || (isEnrolled && progressLoading)) {
     return (
       <div className="min-h-screen bg-background">
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
@@ -41,7 +48,13 @@ const CourseDetail = () => {
     );
   }
 
-  if (error || !course) {
+  if (courseError || !course || (isEnrolled && progressError)) {
+    const errorMessage =
+      (courseError as any)?.response?.status === 403
+        ? "Please verify your email to access this course."
+        : (progressError as any)?.response?.status === 403
+        ? "Please verify your email to access progress."
+        : "Course not found or access denied.";
     return (
       <div className="min-h-screen bg-background">
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
@@ -52,36 +65,43 @@ const CourseDetail = () => {
           </div>
         </div>
         <div className="container mx-auto px-4 py-6">
-          <div className="text-center">Course not found</div>
+          <div className="text-center">{errorMessage}</div>
         </div>
       </div>
     );
   }
 
-  // Defensive: ensure modules/lessons are arrays
   const modules = Array.isArray(course.modules) ? course.modules : [];
   const lessonsInFirstModule =
     modules.length > 0 && Array.isArray(modules[0].lessons) ? modules[0].lessons : [];
 
-  // Map backend modules to frontend structure for CourseSidebar
   const courseModules =
     modules.length > 0
-      ? modules.map((module, index) => ({
-          id: `module-${index + 1}`,
-          title: module.title,
-          progress: 0,
-          lessons: Array.isArray(module.lessons)
-            ? module.lessons.map((lesson, lessonIndex) => ({
-                id: `lesson-${index + 1}-${lessonIndex + 1}`,
-                title: lesson.title,
-                duration: lesson.duration || module.duration || "Unknown",
-                completed: false,
-                current: `lesson-${index + 1}-${lessonIndex + 1}` === currentLessonId,
-                locked: !isEnrolled,
-                videoUrl: lesson.videoUrl || lesson.content || null,
-              }))
-            : [],
-        }))
+      ? modules.map((module, index) => {
+          const lessons = Array.isArray(module.lessons)
+            ? module.lessons.map((lesson, lessonIndex) => {
+                const lessonId = `lesson-${index + 1}-${lessonIndex + 1}`;
+                const lessonProgress = progress.find((p) => p.lessonId === lessonId);
+                return {
+                  id: lessonId,
+                  title: lesson.title,
+                  duration: lesson.duration || module.duration || "Unknown",
+                  completed: lessonProgress?.completed || false,
+                  current: lessonId === currentLessonId,
+                  locked: !isEnrolled,
+                  videoUrl: lesson.videoUrl || lesson.content || null,
+                };
+              })
+            : [];
+          const completedLessons = lessons.filter((l) => l.completed).length;
+          const progressPercentage = lessons.length > 0 ? (completedLessons / lessons.length) * 100 : 0;
+          return {
+            id: `module-${index + 1}`,
+            title: module.title,
+            progress: progressPercentage,
+            lessons,
+          };
+        })
       : [
           {
             id: "1",
@@ -101,17 +121,39 @@ const CourseDetail = () => {
           },
         ];
 
+  if (!currentLessonId && isEnrolled && courseModules.length > 0 && courseModules[0].lessons.length > 0) {
+    setCurrentLessonId(courseModules[0].lessons[0].id);
+  }
+
+  const allLessons = courseModules.flatMap((module) => module.lessons);
+  const currentLessonIndex = allLessons.findIndex((lesson) => lesson.id === currentLessonId);
+  const hasPrevious = currentLessonIndex > 0;
+  const hasNext = currentLessonIndex < allLessons.length - 1;
+
   const currentLesson =
-    courseModules
-      .flatMap((m) => m.lessons)
-      .find((l) => l.id === currentLessonId) || {
+    allLessons.find((lesson) => lesson.id === currentLessonId) || {
       title: "Course Introduction",
       duration: "Unknown",
       videoUrl: null,
+      completed: false,
     };
 
   const handleLessonSelect = (lessonId: string) => {
     setCurrentLessonId(lessonId);
+  };
+
+  const handleNextLesson = () => {
+    if (hasNext) {
+      const nextLesson = allLessons[currentLessonIndex + 1];
+      setCurrentLessonId(nextLesson.id);
+    }
+  };
+
+  const handlePreviousLesson = () => {
+    if (hasPrevious) {
+      const previousLesson = allLessons[currentLessonIndex - 1];
+      setCurrentLessonId(previousLesson.id);
+    }
   };
 
   const handleEnrollRedirect = () => {
@@ -120,30 +162,30 @@ const CourseDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
-          <div className="flex items-center justify-between p-4">
-            <SidebarTrigger />
-            <h1 className="text-xl font-semibold truncate">{course.title}</h1>
-            <FavoriteButton course={course} />
-          </div>
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
+        <div className="flex items-center justify-between p-4">
+          <SidebarTrigger />
+          <h1 className="text-xl font-semibold truncate">{course.title}</h1>
+          <FavoriteButton course={course} />
         </div>
+      </div>
 
       <div className="container mx-auto px-4 py-6">
-        {isEnrolled ? 
-        (
+        {isEnrolled ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              {currentLesson.videoUrl && <VideoPlayer
-                videoUrl={"https://youtu.be/NLKwRW2y-sg?si=vJlY-M5zyZzoVFb1"}
+              <VideoPlayer
+                videoUrl="https://youtu.be/NLKwRW2y-sg?si=vJlY-M5zyZzoVFb1"
                 title={currentLesson.title}
                 duration={currentLesson.duration}
-                hasNext={courseModules.some((m) =>
-                  m.lessons.some((l) => l.id !== currentLessonId)
-                )}
-                hasPrevious={courseModules.some((m) =>
-                  m.lessons.some((l) => l.id !== currentLessonId)
-                )}
-              />}
+                hasNext={hasNext}
+                hasPrevious={hasPrevious}
+                onNext={handleNextLesson}
+                onPrevious={handlePreviousLesson}
+                courseId={id}
+                lessonId={currentLessonId || ""}
+                completed={currentLesson.completed}
+              />
               <Card>
                 <CardHeader>
                   <CardTitle>About this course</CardTitle>
@@ -207,14 +249,11 @@ const CourseDetail = () => {
             </div>
           </div>
         ) : (
-          
           <div className="space-y-8">
-            
             <div className="relative">
               <div className="w-full h-[400px] rounded-lg overflow-hidden relative">
-                {/* Course thumbnail as background */}
                 {course.thumbnail ? (
-                  <img 
+                  <img
                     src={course.thumbnail}
                     loading="lazy"
                     alt={course.title}
@@ -223,7 +262,6 @@ const CourseDetail = () => {
                 ) : (
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20" />
                 )}
-                {/* Overlay */}
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-10">
                   <Button
                     size="lg"
