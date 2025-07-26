@@ -16,5 +16,19 @@ export const CoursesExpertAPI = {
   markLessonComplete: async (courseId: string, lessonId: string) => {
     const response = await axios.post(`/progress/courses/${courseId}/lessons/${lessonId}/complete`);
     return response.data;
-  },
+  }, 
+
+  // New Review APIs
+  addCourseReview: async (courseId: string, userId: string, review: { rating: number; comment: string; userName: string }) =>
+    expertApi.post(`/courses/${courseId}/users/${userId}/review`, review).then((res) => res.data),
+
+  updateCourseReview: async (courseId: string, userId: string, review: { rating: number; comment: string; userName: string }) =>
+    expertApi.put(`/courses/${courseId}/users/${userId}/review`, review).then((res) => res.data),
+
+  getCourseReviews: async (courseId: string) =>
+    expertApi.get(`/courses/${courseId}/reviews`).then((res) => res.data.data),
+
+  getUserCourseReview: async (courseId: string, userId: string) =>
+    expertApi.get(`/courses/${courseId}/users/${userId}/review`).then((res) => res.data.data),
+
 };
