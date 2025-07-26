@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Clock, BookOpen, ChevronRight } from "lucide-react";
+import { Clock, BookOpen, ChevronRight, Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { CourseSidebar } from "@/components/CourseSidebar";
@@ -18,6 +18,8 @@ const CourseDetail = () => {
   const location = useLocation();
   const isEnrolled = location.state?.isEnrolled;
   const [currentLessonId, setCurrentLessonId] = useState<string | null>(null);
+  const [rating, setRating] = useState<number>(0); // State for star rating
+  const [comment, setComment] = useState<string>(""); // State for review comment
 
   const { data: course, isLoading: courseLoading, error: courseError } = useQuery<Course>({
     queryKey: ["courses", id],
@@ -129,6 +131,9 @@ const CourseDetail = () => {
   const currentLessonIndex = allLessons.findIndex((lesson) => lesson.id === currentLessonId);
   const hasPrevious = currentLessonIndex > 0;
   const hasNext = currentLessonIndex < allLessons.length - 1;
+  const courseProgress = allLessons.length > 0
+    ? (allLessons.filter((l) => l.completed).length / allLessons.length) * 100
+    : 0;
 
   const currentLesson =
     allLessons.find((lesson) => lesson.id === currentLessonId) || {
@@ -158,6 +163,19 @@ const CourseDetail = () => {
 
   const handleEnrollRedirect = () => {
     navigate(`/courses/${course.id}/enroll`);
+  };
+
+  const handleRatingChange = (newRating: number) => {
+    setRating(newRating);
+  };
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setComment(e.target.value);
+  };
+
+  const handleReviewSubmit = () => {
+    // Placeholder for future backend integration
+    console.log("Review submitted:", { rating, comment });
   };
 
   return (
@@ -239,6 +257,47 @@ const CourseDetail = () => {
                   </div>
                 </CardContent>
               </Card>
+              {courseProgress === 100 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Review this course</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="text-sm font-semibold mb-2">Your Rating</h4>
+                        <div className="flex space-x-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`h-6 w-6 cursor-pointer ${
+                                star <= rating ? "fill-primary text-primary" : "text-muted-foreground"
+                              }`}
+                              onClick={() => handleRatingChange(star)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold mb-2">Your Feedback</h4>
+                        <Textarea
+                          placeholder="Share your thoughts about the course..."
+                          value={comment}
+                          onChange={handleCommentChange}
+                          className="min-h-[100px]"
+                        />
+                      </div>
+                      <Button
+                        disabled={!rating || !comment.trim()}
+                        onClick={handleReviewSubmit}
+                        className="w-full"
+                      >
+                        Submit Review
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
             <div>
               <CourseSidebar
