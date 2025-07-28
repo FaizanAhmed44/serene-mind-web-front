@@ -12,8 +12,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import { CoursesExpertAPI } from "@/api/courses";
 import type { Course } from "@/data/types/course";
+import { useAuth } from "@/hooks/useAuth";
 
-// Define Review interface
+
 interface Review {
   id: string;
   courseId: string;
@@ -25,16 +26,13 @@ interface Review {
   updatedAt: string;
 }
 
-// Assuming useAuth hook for user data
-import { useAuth } from "@/hooks/useAuth"; // Adjust based on your auth setup
-
 const CourseDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { user } = useAuth(); // Get user data (id, name)
+  const { user } = useAuth(); 
   const isEnrolled = location.state?.isEnrolled;
   const [currentLessonId, setCurrentLessonId] = useState<string | null>(null);
   const [rating, setRating] = useState<number>(0);

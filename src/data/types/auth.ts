@@ -46,9 +46,9 @@ export type SignUpFormData = {
   confirmPassword: string;
 };
 
-
 export type AuthContextType = {
   user: User | null;
+  setUser: (user: User | null) => void;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: null | { message: string } }>;
   signUp: (
