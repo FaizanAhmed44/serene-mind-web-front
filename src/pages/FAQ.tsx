@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Search, HelpCircle } from "lucide-react";
+import { Search, HelpCircle, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
@@ -46,6 +47,16 @@ const FAQ = () => {
       ),
     }))
     .filter((category) => category.questions.length > 0);
+
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Clear search input
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
 
   if (loading) {
     return (
@@ -118,7 +129,7 @@ const FAQ = () => {
         </div>
       </motion.div>
 
-      <div className="p-6 space-y-8">
+      <div className="p-6 space-y-4">
         {/* Hero Section */}
         <motion.div
           className="text-center py-8"
@@ -155,35 +166,34 @@ const FAQ = () => {
           >
             Find answers to common questions about our platform, courses, and mental health support services.
           </motion.p>
-        </motion.div>
-
-        {/* Search Bar */}
-        <motion.div
-          className="max-w-2xl mx-auto"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.7, ease: "easeOut" }}
-        >
-          <div className="relative">
-            <motion.div
-              className="absolute left-3 top-3 transform -translate-y-1/2 text-muted-foreground h-4 w-4"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Search />
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.02, borderColor: "#3b82f6" }}
-              transition={{ duration: 0.2 }}
-            >
+          {/* Search Bar */}
+          <motion.div
+            className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2 mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="   Search for answers..."
+                type="text"
+                placeholder="Search for answers..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-12 text-lg"
+                onChange={handleSearchChange}
+                className="pl-10 pr-10"
               />
-            </motion.div>
-          </div>
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                  onClick={handleClearSearch}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </motion.div>
         </motion.div>
 
         {/* FAQ Content */}
