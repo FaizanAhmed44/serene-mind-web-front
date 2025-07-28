@@ -1,252 +1,23 @@
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Star, Calendar, CheckCircle, BadgeCheck, Award, Users } from "lucide-react";
+import { Search, Star, Calendar, CheckCircle, BadgeCheck, Award, Users, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ExpertsAPI } from "@/api/experts";
 import { ExpertProfile } from "@/data/types/expert";
 
-// const specializations = ["All", "Anxiety Disorders", "CBT", "Public Speaking", "Depression", "Life Transitions"];
-
-const BookingDialog = ({
-  expert,
-  onBookingConfirmed,
-}: {
-  expert: any;
-  onBookingConfirmed: () => void;
-}) => {
-  const [selectedSessionType, setSelectedSessionType] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [message, setMessage] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const { toast } = useToast();
-
-  const handleBookSession = () => {
-    if (!selectedSessionType || !selectedDate || !selectedTime) {
-      toast({
-        title: "Missing Information",
-        description: "Please select session type, date, and time.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // const selectedSession = expert.sessionTypes.find((session: any) => session.type === selectedSessionType);
-
-    // toast({
-    //   title: "Session Booked Successfully!",
-    //   description: `${selectedSession?.type} with ${expert.name} on ${selectedDate} at ${selectedTime}`,
-    // });
-
-    // Reset form
-    setSelectedSessionType("");
-    setSelectedDate("");
-    setSelectedTime("");
-    setMessage("");
-    setIsOpen(false);
-    onBookingConfirmed();
-  };
-
-  // const selectedSession = expert.sessionTypes.find((session: any) => session.type === selectedSessionType);
-
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Button className="flex-1">Book Session</Button>
-        </motion.div>
-      </DialogTrigger>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-            >
-              <DialogTitle>Book Session with {expert.name}</DialogTitle>
-            </motion.div>
-          </DialogHeader>
-          <div className="space-y-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-            >
-              <label className="text-sm font-medium mb-2 block">
-                Select Session Type
-              </label>
-              <Select
-                value={selectedSessionType}
-                onValueChange={setSelectedSessionType}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a session type" />
-                  </SelectTrigger>
-                </motion.div>
-                {/* <SelectContent>
-                  {expert.sessionTypes.map((session: any) => (
-                    <SelectItem key={session.type} value={session.type}>
-                      {session.type} - {session.duration} - {session.price}
-                    </SelectItem>
-                  ))}
-                </SelectContent> */}
-              </Select>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
-            >
-              <label className="text-sm font-medium mb-2 block">
-                Select Date
-              </label>
-              <Select
-                value={selectedDate}
-                onValueChange={(value) => {
-                  setSelectedDate(value);
-                  setSelectedTime(""); // Reset time when date changes
-                }}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a date" />
-                  </SelectTrigger>
-                </motion.div>
-                {/* <SelectContent>
-                  {expert.availability.map((day: any) => (
-                    <SelectItem key={day.date} value={day.date}>
-                      {day.date}
-                    </SelectItem>
-                  ))}
-                </SelectContent> */}
-              </Select>
-            </motion.div>
-
-            {selectedDate && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.4 }}
-              >
-                <label className="text-sm font-medium mb-2 block">
-                  Select Time
-                </label>
-                <Select value={selectedTime} onValueChange={setSelectedTime}>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose a time" />
-                    </SelectTrigger>
-                  </motion.div>
-                  <SelectContent>
-                    {expert.availability
-                      .find((day: any) => day.date === selectedDate)
-                      ?.times.map((time: string) => (
-                        <SelectItem key={time} value={time}>
-                          {time}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </motion.div>
-            )}
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.5 }}
-            >
-              <label className="text-sm font-medium mb-2 block">
-                Message (Optional)
-              </label>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Textarea
-                  placeholder="Briefly describe what you'd like to work on..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="min-h-[80px]"
-                />
-              </motion.div>
-            </motion.div>
-
-            {/* {selectedSession && (
-              <div className="p-3 bg-muted rounded-lg">
-                <p className="text-sm font-medium">{selectedSession.type}</p>
-                <p className="text-sm text-muted-foreground">{selectedSession.duration} - {selectedSession.price}</p>
-              </div>
-            )} */}
-
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Button
-                className="w-full"
-                onClick={handleBookSession}
-                disabled={!selectedSessionType || !selectedDate || !selectedTime}
-              >
-                Confirm Booking
-              </Button>
-            </motion.div>
-          </div>
-        </DialogContent>
-      </motion.div>
-    </Dialog>
-  );
-};
 
 const Experts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSpecialization, setSelectedSpecialization] = useState("All");
 
   const {
-    data: experts,
+    data: experts = [],
     isLoading,
     error,
   } = useQuery<ExpertProfile[]>({
@@ -254,7 +25,7 @@ const Experts = () => {
     queryFn: () => ExpertsAPI.getExperts(),
   });
 
-  const filteredExperts = experts?.filter((expert) => {
+  const filteredExperts = experts.filter((expert) => {
     const matchesSearch =
       expert.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       expert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -266,6 +37,16 @@ const Experts = () => {
       expert.specializations.includes(selectedSpecialization);
     return matchesSearch && matchesSpecialization;
   });
+
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Clear search input
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
 
   if (isLoading) {
     return (
@@ -387,94 +168,108 @@ const Experts = () => {
           >
             <SidebarTrigger />
           </motion.div>
-          <motion.div
-            className="flex-1 max-w-md mx-auto"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+          <motion.h1
+            className="text-xl font-semibold text-foreground"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div className="relative">
-              <motion.div
-                className="absolute left-3 top-2 transform -translate-y-1/2 text-muted-foreground h-4 w-4"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Search />
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02, borderColor: "#3b82f6" }}
-                transition={{ duration: 0.2 }}
-              >
-                <Input
-                  placeholder="   Search experts..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </motion.div>
-            </div>
-          </motion.div>
+            Find Experts
+          </motion.h1>
           <div className="w-10" />
         </div>
       </motion.div>
 
       <div className="p-6 space-y-8">
-        {/* Header */}        
+        {/* Header */}
         <motion.div
-          className="text-center space-y-6 mb-12"
+          className="text-center space-y-6 mb-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          
-          <div className="space-y-3">
-          <motion.div
-            className="flex items-center justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-           
-
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
-            Mental Wellness Experts
-            </h1>
-          </motion.div>
-
-      <motion.p
-        className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-      >
-      Connect with verified therapists and coaches for personalized support
-      </motion.p>
-    </div>
-
-          
+          <div className="space-y-4">
+            <motion.div
+              className="flex items-center justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
+                Mental Wellness Experts
+              </h1>
+            </motion.div>
+            <motion.p
+              className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Connect with verified therapists and coaches for personalized support
+            </motion.p>
+            {/* Search Bar */}
+            <motion.div
+              className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search experts..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="pl-10 pr-10"
+                />
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                    onClick={handleClearSearch}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* Experts Grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-        >
-          <AnimatePresence>
-            {filteredExperts.map((expert, index) => (
-              <motion.div
-                key={expert.id}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                transition={{ duration: 0.5, delay: 0.8 + index * 0.1, ease: "easeOut" }}
-              >
-                <ExpertCard expert={expert} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        {filteredExperts.length === 0 && experts.length > 0 ? (
+          <motion.div
+            className="text-center py-12 text-muted-foreground"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            No experts found matching your search.
+          </motion.div>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+          >
+            <AnimatePresence>
+              {filteredExperts.map((expert, index) => (
+                <motion.div
+                  key={expert.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 50 }}
+                  transition={{ duration: 0.5, delay: 0.8 + index * 0.1, ease: "easeOut" }}
+                >
+                  <ExpertCard expert={expert} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );
@@ -606,16 +401,16 @@ const ExpertCard = ({ expert }: { expert: ExpertProfile }) => {
           </motion.div>
 
           <div className="flex space-x-2 pt-2">
-          <Button
-            asChild
-            className="flex-1 font-bold uppercase text-white text-xs py-3 px-6 rounded-lg bg-primary hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] transition-all"
-            tabIndex={-1}
-            aria-label={`View profile of ${expert.name}`}
+            <Button
+              asChild
+              className="flex-1 font-bold uppercase text-white text-xs py-3 px-6 rounded-lg bg-primary hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] transition-all"
+              tabIndex={-1}
+              aria-label={`View profile of ${expert.name}`}
             >
-            <Link to={`/experts/${expert.id}`}>View Profile</Link>
-          </Button>           
-        </div>
-         
+              <Link to={`/experts/${expert.id}`}>View Profile</Link>
+            </Button>
+           
+          </div>
         </CardContent>
       </Card>
     </motion.div>
@@ -677,3 +472,4 @@ const ExpertCardAvatar = ({ expert }: { expert: ExpertProfile }) => {
     </motion.div>
   );
 };
+  
