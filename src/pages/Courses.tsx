@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Course } from "@/data/types/course";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { CoursesExpertAPI } from "@/api/courses";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { Input } from "@/components/ui/input";
+import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Card component for a single course
 interface CourseCardProps {
@@ -20,7 +23,6 @@ function truncateWords(text: string, wordLimit: number): string {
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
-  console.log(isEnrolled);
   return (
     <motion.div
       className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md border hover:translate-y-[-6px] transition-all duration-300 h-full"
@@ -46,7 +48,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
           style={{ color: "transparent" }}
         />
       </motion.div>
-      {/* Make the content area a flex column that grows, so the button is always at the bottom */}
       <div className="flex flex-col flex-1 p-6">
         <motion.div
           className="flex items-center gap-2"
@@ -80,7 +81,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
         >
           {truncateWords(course.description, 10)}
         </motion.p>
-        {/* Spacer to push button to bottom */}
         <div className="flex-1 flex items-center justify-center"></div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -108,16 +108,32 @@ export default function Courses() {
     queryKey: ["courses"],
     queryFn: () => CoursesExpertAPI.getCourses(),
   });
-
   const { user } = useAuth();
-  console.log(user);
   const { data: enrolledCourses = [], isLoading: enrolledLoading } = useQuery({
     queryKey: ["enrolledCourses", user?.id],
     queryFn: () => CoursesExpertAPI.getEnrollment(user?.id || ""),
     enabled: !!user?.id,
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
-  if (isLoading) {
+  // Filter courses based on search query
+  const filteredCourses = courses?.filter(
+    (course: Course) =>
+      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.description.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
+
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Clear search input
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
+
+  if (isLoading || enrolledLoading) {
     return (
       <motion.div
         className="min-h-screen bg-background"
@@ -209,33 +225,55 @@ export default function Courses() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          
           <div className="space-y-3">
+            <motion.div
+              className="flex items-center justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
+                Mental Wellness Courses
+              </h1>
+            </motion.div>
+            <motion.p
+              className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Explore curated courses designed to elevate your skills and career.
+            </motion.p>
+          </div>
+          {/* Search Bar */}
           <motion.div
-            className="flex items-center justify-center gap-4"
+            className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
           >
-           
-
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
-            Mental Wellness Courses
-            </h1>
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search courses..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-10 pr-10"
+              />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                  onClick={handleClearSearch}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </motion.div>
-
-      <motion.p
-        className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-      >
-        Explore curated courses designed to elevate your skills and career.
-      </motion.p>
-    </div>
-
-          
-        </motion.div>        
+        </motion.div>
 
         {/* Courses Grid */}
         <motion.div
@@ -245,17 +283,28 @@ export default function Courses() {
           transition={{ duration: 0.5, delay: 0.7 }}
         >
           <AnimatePresence>
-            {courses.map((course: Course, index: number) => (
+            {filteredCourses.length > 0 ? (
+              filteredCourses.map((course: Course, index: number) => (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 50 }}
+                  transition={{ duration: 0.5, delay: 0.8 + index * 0.1, ease: "easeOut" }}
+                >
+                  <CourseCard course={course} isEnrolled={enrolledCourses.some((c: any) => c.courseId === course.id)} />
+                </motion.div>
+              ))
+            ) : (
               <motion.div
-                key={course.id}
-                initial={{ opacity: 0, y: 50 }}
+                className="col-span-full text-center text-muted-foreground"
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                transition={{ duration: 0.5, delay: 0.8 + index * 0.1, ease: "easeOut" }}
+                transition={{ duration: 0.5, delay: 0.8 }}
               >
-                <CourseCard course={course} isEnrolled={enrolledCourses.some((c: any) => c.courseId === course.id)} />
+                No courses found matching your search.
               </motion.div>
-            ))}
+            )}
           </AnimatePresence>
         </motion.div>
       </div>
