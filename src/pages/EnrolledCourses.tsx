@@ -1,10 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Search, X } from "lucide-react";
 import { CourseCard } from "@/components/CourseCard";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { CoursesExpertAPI } from "@/api/courses";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface Course {
   id: string;
@@ -37,6 +40,24 @@ const EnrolledCourses = () => {
     queryFn: () => CoursesExpertAPI.getEnrollment(user?.id || ""),
     enabled: !!user?.id,
   });
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter enrolled courses based on search query
+  const filteredCourses = enrolledCourses.filter(
+    (enrollment) =>
+      enrollment.course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      enrollment.course.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Clear search input
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
 
   if (isLoading) {
     return (
@@ -138,7 +159,7 @@ const EnrolledCourses = () => {
         </div>
       </motion.div>
 
-      <div className="container mx-auto px-4 ">
+      <div className="container mx-auto px-4">
         <motion.div
           className="text-center space-y-6 py-6"
           initial={{ opacity: 0, y: 20 }}
@@ -151,13 +172,11 @@ const EnrolledCourses = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.4 }}
           >
-            
             <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
               Empower Your Learning Journey
             </h1>
           </motion.div>
           <motion.p
-          
             className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -165,6 +184,34 @@ const EnrolledCourses = () => {
           >
             Explore and continue learning with the courses you've joined to support your personal growth and mental well-being.
           </motion.p>
+          {/* Search Bar */}
+          <motion.div
+            className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.6 }}
+          >
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search enrolled courses..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-10 pr-10"
+              />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                  onClick={handleClearSearch}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </motion.div>
         </motion.div>
 
         {enrolledCourses.length === 0 ? (
@@ -186,6 +233,15 @@ const EnrolledCourses = () => {
               No enrolled courses yet.
             </motion.p>
           </motion.div>
+        ) : filteredCourses.length === 0 ? (
+          <motion.div
+            className="text-center py-12 text-muted-foreground"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.6 }}
+          >
+            No enrolled courses found matching your search.
+          </motion.div>
         ) : (
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8 py-4"
@@ -194,7 +250,7 @@ const EnrolledCourses = () => {
             transition={{ duration: 0.4, delay: 0.6 }}
           >
             <AnimatePresence>
-              {enrolledCourses.map((enrollment, index) => {
+              {filteredCourses.map((enrollment, index) => {
                 const weeksAgo = Math.floor(
                   (new Date().getTime() - new Date(enrollment.course.createdAt).getTime()) /
                     (1000 * 60 * 60 * 24 * 7)
@@ -229,6 +285,3 @@ const EnrolledCourses = () => {
 };
 
 export default EnrolledCourses;
-
-
-
