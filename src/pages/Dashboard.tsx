@@ -13,7 +13,6 @@ import { useDashboardStats } from "@/hooks/useDashboardStats";
 import ReviewDialog from "@/components/ReviewDialog";
 import { BookingSessionsAPI } from '@/api/bookingSessions';
 
-
 interface Session {
   id: number;
   sessionType: {
@@ -48,10 +47,34 @@ interface BookedSession {
   hasReviewed: boolean;
 }
 
+const statsColors =
+ [
+  {
+    gradient: "from-primary/10 via-primary/5 to-transparent",
+    iconBg: "bg-primary/10",
+    textColor: "text-primary",
+  },
+  {
+    gradient: "from-amber-50 via-amber-25 to-transparent",
+    iconBg: "bg-amber-100",
+    textColor: "text-amber-700",
+  },
+  {
+    gradient: "from-green-50 via-green-25 to-transparent",
+    iconBg: "bg-green-100",
+    textColor: "text-green-700",
+  },
+  {
+    gradient: "from-blue-50 via-blue-25 to-transparent",
+    iconBg: "bg-blue-100",
+    textColor: "text-blue-700",
+  }
+];
+
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data: dashboardStats = [], isLoading: statsLoading } = useDashboardStats();  
+  const { data: dashboardStats = [], isLoading: statsLoading } = useDashboardStats();
 
   const { data: apiSessions = [], isLoading, error } = useQuery<Session[]>({
     queryKey: ["bookedSessions", user?.id],
@@ -97,11 +120,11 @@ const Dashboard = () => {
       )
     );
   };
+
   function formatTo12Hour(time) {
     const [hour, minute] = time.split(":");
     const date = new Date();
     date.setHours(hour, minute);
-  
     return date.toLocaleString('en-US', {
       hour: 'numeric',
       minute: 'numeric',
@@ -109,40 +132,37 @@ const Dashboard = () => {
     });
   }
 
-  const defaultStats = [
+  const defaultStats = 
+  [
     {
       title: "Total Sessions",
       value: upcomingSessions.length + completedSessions.length,
       icon: Calendar,
       change: `+${upcomingSessions.length + completedSessions.length} this month`,
-      color: "primary",
     },
     {
       title: "Hours of Therapy",
       value: "24.5",
       icon: Clock,
       change: "+4.2 hours",
-      color: "secondary",
     },
     {
       title: "Progress Score",
       value: "85%",
       icon: TrendingUp,
       change: "+12% improvement",
-      color: "accent",
     },
     {
       title: "Completed Goals",
       value: "7/10",
       icon: CheckCircle,
       change: "3 remaining",
-      color: "primary",
     },
   ];
 
-  const stats = dashboardStats.length > 0 ? dashboardStats : defaultStats;
+  const stats = dashboardStats.length > 8 ? dashboardStats : defaultStats;
 
-  if (isLoading || statsLoading ) {
+  if (isLoading || statsLoading) {
     return (
       <motion.div
         className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20"
@@ -308,55 +328,60 @@ const Dashboard = () => {
           transition={{ duration: 0.4, delay: 0.6, ease: "easeInOut" }}
         >
           <AnimatePresence>
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.4, delay: 0.7 + index * 0.1, ease: "easeInOut" }}
-                whileHover={{
-                  y: -5,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                  transition: { duration: 0.3, ease: "easeInOut" },
-                }}
-              >
-                <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-muted/20 hover:shadow-md transition-all duration-300">
-                  <CardHeader className="pb-3">
-                    <motion.div
-                      className="flex items-center justify-between"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, delay: 0.8 + index * 0.1, ease: "easeInOut" }}
-                    >
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                          {stat.title}
-                        </p>
-                        <p className="text-3xl font-bold text-foreground">{stat.value}</p>
-                      </div>
+            {stats.map((stat, index) => {
+              const statColor = statsColors[index % statsColors.length];
+              return (
+                <motion.div
+                  key={stat.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ duration: 0.4, delay: 0.7 + index * 0.1, ease: "easeInOut" }}
+                  whileHover={{
+                    y: -5,
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    transition: { duration: 0.3, ease: "easeInOut" },
+                  }}
+                >
+                  <Card className={`border-0 shadow-sm bg-gradient-to-br ${statColor.gradient} hover:shadow-md transition-all duration-300`}>
+                    <CardHeader className="pb-3">
                       <motion.div
-                        className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10"
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="flex items-center justify-between"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.8 + index * 0.1, ease: "easeInOut" }}
                       >
-                        <stat.icon className="h-6 w-6 text-primary" />
+                        <div className="space-y-1">
+                          <p className={`text-sm font-medium text-muted-foreground uppercase tracking-wide`}>
+                            {stat.title}
+                          </p>
+                          <p className={`text-3xl font-bold ${statColor.textColor}`}>
+                            {stat.value}
+                          </p>
+                        </div>
+                        <motion.div
+                          className={`flex items-center justify-center w-12 h-12 rounded-full ${statColor.iconBg}`}
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                        >
+                          <stat.icon className={`h-6 w-6 ${statColor.textColor}`} />
+                        </motion.div>
                       </motion.div>
-                    </motion.div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <motion.p
-                      className="text-sm text-muted-foreground font-medium"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.9 + index * 0.1, ease: "easeInOut" }}
-                    >
-                      {stat.change}
-                    </motion.p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <motion.p
+                        className={`text-sm text-muted-foreground font-medium`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.9 + index * 0.1, ease: "easeInOut" }}
+                      >
+                        {stat.change}
+                      </motion.p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </motion.div>
 
