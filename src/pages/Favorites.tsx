@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Star, Clock, Users, BookOpen } from "lucide-react";
+import { Star, Clock, Users, BookOpen, Search, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,16 @@ const Favorites = () => {
                          course.description.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
+
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Clear search input
+  const handleClearSearch = () => {
+    setSearchTerm("");
+  };
 
   return (
     <motion.div
@@ -55,56 +65,60 @@ const Favorites = () => {
       </motion.div>
 
       <div className="container mx-auto px-4 py-6">
-      <motion.div
+        <motion.div
           className="text-center space-y-6 mb-12"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          
           <div className="space-y-3">
+            <motion.div
+              className="flex items-center justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
+                Courses You Loved
+              </h1>
+            </motion.div>
+            <motion.p
+              className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Quickly access your most loved courses and continue learning at your own pace.
+            </motion.p>
+          </div>
+          {/* Search Bar */}
           <motion.div
-            className="flex items-center justify-center gap-4"
+            className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
           >
-           
-
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
-            Courses You Loved
-            </h1>
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search favorite courses..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="pl-10 pr-10"
+              />
+              {searchTerm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                  onClick={handleClearSearch}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </motion.div>
-
-      <motion.p
-        className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-      >
-        Quickly access your most loved courses and continue learning at your own pace.
-      </motion.p>
-    </div>
-
-          
-        </motion.div>        
-
-        
-        {/* Filters */}
-        <motion.div
-          className="flex flex-col sm:flex-row gap-4 mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
-        >
-          <div className="flex-1">
-            <Input
-              placeholder="Search courses..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full"
-            />
-          </div>
         </motion.div>
 
         {/* Content */}
@@ -129,23 +143,21 @@ const Favorites = () => {
               </CardContent>
             </Card>
           </motion.div>
+        ) : filteredCourses.length === 0 ? (
+          <motion.div
+            className="text-center py-12 text-muted-foreground"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.7 }}
+          >
+            No favorite courses found matching your search.
+          </motion.div>
         ) : (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.5, ease: "easeInOut" }}
           >
-            <motion.div
-              className="flex justify-between items-center mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.6, ease: "easeInOut" }}
-            >
-              <p className="text-sm text-muted-foreground">
-                {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
-              </p>
-            </motion.div>
-
             <motion.div
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               initial={{ opacity: 0 }}
