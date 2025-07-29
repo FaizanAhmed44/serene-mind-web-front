@@ -201,7 +201,7 @@ const Dashboard = () => {
           transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
         >
           <div className="text-lg text-muted-foreground">
-            Loading booked sessions...
+            Loading Dashboard details...
           </div>
         </motion.div>
       </motion.div>
@@ -294,16 +294,16 @@ const Dashboard = () => {
         </div>
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
         {/* Welcome Section */}
         <motion.div
-          className="text-center py-6"
+          className="text-center py-6"  
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
         >
           <motion.h1
-            className="text-4xl font-bold mb-3 tracking-tight text-primary"
+            className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.4, ease: "easeInOut" }}
@@ -311,7 +311,7 @@ const Dashboard = () => {
             Welcome back, {user.name}!
           </motion.h1>
           <motion.p
-            className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+            className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mt-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.5, ease: "easeInOut" }}

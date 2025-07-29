@@ -160,7 +160,7 @@ const TrainingSessions: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.4 }}
           >
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-primary">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               Strategic Mental Wealth Training
             </h1>
           </motion.div>
@@ -170,7 +170,7 @@ const TrainingSessions: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.5 }}
           >
-            Join expert-led sessions to enhance your mental wellness journey
+            Join immersive sessions to strengthen your personal and professional growth
           </motion.p>
         </motion.div>
 

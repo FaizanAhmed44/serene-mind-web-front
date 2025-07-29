@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X, Upload, Settings, CreditCard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -330,7 +331,7 @@ const UserProfile = () => {
                 <TabsTrigger 
                   key={tab}
                   value={tab} 
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 "
                 >
                   <motion.div
                     whileHover={{ scale: 1.1 }}
