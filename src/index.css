@@ -1,3 +1,5 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,34 +11,24 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 200 15% 8%;
-
     --card: 0 0% 100%;
     --card-foreground: 200 15% 8%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 200 15% 8%;
-
     --primary: 184 52% 20%;
     --primary-foreground: 0 0% 98%;
-
     --secondary: 221 35% 20%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 220 13% 91%;
     --muted-foreground: 215 16% 47%;
-
     --accent: 210 11% 15%;
     --accent-foreground: 0 0% 98%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 220 13% 91%;
     --input: 220 13% 91%;
     --ring: 184 52% 20%;
-
     --radius: 0.75rem;
-
     --sidebar-background: 184 52% 20%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 0 0% 98%;
@@ -55,11 +47,12 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Lato', sans-serif;
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-montserrat font-semibold tracking-tight;
   }
 
   h1 {
@@ -80,6 +73,11 @@
 
   p {
     @apply leading-relaxed;
+  }
+
+  /* Apply Montserrat to buttons and UI components */
+  button, .btn, [role="button"], .form-input[type="submit"], .form-input[type="button"], .tabs-trigger, .sidebar-trigger {
+    @apply font-montserrat font-medium;
   }
 
   /* Smooth scrolling */
@@ -107,19 +105,16 @@
     box-shadow: 0 20px 25px -5px rgba(24, 67, 73, 0.1), 0 10px 10px -5px rgba(24, 67, 73, 0.04);
   }
 
-  /* Glass morphism effect */
   .glass {
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  /* Improved text rendering */
   .text-balance {
     text-wrap: balance;
   }
 
-  /* Professional shadows */
   .shadow-soft {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
   }
@@ -128,12 +123,10 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
   }
 
-  /* Consistent border radius */
   .rounded-brand {
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
   }
 
-  /* Interactive states */
   .interactive {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -183,10 +176,10 @@
   }
 
   .form-label {
-    @apply text-sm font-medium text-foreground;
+    @apply text-sm font-medium text-foreground font-montserrat;
   }
 
   .form-input {
-    @apply w-full px-3 py-2 text-sm bg-background border border-input rounded-md shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50;
+    @apply w-full px-3 py-2 text-sm bg-background border border-input rounded-md shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 font-sans;
   }
 }

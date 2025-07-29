@@ -432,7 +432,7 @@ const Dashboard = () => {
                   </motion.div>
                 ) : (
                   <AnimatePresence>
-                    {upcomingSessions.map((session, index) => (
+                  {upcomingSessions.slice(0, 2).map((session, index) => (
                       <motion.div
                         key={session.id}
                         initial={{ opacity: 0, x: -20 }}
