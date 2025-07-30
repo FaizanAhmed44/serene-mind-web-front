@@ -77,9 +77,9 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-gray-300 bg-white flex flex-col h-full">
+    <Sidebar className="border-r border-gray-200 bg-white flex flex-col h-full">
      
-       <SidebarHeader className="border-b border-gray-300 p-4 lg:p-6">
+       <SidebarHeader className="border-b border-gray-200 p-4 lg:p-6">
          <div className="flex items-center space-x-4">
            <div className="relative">
              <img 
@@ -164,7 +164,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-gray-300 p-4">
+      <SidebarFooter className="border-t border-gray-200 p-4">
         <Link to="/profile">
           <div className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-200 transition-colors duration-200 group cursor-pointer">
             {user?.avatar ? (

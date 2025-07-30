@@ -90,13 +90,16 @@ export const CourseCard = ({ course }: CourseCardProps) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.5 }}
           >
-            <Link to={`/courses/${course.id}`} state={{ isEnrolled: true }}>
-              <Button
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-colors"
-              >
-                View Course
-              </Button>
-            </Link>
+
+          <Link to={`/courses/${course.id}`} state={{ isEnrolled: true }}>
+            <button
+              className="w-full py-2 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-200"
+              type="button"
+            >
+              View Course
+            </button>
+          </Link>
+            
           </motion.div>
         </CardFooter>
       </Card>

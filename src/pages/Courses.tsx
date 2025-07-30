@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
-import { Search, X } from "lucide-react";
+import { Search, X,Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Card component for a single course
@@ -22,66 +22,78 @@ function truncateWords(text: string, wordLimit: number): string {
   return words.slice(0, wordLimit).join(" ") + "…";
 }
 
+
+
 const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
   return (
     <motion.div
-      className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md border hover:translate-y-[-6px] transition-all duration-300 h-full"
+      className="relative flex flex-col h-full bg-gradient-to-br from-gray-50 to-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300"
       initial={{ opacity: 0, scale: 0.95, y: 50 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      whileHover={{ y: -10, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
+      whileHover={{ y: -8, boxShadow: "0 15px 30px rgba(0,0,0,0.1)" }}
     >
-      <motion.div
-        className="relative bg-clip-border mx-4 rounded-xl overflow-hidden mt-4 transition-all duration-300 bg-white text-gray-700 shadow-lg"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: 0.1 }}
-      >
+      {/* Thumbnail with Gradient Overlay */}
+      <div className="relative w-full h-48 overflow-hidden">
         <img
           alt={course.title}
           loading="lazy"
           width={768}
           height={768}
           decoding="async"
-          className="h-full w-full object-cover"
-          src={course.thumbnail}
-          style={{ color: "transparent" }}
+          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          src={course.thumbnail || "/placeholder-image.jpg"} // Fallback image
         />
-      </motion.div>
-      <div className="flex flex-col flex-1 p-6">
-        <motion.div
-          className="flex items-center gap-2"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        <div className="absolute top-4 left-4">
+          <span className="inline-block bg-primary/80 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
+            {course.status || "Ongoing"}
+          </span>
+        </div>
+      </div>
+
+      {/* Course Details */}
+      <div className="flex flex-col flex-1 p-5">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <span>{course.duration || "N/A"}</span>
+            <span className="text-gray-400">•</span>
+            <span>{course.enrolledStudents || 0} Students</span>
+          </div>
+          {course.rating && (
+            <div className="flex items-center gap-1 text-yellow-500">
+              <span className="text-sm font-medium">{course.rating}</span>
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            </div>
+          )}
+        </div>
+
+        <Link
+          to={`/courses/${course.id}`}
+          className="block hover:text-primary transition-colors"
         >
-          <p className="block antialiased font-sans text-sm leading-normal mb-2 font-normal text-gray-500">
-            {course.status} • {course.duration} • {course.enrolledStudents} Students
-          </p>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-        >
-          <a
-            href={`/courses/${course.id}`}
-            className="text-blue-gray-900 transition-colors hover:text-gray-900"
-          >
-            <h5 className="block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-inherit mb-2 normal-case">
-              {course.title}
-            </h5>
-          </a>
-        </motion.div>
-        <motion.p
-          className="block antialiased font-sans text-sm leading-relaxed text-inherit mb-6 font-normal !text-gray-500"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-        >
-          {truncateWords(course.description, 10)}
-        </motion.p>
-        <div className="flex-1 flex items-center justify-center"></div>
+          <h5 className="text-lg font-semibold text-gray-900 leading-tight line-clamp-2 mb-2">
+            {course.title}
+          </h5>
+        </Link>
+
+        <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
+          {truncateWords(course.description || "No description available", 15)}
+        </p>
+
+        {/* Price and Expert */}
+        <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center gap-2 text-gray-500">
+            <span className="font-medium text-gray-700">
+              {course.expert?.name || "Unknown Expert"}
+            </span>
+          </div>
+          <span className="font-semibold text-primary">
+            {course.price ? `$${course.price}` : "Free"}
+          </span>
+        </div>
+
+        {/* Action Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -91,10 +103,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
         >
           <Link to={`/courses/${course.id}`} state={{ isEnrolled: isEnrolled }}>
             <button
-              className="align-middle w-full select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-primary text-white hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] mt-4"
+              className="w-full py-2 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-200"
               type="button"
             >
-              {isEnrolled ? "Go to Course" : "Enroll Now"}
+              {isEnrolled ? "Continue Course" : "Enroll Now"}
             </button>
           </Link>
         </motion.div>
@@ -102,6 +114,89 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
     </motion.div>
   );
 };
+
+
+
+// const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
+//   return (
+//     <motion.div
+//       className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md border hover:translate-y-[-6px] transition-all duration-300 h-full"
+//       initial={{ opacity: 0, scale: 0.95, y: 50 }}
+//       animate={{ opacity: 1, scale: 1, y: 0 }}
+//       transition={{ duration: 0.4, ease: "easeOut" }}
+//       whileHover={{ y: -10, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
+//     >
+//       <motion.div
+//         className="relative bg-clip-border mx-4 rounded-xl overflow-hidden mt-4 transition-all duration-300 bg-white text-gray-700 shadow-lg"
+//         initial={{ opacity: 0, scale: 0.8 }}
+//         animate={{ opacity: 1, scale: 1 }}
+//         transition={{ duration: 0.4, delay: 0.1 }}
+//       >
+//         <img
+//           alt={course.title}
+//           loading="lazy"
+//           width={768}
+//           height={768}
+//           decoding="async"
+//           className="h-full w-full object-cover"
+//           src={course.thumbnail}
+//           style={{ color: "transparent" }}
+//         />
+//       </motion.div>
+//       <div className="flex flex-col flex-1 p-6">
+//         <motion.div
+//           className="flex items-center gap-2"
+//           initial={{ opacity: 0, x: -20 }}
+//           animate={{ opacity: 1, x: 0 }}
+//           transition={{ duration: 0.4, delay: 0.2 }}
+//         >
+//           <p className="block antialiased font-sans text-sm leading-normal mb-2 font-normal text-gray-500">
+//             {course.status} • {course.duration} • {course.enrolledStudents} Students
+//           </p>
+//         </motion.div>
+//         <motion.div
+//           initial={{ opacity: 0, x: -20 }}
+//           animate={{ opacity: 1, x: 0 }}
+//           transition={{ duration: 0.4, delay: 0.3 }}
+//         >
+//           <a
+//             href={`/courses/${course.id}`}
+//             className="text-blue-gray-900 transition-colors hover:text-gray-900"
+//           >
+//             <h5 className="block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-inherit mb-2 normal-case">
+//               {course.title}
+//             </h5>
+//           </a>
+//         </motion.div>
+//         <motion.p
+//           className="block antialiased font-sans text-sm leading-relaxed text-inherit mb-6 font-normal !text-gray-500"
+//           initial={{ opacity: 0, x: -20 }}
+//           animate={{ opacity: 1, x: 0 }}
+//           transition={{ duration: 0.4, delay: 0.4 }}
+//         >
+//           {truncateWords(course.description, 10)}
+//         </motion.p>
+//         <div className="flex-1 flex items-center justify-center"></div>
+//         <motion.div
+//           initial={{ opacity: 0, y: 20 }}
+//           animate={{ opacity: 1, y: 0 }}
+//           transition={{ duration: 0.4, delay: 0.5 }}
+//           whileHover={{ scale: 1.05 }}
+//           whileTap={{ scale: 0.95 }}
+//         >
+//           <Link to={`/courses/${course.id}`} state={{ isEnrolled: isEnrolled }}>
+//             <button
+//               className="align-middle w-full select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-primary text-white hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] mt-4"
+//               type="button"
+//             >
+//               {isEnrolled ? "Go to Course" : "Enroll Now"}
+//             </button>
+//           </Link>
+//         </motion.div>
+//       </div>
+//     </motion.div>
+//   );
+// };
 
 export default function Courses() {
   const { data: courses, isLoading, error } = useQuery({

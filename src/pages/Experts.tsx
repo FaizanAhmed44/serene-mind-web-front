@@ -400,15 +400,16 @@ const ExpertCard = ({ expert }: { expert: ExpertProfile }) => {
             )}
           </motion.div>
 
-          <div className="flex space-x-2 pt-2">
-            <Button
-              asChild
-              className="flex-1 font-bold uppercase text-white text-xs py-3 px-6 rounded-lg bg-primary hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] transition-all"
-              tabIndex={-1}
-              aria-label={`View profile of ${expert.name}`}
-            >
-              <Link to={`/experts/${expert.id}`}>View Profile</Link>
-            </Button>
+          <div className=" space-x-2 pt-2">
+            <Link to={`/experts/${expert.id}`}>
+              <button
+                className="w-full py-2 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-200"
+                type="button"
+              >
+                View Profile
+              </button>
+            </Link>
+              
            
           </div>
         </CardContent>

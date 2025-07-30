@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X, Upload, Settings, CreditCard, Award, Clock, BookOpen } from "lucide-react";
+import { User, Phone, MapPin, Calendar, Edit2, Save, X, Upload, Settings, CreditCard, Award, Clock, BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -420,7 +420,7 @@ const UserProfile = () => {
                 {/* Learning Progress */}
                 <Card className="border border-border/50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+                    <CardTitle className="flex items-center gap-2 text-base md:text-lg text-primary">
                       <Award className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                       Learning Progress
                     </CardTitle>
