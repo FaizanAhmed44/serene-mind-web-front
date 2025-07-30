@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X, Upload, Settings, CreditCard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -52,93 +51,35 @@ const UserProfile = () => {
 
   if (isLoading) {
     return (
-      <motion.div 
-        className="min-h-screen bg-gradient-to-br from-background to-muted/30"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-      >
-        <motion.div 
-          className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
-        >
-          <div className="flex items-center justify-between p-4">
-            <motion.div 
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <SidebarTrigger />
-            </motion.div>
-            <motion.h1 
-              className="text-2xl font-bold text-foreground"
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.4, delay: 0.2, ease: "easeInOut" }}
-            >
-              My Profile
-            </motion.h1>
-            <div className="w-10" />
+      <div className="min-h-screen bg-background">
+        <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+          <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold text-foreground">Profile</h1>
+            <div className="w-20" />
           </div>
-        </motion.div>
-        <motion.div 
-          className="flex items-center justify-center min-h-96"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
-        >
-          <p className="text-muted-foreground">
-            Loading profile...
-          </p>
-        </motion.div>
-      </motion.div>
+        </div>
+        <div className="flex items-center justify-center min-h-96">
+          <p className="text-muted-foreground">Loading profile...</p>
+        </div>
+      </div>
     );
   }
 
   if (error || !userData) {
     return (
-      <motion.div 
-        className="min-h-screen bg-gradient-to-br from-background to-muted/30"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-      >
-        <motion.div 
-          className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
-        >
-          <div className="flex items-center justify-between p-4">
-            <motion.div 
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <SidebarTrigger />
-            </motion.div>
-            <motion.h1 
-              className="text-2xl font-bold text-foreground"
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.4, delay: 0.2, ease: "easeInOut" }}
-            >
-              My Profile
-            </motion.h1>
-            <div className="w-10" />
+      <div className="min-h-screen bg-background">
+        <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+          <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold text-foreground">Profile</h1>
+            <div className="w-20" />
           </div>
-        </motion.div>
-        <motion.div 
-          className="flex items-center justify-center min-h-96"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
-        >
-          <p className="text-destructive">
-            Error loading profile. Please try again.
-          </p>
-        </motion.div>
-      </motion.div>
+        </div>
+        <div className="flex items-center justify-center min-h-96">
+          <p className="text-destructive">Error loading profile. Please try again.</p>
+        </div>
+      </div>
     );
   }
 
@@ -237,410 +178,231 @@ const UserProfile = () => {
   };
 
   return (
-    <motion.div 
-      className="min-h-screen bg-gradient-to-br from-background to-muted/30"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
-    >
-      <motion.div 
-        className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
-      >
-        <div className="flex items-center justify-between p-4">
-          <motion.div 
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
-            <SidebarTrigger />
-          </motion.div>
-          <motion.h1 
-            className="text-2xl font-bold text-foreground"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.2, ease: "easeInOut" }}
-          >
-            My Profile
-          </motion.h1>
-          <AnimatePresence>
+    <div className="min-h-screen bg-background">
+      {/* Clean Header */}
+      <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+        <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+          <SidebarTrigger />
+          <h1 className="text-xl font-semibold text-foreground">Profile</h1>
+          <AnimatePresence mode="wait">
             {!isEditing ? (
-              <motion.div 
+              <motion.div
                 key="edit"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
               >
-                <Button onClick={handleEdit}>
-                  <Edit2 className="h-4 w-4 mr-2" />
-                  Edit Profile
+                <Button onClick={handleEdit} variant="outline" size="sm" className="gap-2">
+                  <Edit2 className="h-4 w-4" />
+                  Edit
                 </Button>
               </motion.div>
             ) : (
-              <motion.div 
-                key="save-cancel"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
-                className="flex space-x-2"
+              <motion.div
+                key="actions"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="flex gap-2"
               >
-                <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <Button 
+                  onClick={handleSave}
+                  disabled={updateProfileMutation.isPending}
+                  size="sm"
+                  className="gap-2"
                 >
-                  <Button 
-                    onClick={handleSave}
-                    disabled={updateProfileMutation.isPending}
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    {updateProfileMutation.isPending ? "Saving..." : "Save"}
-                  </Button>
-                </motion.div>
-                <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button 
-                    onClick={handleCancel} 
-                    variant="outline"
-                  >
-                    <X className="h-4 w-4 mr-2" />
-                    Cancel
-                  </Button>
-                </motion.div>
+                  <Save className="h-4 w-4" />
+                  {updateProfileMutation.isPending ? "Saving..." : "Save"}
+                </Button>
+                <Button onClick={handleCancel} variant="outline" size="sm" className="gap-2">
+                  <X className="h-4 w-4" />
+                  Cancel
+                </Button>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-      </motion.div>
+      </div>
 
-      <div className="p-6">
-        <Tabs defaultValue="profile" className="space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.4, ease: "easeInOut" }}
-          >
-            <TabsList className="grid w-full grid-cols-3">
-              {["profile", "settings", "payments"].map((tab, index) => (
-                <TabsTrigger 
-                  key={tab}
-                  value={tab} 
-                  className="flex items-center space-x-2 "
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                  >
-                    {tab === "profile" && <User className="h-4 w-4" />}
-                    {tab === "settings" && <Settings className="h-4 w-4" />}
-                    {tab === "payments" && <CreditCard className="h-4 w-4" />}
-                  </motion.div>
-                  <motion.span
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1, ease: "easeInOut" }}
-                  >
-                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  </motion.span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </motion.div>
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <Tabs defaultValue="profile" className="space-y-8">
+          {/* Simplified Tab Navigation */}
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 bg-muted/50">
+            <TabsTrigger value="profile" className="gap-2">
+              <User className="h-4 w-4" />
+              <span className="hidden sm:inline">Profile</span>
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2">
+              <Settings className="h-4 w-4" />
+              <span className="hidden sm:inline">Settings</span>
+            </TabsTrigger>
+            <TabsTrigger value="payments" className="gap-2">
+              <CreditCard className="h-4 w-4" />
+              <span className="hidden sm:inline">Payments</span>
+            </TabsTrigger>
+          </TabsList>
 
-          <AnimatePresence mode="wait">
-            <TabsContent value="profile" className="space-y-8">
-              <motion.div
-                key="profile"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.4, delay: 0.5, ease: "easeInOut" }}
-                className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-              >
-                {/* Profile Overview Card */}
-                <motion.div 
-                  className="lg:col-span-1"
-                  whileHover={{ y: -5, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
-                  <Card>
-                    <CardContent className="p-6 text-center">
-                      <motion.div 
-                        className="relative mx-auto mb-4 w-32 h-32"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, delay: 0.6, ease: "easeInOut" }}
-                      >
-                        <Avatar className="h-32 w-32">
-                          <AvatarImage src={isEditing ? editedData.avatar : userData.avatar} alt={userData.name} />
-                          <AvatarFallback className="text-2xl bg-primary text-white">
-                            {userData.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        {isEditing && (
-                          <motion.div 
-                            className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
-                            onClick={triggerFileInput}
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                          >
-                            <Upload className="h-8 w-8 text-white" />
-                          </motion.div>
-                        )}
-                      </motion.div>
-
-                      <AnimatePresence>
-                        {isEditing && (
-                          <motion.div 
-                            className="mb-4"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 20 }}
-                            transition={{ duration: 0.4, delay: 0.7, ease: "easeInOut" }}
-                          >
-                            <input
-                              ref={fileInputRef}
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageUpload}
-                              className="hidden"
-                            />
-                            <motion.div
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={triggerFileInput}
-                                className="text-sm"
-                              >
-                                <Upload className="h-4 w-4 mr-2" />
-                                Change Photo
-                              </Button>
-                            </motion.div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                      
-                      <motion.h2 
-                        className="text-2xl font-bold text-primary mb-2"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 0.8, ease: "easeInOut" }}
-                      >
-                        {userData.name}
-                      </motion.h2>
-                      <motion.p 
-                        className="text-muted-foreground mb-4"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 0.9, ease: "easeInOut" }}
-                      >
-                        {userData.email}
-                      </motion.p>
-
-                      <motion.div 
-                        className="space-y-3 text-sm"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 1.0, ease: "easeInOut" }}
-                      >
-                        <motion.div 
-                          className="flex items-center justify-center text-muted-foreground"
-                          whileHover={{ x: 5 }}
-                          transition={{ duration: 0.2, ease: "easeInOut" }}
+          <TabsContent value="profile" className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              {/* Profile Card - Clean and Centered */}
+              <div className="lg:col-span-4">
+                <Card className="border-0 shadow-sm">
+                  <CardContent className="p-8 text-center">
+                    <div className="relative inline-block mb-6">
+                      <Avatar className="h-24 w-24 ring-4 ring-muted">
+                        <AvatarImage src={isEditing ? editedData.avatar : userData.avatar} alt={userData.name} />
+                        <AvatarFallback className="text-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
+                          {userData.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      {isEditing && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full p-0"
+                          onClick={triggerFileInput}
                         >
-                          <Phone className="h-4 w-4 mr-2 text-primary" />
-                          <span>{userData.phone}</span>
-                        </motion.div>
-                        <motion.div 
-                          className="flex items-center justify-center text-muted-foreground"
-                          whileHover={{ x: 5 }}
-                          transition={{ duration: 0.2, ease: "easeInOut" }}
-                        >
-                          <MapPin className="h-4 w-4 mr-2 text-primary" />
+                          <Upload className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+
+                    <h2 className="text-xl font-semibold text-foreground mb-1">
+                      {userData.name}
+                    </h2>
+                    <p className="text-sm text-muted-foreground mb-6 break-all">
+                      {userData.email}
+                    </p>
+
+                    <div className="space-y-4 text-sm">
+                      {userData.phone && (
+                        <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <span className="break-all">{userData.phone}</span>
+                        </div>
+                      )}
+                      {userData.location && (
+                        <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                          <MapPin className="h-4 w-4 text-primary" />
                           <span>{userData.location}</span>
-                        </motion.div>
-                      </motion.div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-
-                {/* Profile Details Card */}
-                <motion.div 
-                  className="lg:col-span-2"
-                  whileHover={{ y: -5, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
-                  <Card>
-                    <CardHeader>
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4, delay: 1.1, ease: "easeInOut" }}
-                      >
-                        <CardTitle className="flex items-center text-primary">
-                          <User className="h-5 w-5 mr-2 text-primary" />
-                          Profile Information
-                        </CardTitle>
-                      </motion.div>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {[
-                            { id: "name", label: "Full Name", value: editedData.name },
-                            { id: "email", label: "Email Address", value: editedData.email, type: "email" },
-                            { id: "phone", label: "Phone Number", value: editedData.phone },
-                            { id: "location", label: "Location", value: editedData.location },
-                          ].map((field, index) => (
-                            <motion.div
-                              key={field.id}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ duration: 0.4, delay: 1.2 + index * 0.1, ease: "easeInOut" }}
-                            >
-                              <Label htmlFor={field.id}>{field.label}</Label>
-                              {isEditing ? (
-                                <motion.div
-                                  whileHover={{ y: -2 }}
-                                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                                >
-                                  <Input
-                                    id={field.id}
-                                    type={field.type || "text"}
-                                    value={field.value}
-                                    onChange={(e) => handleInputChange(field.id as keyof typeof editedData, e.target.value)}
-                                    className="mt-1"
-                                  />
-                                </motion.div>
-                              ) : (
-                                <motion.p 
-                                  className="mt-1 text-foreground bg-muted/50 px-3 py-2 rounded-md"
-                                  whileHover={{ y: -2 }}
-                                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                                >
-                                  {field.value}
-                                </motion.p>
-                              )}
-                            </motion.div>
-                          ))}
                         </div>
+                      )}
+                      {userData.created_at && (
+                        <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                          <Calendar className="h-4 w-4 text-primary" />
+                          <span>Joined {new Date(userData.created_at).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
 
-                        <motion.div
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 1.6, ease: "easeInOut" }}
-                        >
-                          <Label htmlFor="bio">Bio</Label>
-                          {isEditing ? (
-                            <motion.div
-                              whileHover={{ y: -2 }}
-                              transition={{ duration: 0.2, ease: "easeInOut" }}
-                            >
-                              <Textarea
-                                id="bio"
-                                value={editedData.bio}
-                                onChange={(e) => handleInputChange('bio', e.target.value)}
-                                className="mt-1"
-                                rows={4}
-                                placeholder="Tell us about yourself..."
+              {/* Profile Details Card */}
+              <div className="lg:col-span-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-primary gap-2">
+                      <User className="h-5 w-5" />
+                      Profile Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {[
+                          { id: "name", label: "Full Name", value: editedData.name },
+                          { id: "email", label: "Email Address", value: editedData.email, type: "email" },
+                          { id: "phone", label: "Phone Number", value: editedData.phone },
+                          { id: "location", label: "Location", value: editedData.location },
+                        ].map((field, index) => (
+                          <div key={field.id}>
+                            <Label htmlFor={field.id} className="text-sm font-medium">{field.label}</Label>
+                            {isEditing ? (
+                              <Input
+                                id={field.id}
+                                type={field.type || "text"}
+                                value={field.value}
+                                onChange={(e) => handleInputChange(field.id as keyof typeof editedData, e.target.value)}
+                                className="mt-2"
                               />
-                            </motion.div>
-                          ) : (
-                            <motion.p 
-                              className="mt-1 text-foreground bg-muted/50 px-3 py-2 rounded-md min-h-[100px]"
-                              whileHover={{ y: -2 }}
-                              transition={{ duration: 0.2, ease: "easeInOut" }}
-                            >
-                              {userData.bio}
-                            </motion.p>
-                          )}
-                        </motion.div>
+                            ) : (
+                              <p className="mt-2 text-foreground bg-muted/30 px-3 py-2 rounded-md text-sm break-all">
+                                {field.value || "Not provided"}
+                              </p>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    </CardContent>
-                  </Card>
 
-                  {/* Stats Card */}
-                  <motion.div 
-                    className="mt-6"
-                    whileHover={{ y: -5, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                  >
-                    <Card>
-                      <CardHeader>
-                        <motion.div
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 1.7, ease: "easeInOut" }}
-                        >
-                          <CardTitle>Activity Overview</CardTitle>
-                        </motion.div>
-                      </CardHeader>
-                      <CardContent className="p-6">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          {[
-                            { value: "12", label: "Courses Enrolled" },
-                            { value: "8", label: "Courses Completed" },
-                            { value: "45", label: "Hours Learned" },
-                          ].map((stat, index) => (
-                            <motion.div 
-                              key={stat.label}
-                              className="text-center"
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.4, delay: 1.8 + index * 0.1, ease: "easeInOut" }}
-                              whileHover={{ scale: 1.02 }}
-                            >
-                              <div className="text-3xl font-bold text-primary">
-                                {stat.value}
-                              </div>
-                              <div className="text-sm text-muted-foreground">{stat.label}</div>
-                            </motion.div>
-                          ))}
+                      <div>
+                        <Label htmlFor="bio" className="text-sm font-medium">Bio</Label>
+                        {isEditing ? (
+                          <Textarea
+                            id="bio"
+                            value={editedData.bio}
+                            onChange={(e) => handleInputChange('bio', e.target.value)}
+                            className="mt-2"
+                            rows={4}
+                            placeholder="Tell us about yourself..."
+                          />
+                        ) : (
+                          <p className="mt-2 text-foreground bg-muted/30 px-3 py-2 rounded-md min-h-[100px] text-sm">
+                            {userData.bio || "No bio provided"}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Stats Card */}
+                <Card className="mt-6">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Activity Overview</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {[
+                        { value: "12", label: "Courses Enrolled" },
+                        { value: "8", label: "Courses Completed" },
+                        { value: "45", label: "Hours Learned" },
+                      ].map((stat, index) => (
+                        <div key={stat.label} className="text-center">
+                          <div className="text-2xl font-bold text-primary">
+                            {stat.value}
+                          </div>
+                          <div className="text-sm text-muted-foreground">{stat.label}</div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                </motion.div>
-              </motion.div>
-            </TabsContent>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
 
-            <TabsContent value="settings" className="space-y-6">
-              <motion.div
-                key="settings"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.4, delay: 0.5, ease: "easeInOut" }}
-              >
-                <ProfileSettings />
-              </motion.div>
-            </TabsContent>
+          <TabsContent value="settings" className="space-y-6">
+            <ProfileSettings />
+          </TabsContent>
 
-            <TabsContent value="payments" className="space-y-6">
-              <motion.div
-                key="payments"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.4, delay: 0.5, ease: "easeInOut" }}
-              >
-                <PaymentHistory />
-              </motion.div>
-            </TabsContent>
-          </AnimatePresence>
+          <TabsContent value="payments" className="space-y-6">
+            <PaymentHistory />
+          </TabsContent>
         </Tabs>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
