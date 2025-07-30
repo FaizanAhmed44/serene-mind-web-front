@@ -14,6 +14,8 @@ import ProfileSettings from "@/components/ProfileSettings";
 import PaymentHistory from "@/components/PaymentHistory";
 import { useUserProfile, useUpdateUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from '@/hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
+import { CoursesExpertAPI } from "@/api/courses";
 
 interface UserData {
   name: string;
@@ -49,7 +51,13 @@ const UserProfile = () => {
     }
   }, [userData]);
 
-  if (isLoading) {
+  const { data: completedCount = 0, isLoading: isCompletedLoading, error: completedError } = useQuery<number>({
+    queryKey: ["completedCoursesCount", user?.id],
+    queryFn: () => CoursesExpertAPI.getCompletedCoursesCount(user!.id),
+    enabled: !!user?.id,
+  });
+
+  if (isLoading || isCompletedLoading) {
     return (
       <div className="min-h-screen bg-background">
         <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
@@ -66,7 +74,7 @@ const UserProfile = () => {
     );
   }
 
-  if (error || !userData) {
+  if (error || !userData || completedError) {
     return (
       <div className="min-h-screen bg-background">
         <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
@@ -121,8 +129,8 @@ const UserProfile = () => {
         toast({
           title: "Update Failed",
           description:
-            err?.response?.data?.error ||
-            "Failed to update profile. Please try again.",
+          err?.response?.data?.error ||
+          "Failed to update profile. Please try again.",
           variant: "destructive",
         });
       },
@@ -182,7 +190,12 @@ const UserProfile = () => {
       {/* Header matching the design */}
       <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="flex items-center justify-between px-4 md:px-6 py-4 max-w-7xl mx-auto">
-          <SidebarTrigger />
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.4 }}
+          >
+            <SidebarTrigger />
+          </motion.div>
           <h1 className="text-lg md:text-xl font-semibold text-foreground">My Profile</h1>
           <AnimatePresence mode="wait">
             {!isEditing ? (
@@ -228,10 +241,8 @@ const UserProfile = () => {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
-       
         <Tabs defaultValue="profile" className="space-y-6 md:space-y-8">
           {/* Tab Navigation */}
-            
           <div className="flex justify-center w-full ">
             <TabsList className="grid grid-cols-3 bg-muted/30 p-1 w-full ">
               <TabsTrigger 
@@ -262,7 +273,6 @@ const UserProfile = () => {
               {/* Left Sidebar */}
               <div className="lg:col-span-1 space-y-6">
                 {/* Profile Card */}
-                
                 <Card className="border border-border/50">
                   <CardContent className="p-6 text-center">
                     <div className="relative inline-block mb-4">
@@ -329,7 +339,7 @@ const UserProfile = () => {
                   <CardContent className="space-y-3">
                     {[
                       { label: "Courses Enrolled", value: "12", key: "enrolled" },
-                      { label: "Completed", value: "8", key: "completed" },
+                      { label: "Completed", value: completedCount, key: "completed" }, // Updated with query data
                       { label: "Hours Learned", value: "45", key: "hours" },
                     ].map((stat) => (
                       <div key={stat.key} className="flex justify-between items-center">
@@ -370,9 +380,14 @@ const UserProfile = () => {
                               value={field.value}
                               onChange={(e) => handleInputChange(field.id as keyof typeof editedData, e.target.value)}
                               className="mt-1 md:mt-2 text-sm"
+                              placeholder="type here.."
                             />
                           ) : (
-                            <p className="mt-1 md:mt-2 text-sm md:text-base text-foreground break-all">
+                            <p
+                              className={`mt-1 md:mt-2 text-sm md:text-base break-all ${
+                                field.value ? "text-foreground" : "text-gray-400"
+                              }`}
+                            >
                               {field.value || "Not provided"}
                             </p>
                           )}
@@ -389,11 +404,13 @@ const UserProfile = () => {
                           onChange={(e) => handleInputChange('bio', e.target.value)}
                           className="mt-1 md:mt-2 text-sm"
                           rows={3}
-                          placeholder="Passionate learner with a focus on technology and innovation. Always excited to explore new subjects and expand my knowledge base."
+                          placeholder="e.g Passionate learner with a focus on technology and innovation. Always excited to explore new subjects and expand my knowledge base."
                         />
                       ) : (
-                        <p className="mt-1 md:mt-2 text-sm md:text-base text-foreground">
-                          {userData.bio || "Passionate learner with a focus on technology and innovation. Always excited to explore new subjects and expand my knowledge base."}
+                        <p className={`mt-1 md:mt-2 text-sm md:text-base ${
+                          userData.bio ? "text-foreground" : "text-gray-400"
+                        }`}>
+                          {userData.bio || "e.g Passionate learner with a focus on technology and innovation. Always excited to explore new subjects and expand my knowledge base."}
                         </p>
                       )}
                     </div>
@@ -401,7 +418,7 @@ const UserProfile = () => {
                 </Card>
 
                 {/* Learning Progress */}
-                {/* <Card className="border border-border/50">
+                <Card className="border border-border/50">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base md:text-lg">
                       <Award className="h-4 w-4 md:h-5 md:w-5 text-primary" />
@@ -412,7 +429,7 @@ const UserProfile = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                       {[
                         { value: "12", label: "Courses Enrolled", color: "bg-blue-50 border-blue-200 text-blue-700", icon: BookOpen },
-                        { value: "8", label: "Courses Completed", color: "bg-green-50 border-green-200 text-green-700", icon: Award },
+                        { value: completedCount, label: "Courses Completed", color: "bg-green-50 border-green-200 text-green-700", icon: Award }, // Updated with query data
                         { value: "45", label: "Hours Learned", color: "bg-purple-50 border-purple-200 text-purple-700", icon: Clock },
                       ].map((stat, index) => {
                         const IconComponent = stat.icon;
@@ -428,7 +445,7 @@ const UserProfile = () => {
                       })}
                     </div>
                   </CardContent>
-                </Card> */}
+                </Card>
 
                 {/* Recent Activity */}
                 <Card className="border border-border/50">

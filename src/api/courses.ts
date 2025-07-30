@@ -16,6 +16,10 @@ export const CoursesExpertAPI = {
   markLessonComplete: async (courseId: string, lessonId: string) => {
     const response = await axios.post(`/progress/courses/${courseId}/lessons/${lessonId}/complete`);
     return response.data;
+  },
+  getCompletedCoursesCount: async (userId: string) => {
+    const response = await axios.get(`/progress/users/${userId}/completed-courses/count`);
+    return response.data.completedCount; 
   }, 
 
   // New Review APIs

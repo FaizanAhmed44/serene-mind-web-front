@@ -277,8 +277,8 @@ const Dashboard = () => {
       >
         <div className="flex items-center justify-between p-6">
           <motion.div
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.4 }}            
           >
             <SidebarTrigger />
           </motion.div>

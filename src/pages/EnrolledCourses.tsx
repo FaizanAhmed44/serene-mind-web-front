@@ -142,8 +142,8 @@ const EnrolledCourses = () => {
       >
         <div className="flex items-center justify-between p-4">
           <motion.div
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.3 }}
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.4 }}
           >
             <SidebarTrigger />
           </motion.div>
