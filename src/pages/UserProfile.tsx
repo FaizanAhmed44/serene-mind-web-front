@@ -228,30 +228,41 @@ const UserProfile = () => {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
+       
         <Tabs defaultValue="profile" className="space-y-6 md:space-y-8">
           {/* Tab Navigation */}
-          <div className="flex justify-center">
-            <TabsList className="grid grid-cols-3 bg-muted/30 p-1 w-full max-w-sm">
-              <TabsTrigger value="profile" className="gap-2 text-xs md:text-sm">
+            
+          <div className="flex justify-center w-full ">
+            <TabsList className="grid grid-cols-3 bg-muted/30 p-1 w-full ">
+              <TabsTrigger 
+                value="profile" 
+                className="gap-2 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
                 <User className="h-3 w-3 md:h-4 md:w-4" />
                 Profile
               </TabsTrigger>
-              <TabsTrigger value="settings" className="gap-2 text-xs md:text-sm">
+              <TabsTrigger 
+                value="settings" 
+                className="gap-2 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
                 <Settings className="h-3 w-3 md:h-4 md:w-4" />
                 Settings
               </TabsTrigger>
-              <TabsTrigger value="payments" className="gap-2 text-xs md:text-sm">
+              <TabsTrigger 
+                value="payments" 
+                className="gap-2 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
                 <CreditCard className="h-3 w-3 md:h-4 md:w-4" />
                 Payments
               </TabsTrigger>
             </TabsList>
           </div>
-
           <TabsContent value="profile" className="space-y-6 md:space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
               {/* Left Sidebar */}
               <div className="lg:col-span-1 space-y-6">
                 {/* Profile Card */}
+                
                 <Card className="border border-border/50">
                   <CardContent className="p-6 text-center">
                     <div className="relative inline-block mb-4">
@@ -288,7 +299,7 @@ const UserProfile = () => {
                       {userData.email}
                     </p>
 
-                    <div className="space-y-3 text-xs md:text-sm">
+                    <div className="flex flex-col items-center space-y-3 text-xs md:text-sm">
                       {userData.phone && (
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Phone className="h-3 w-3 md:h-4 md:w-4 text-primary" />
@@ -310,11 +321,10 @@ const UserProfile = () => {
                     </div>
                   </CardContent>
                 </Card>
-
                 {/* Quick Stats */}
                 <Card className="border border-border/50">
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-base md:text-lg font-semibold">Quick Stats</CardTitle>
+                    <CardTitle className="text-base md:text-lg font-semibold text-primary">Quick Stats</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {[
@@ -336,7 +346,7 @@ const UserProfile = () => {
                 {/* Personal Information */}
                 <Card className="border border-border/50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+                    <CardTitle className="flex items-center gap-2 text-base md:text-lg text-primary">
                       <User className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                       Personal Information
                     </CardTitle>
@@ -391,7 +401,7 @@ const UserProfile = () => {
                 </Card>
 
                 {/* Learning Progress */}
-                <Card className="border border-border/50">
+                {/* <Card className="border border-border/50">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base md:text-lg">
                       <Award className="h-4 w-4 md:h-5 md:w-5 text-primary" />
@@ -418,12 +428,12 @@ const UserProfile = () => {
                       })}
                     </div>
                   </CardContent>
-                </Card>
+                </Card> */}
 
                 {/* Recent Activity */}
                 <Card className="border border-border/50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+                    <CardTitle className="flex items-center gap-2 text-base md:text-lg text-primary">
                       <Clock className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                       Recent Activity
                     </CardTitle>

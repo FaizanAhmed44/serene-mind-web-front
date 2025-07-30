@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Shield, Bell, Trash2, Eye, EyeOff } from "lucide-react";
+import { Shield, Bell, Trash2, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link,useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import axios from "@/lib/axios"; 
+import axios from "@/lib/axios";
 
 import {
   AlertDialog,
@@ -30,14 +30,15 @@ interface ProfileSettingsProps {
 const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsProps) => {
   const { toast } = useToast();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);  
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
-  
+
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const [notifications, setNotifications] = useState({
@@ -45,16 +46,18 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
     pushNotifications: false,
     courseReminders: true,
     expertMessages: true,
-    weeklyDigest: false
+    weeklyDigest: false,
   });
 
   const handlePasswordChange = async () => {
+    setIsLoading(true);
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast({
         title: "Password Mismatch",
         description: "New password and confirmation don't match.",
         variant: "destructive",
       });
+      setIsLoading(false);
       return;
     }
 
@@ -64,6 +67,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
         description: "Password must be at least 8 characters long.",
         variant: "destructive",
       });
+      setIsLoading(false);
       return;
     }
 
@@ -88,7 +92,6 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
     } catch (error: any) {
       const response = error?.response?.data;
 
-      // If we have validation error details from backend
       if (Array.isArray(response?.details)) {
         response.details.forEach((detail: { msg: string }) => {
           toast({
@@ -98,20 +101,21 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
           });
         });
       } else {
-        // Fallback message
         toast({
           title: "Password Update Failed",
           description: response?.error || "Something went wrong. Please try again.",
           variant: "destructive",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleNotificationChange = (key: keyof typeof notifications) => {
-    setNotifications(prev => ({
+    setNotifications((prev) => ({
       ...prev,
-      [key]: !prev[key]
+      [key]: !prev[key],
     }));
 
     toast({
@@ -128,13 +132,10 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
         description: "Your account has been deactivated successfully.",
         variant: "destructive",
       });
-      // Clear JWT token from localStorage (assuming token is stored there)
       localStorage.removeItem("token");
-      // Trigger onAccountDelete for navigation or state cleanup
       onAccountDelete?.();
-      
-      window.location.href = "/login";
 
+      window.location.href = "/login";
     } catch (error: any) {
       const response = error?.response?.data;
       toast({
@@ -163,17 +164,19 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
                 id="currentPassword"
                 type={showCurrentPassword ? "text" : "password"}
                 value={passwordData.currentPassword}
-                onChange={(e) => setPasswordData(prev => ({
-                  ...prev,
-                  currentPassword: e.target.value
-                }))}
+                onChange={(e) =>
+                  setPasswordData((prev) => ({
+                    ...prev,
+                    currentPassword: e.target.value,
+                  }))
+                }
                 className="pr-10"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                className="absolute right-0 top-0 h-full px-3 py-2 "
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
               >
                 {showCurrentPassword ? (
@@ -192,17 +195,19 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
                 id="newPassword"
                 type={showNewPassword ? "text" : "password"}
                 value={passwordData.newPassword}
-                onChange={(e) => setPasswordData(prev => ({
-                  ...prev,
-                  newPassword: e.target.value
-                }))}
+                onChange={(e) =>
+                  setPasswordData((prev) => ({
+                    ...prev,
+                    newPassword: e.target.value,
+                  }))
+                }
                 className="pr-10"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                className="absolute right-0 top-0 h-full px-3 py-2 "
                 onClick={() => setShowNewPassword(!showNewPassword)}
               >
                 {showNewPassword ? (
@@ -221,17 +226,19 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
                 id="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
                 value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData(prev => ({
-                  ...prev,
-                  confirmPassword: e.target.value
-                }))}
+                onChange={(e) =>
+                  setPasswordData((prev) => ({
+                    ...prev,
+                    confirmPassword: e.target.value,
+                  }))
+                }
                 className="pr-10"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                className="absolute right-0 top-0 h-full px-3 py-2 "
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? (
@@ -243,8 +250,15 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
             </div>
           </div>
 
-          <Button onClick={handlePasswordChange} className="w-full">
-            Update Password
+          <Button onClick={handlePasswordChange} className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Updating...
+              </div>
+            ) : (
+              "Update Password"
+            )}
           </Button>
         </CardContent>
       </Card>
@@ -267,7 +281,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
             </div>
             <Switch
               checked={notifications.emailUpdates}
-              onCheckedChange={() => handleNotificationChange('emailUpdates')}
+              onCheckedChange={() => handleNotificationChange("emailUpdates")}
             />
           </div>
 
@@ -282,7 +296,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
             </div>
             <Switch
               checked={notifications.pushNotifications}
-              onCheckedChange={() => handleNotificationChange('pushNotifications')}
+              onCheckedChange={() => handleNotificationChange("pushNotifications")}
             />
           </div>
 
@@ -297,7 +311,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
             </div>
             <Switch
               checked={notifications.courseReminders}
-              onCheckedChange={() => handleNotificationChange('courseReminders')}
+              onCheckedChange={() => handleNotificationChange("courseReminders")}
             />
           </div>
 
@@ -312,7 +326,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
             </div>
             <Switch
               checked={notifications.expertMessages}
-              onCheckedChange={() => handleNotificationChange('expertMessages')}
+              onCheckedChange={() => handleNotificationChange("expertMessages")}
             />
           </div>
 
@@ -327,7 +341,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
             </div>
             <Switch
               checked={notifications.weeklyDigest}
-              onCheckedChange={() => handleNotificationChange('weeklyDigest')}
+              onCheckedChange={() => handleNotificationChange("weeklyDigest")}
             />
           </div>
         </CardContent>
@@ -347,9 +361,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
           </p>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive">
-                Delete Account
-              </Button>
+              <Button variant="destructive">Delete Account</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -361,7 +373,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction 
+                <AlertDialogAction
                   onClick={handleDeleteAccount}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 >

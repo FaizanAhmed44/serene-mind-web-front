@@ -69,7 +69,7 @@ const menuItems = [
 
 export function AppSidebar() {
   const location = useLocation();
-  const { user } = useAuth(); // Assumes useAuth provides user data (avatar, name, email)
+  const { user } = useAuth(); 
 
   const handleLogout = () => {
     localStorage.removeItem("token");
