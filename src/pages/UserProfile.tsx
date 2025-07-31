@@ -57,7 +57,13 @@ const UserProfile = () => {
     enabled: !!user?.id,
   });
 
-  if (isLoading || isCompletedLoading) {
+  const { data: enrollmentLength = 0, isLoading:isEnrolledLoading, error:enrolledError } = useQuery<number>({
+    queryKey: ["enrollmentLength", user?.id],
+    queryFn: () => CoursesExpertAPI.getEnrollmentLength(user?.id || ""),
+    enabled: !!user?.id,
+  });
+
+  if (isLoading || isCompletedLoading || isEnrolledLoading) {
     return (
       <div className="min-h-screen bg-background">
         <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
@@ -74,7 +80,7 @@ const UserProfile = () => {
     );
   }
 
-  if (error || !userData || completedError) {
+  if (error || !userData || completedError || enrolledError) {
     return (
       <div className="min-h-screen bg-background">
         <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
@@ -250,7 +256,7 @@ const UserProfile = () => {
                 className="gap-2 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 <User className="h-3 w-3 md:h-4 md:w-4" />
-                Profile
+                Profile 
               </TabsTrigger>
               <TabsTrigger 
                 value="settings" 
@@ -338,7 +344,7 @@ const UserProfile = () => {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {[
-                      { label: "Courses Enrolled", value: "12", key: "enrolled" },
+                      { label: "Courses Enrolled", value: enrollmentLength, key: "enrolled" },
                       { label: "Completed", value: completedCount, key: "completed" }, // Updated with query data
                       { label: "Hours Learned", value: "45", key: "hours" },
                     ].map((stat) => (
@@ -428,7 +434,7 @@ const UserProfile = () => {
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                       {[
-                        { value: "12", label: "Courses Enrolled", color: "bg-blue-50 border-blue-200 text-blue-700", icon: BookOpen },
+                        { value: enrollmentLength, label: "Courses Enrolled", color: "bg-blue-50 border-blue-200 text-blue-700", icon: BookOpen },
                         { value: completedCount, label: "Courses Completed", color: "bg-green-50 border-green-200 text-green-700", icon: Award }, // Updated with query data
                         { value: "45", label: "Hours Learned", color: "bg-purple-50 border-purple-200 text-purple-700", icon: Clock },
                       ].map((stat, index) => {
@@ -445,49 +451,7 @@ const UserProfile = () => {
                       })}
                     </div>
                   </CardContent>
-                </Card>
-
-                {/* Recent Activity */}
-                <Card className="border border-border/50">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base md:text-lg text-primary">
-                      <Clock className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-                      Recent Activity
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {[
-                      {
-                        action: "Completed 'Advanced JavaScript'",
-                        time: "2 hours ago",
-                        icon: "✅",
-                        color: "bg-green-100 text-green-600"
-                      },
-                      {
-                        action: "Earned 'Quick Learner' badge",
-                        time: "1 day ago",
-                        icon: "🏆",
-                        color: "bg-yellow-100 text-yellow-600"
-                      },
-                      {
-                        action: "Joined 'React Study Group'",
-                        time: "3 days ago",
-                        icon: "👥",
-                        color: "bg-blue-100 text-blue-600"
-                      },
-                    ].map((activity, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${activity.color}`}>
-                          {activity.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm md:text-base text-foreground font-medium">{activity.action}</p>
-                          <p className="text-xs md:text-sm text-muted-foreground">{activity.time}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
+                </Card>              
               </div>
             </div>
           </TabsContent>
