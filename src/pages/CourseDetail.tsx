@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import { motion, AnimatePresence } from "framer-motion";
 import { CourseSidebar } from "@/components/CourseSidebar";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -247,7 +248,12 @@ const CourseDetail = () => {
     <div className="min-h-screen bg-background">
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
         <div className="flex items-center justify-between p-4">
-          <SidebarTrigger />
+        <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SidebarTrigger />
+            </motion.div>
           <h1 className="text-xl font-semibold truncate">{course.title}</h1>
           <FavoriteButton course={course} />
         </div>

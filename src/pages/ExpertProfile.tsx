@@ -159,7 +159,7 @@ const ExpertProfile = () => {
                 {/* Prominent Book Now Button */}
                 <Button
                   size="lg"
-                  className="w-full lg:w-auto"
+                  className="w-full lg:w-auto "
                   onClick={() => setIsBookingModalOpen(true)}
                 >
                   <Calendar className="h-5 w-5 mr-2" />

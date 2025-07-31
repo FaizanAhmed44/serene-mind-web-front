@@ -56,7 +56,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading }) => {
             </div>
           </div>
 
-          <Button type="submit" className="w-full" size="lg" disabled={loading}>
+          <Button type="submit" className="w-full " size="lg" disabled={loading}>
             {loading ? "Signing In..." : "Sign In"}
             {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
           </Button>

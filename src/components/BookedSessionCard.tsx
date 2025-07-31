@@ -157,19 +157,24 @@ export const BookedSessionCard: React.FC<BookedSessionCardProps> = ({ session })
 
           {/* Action Button */}
           <div className="pt-2">
-            <Button className="w-full h-11 font-medium transition-all duration-200">
-              {isUpcoming ? (
-                <>
-                  <Video className="w-4 h-4 mr-2" />
-                  Join Session
-                </>
-              ) : (
-                <>
-                  <FileText className="w-4 h-4 mr-2" />
-                  View Summary
-                </>
-              )}
-            </Button>
+          <button
+  className="w-full py-2 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-200"
+  type="button"
+>
+  {isUpcoming ? (
+    <>
+      <Video className="w-4 h-4 inline-block mr-4" />
+      Join Session
+    </>
+  ) : (
+    <>
+      <FileText className="w-4 h-4 inline-block mr-4" />
+      View Summary
+    </>
+  )}
+</button>
+
+          
           </div>
         </CardContent>
       </Card>

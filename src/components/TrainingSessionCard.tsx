@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, MapPin, Users, Video, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Video, CheckCircle, Link } from 'lucide-react';
 import { TrainingSession } from '@/data/types/training';
 
 interface TrainingSessionCardProps {
@@ -180,24 +180,24 @@ export const TrainingSessionCard: React.FC<TrainingSessionCardProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 1.1 }}
           >
-            {isEnrollable && (
-              <Button 
-                onClick={() => onEnroll?.(session.id)}
-                className="w-full h-11 font-medium transition-all duration-200"
-                size="sm"
+            {isEnrollable && (              
+              <button
+              onClick={() => onEnroll?.(session.id)}
+              className="w-full py-2 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-200"
+              type="button"
               >
                 Enroll Now
-              </Button>
+              </button>
             )}
 
-            {session.status === 'ongoing' && session.meetingLink && (
-              <Button 
+            {session.status === 'ongoing' && session.meetingLink && (            
+              <button
                 onClick={() => window.open(session.meetingLink!, '_blank')}
-                className="w-full h-11 bg-green-600 hover:bg-green-700 font-medium transition-all duration-200"
-                size="sm"
+                className="w-full py-2 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-200"
+                type="button"
               >
                 Join Session
-              </Button>
+              </button>                
             )}
 
             {session.status === 'completed' && (

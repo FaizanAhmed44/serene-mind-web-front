@@ -340,7 +340,7 @@ const FAQ = () => {
               >
                 <motion.a
                   href="mailto:support@corecognitive.com"
-                  className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-primary to-primary/70 text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
                   whileHover={{ scale: 1.05, boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.2 }}
