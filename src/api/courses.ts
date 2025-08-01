@@ -14,9 +14,11 @@ export const CoursesExpertAPI = {
   getCourseProgress: async (courseId: string) => {
     const response = await axios.get(`/progress/courses/${courseId}/progress`);
     return response.data;
-  },
-  markLessonComplete: async (courseId: string, lessonId: string) => {
-    const response = await axios.post(`/progress/courses/${courseId}/lessons/${lessonId}/complete`);
+  },  
+  markLessonComplete: async (courseId: string, lessonId: string, allLessons: number) => {
+    const response = await axios.post(`/progress/courses/${courseId}/lessons/${lessonId}/complete`, {}, {
+      params: { totalLessons: allLessons }, // Pass totalLessons as a query parameter
+    });
     return response.data;
   },
   getCompletedCoursesCount: async (userId: string) => {

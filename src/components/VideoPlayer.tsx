@@ -14,6 +14,7 @@ interface VideoPlayerProps {
   courseId: string;
   lessonId: string;
   completed: boolean;
+  allLessons:number;
 }
 
 function isYouTubeUrl(url: string): boolean {
@@ -41,11 +42,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   courseId,
   lessonId,
   completed,
+  allLessons,
 }) => {
   const queryClient = useQueryClient();
 
   const markCompleteMutation = useMutation({
-    mutationFn: () => CoursesExpertAPI.markLessonComplete(courseId, lessonId),
+    mutationFn: () => CoursesExpertAPI.markLessonComplete(courseId, lessonId,allLessons),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["progress", courseId] });
     },

@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Clock, User, BookOpen, Star, TrendingUp, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,25 +10,29 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
-import { useDashboardStats } from "@/hooks/useDashboardStats";
+import { CoursesExpertAPI } from "@/api/courses";
 import ReviewDialog from "@/components/ReviewDialog";
-import { BookingSessionsAPI } from '@/api/bookingSessions';
+import { BookingSessionsAPI } from "@/api/bookingSessions";
 
 interface Session {
-  id: number;
-  sessionType: {
-    expert: {
-      name: string;
-      avatar?: string;
-    };
-    name: string;
-    price: number;
-  };
+  id: string;
   sessionDate: string;
-  paymentStatus: string;
   startTime: string;
+  endTime: string;
   status: "PENDING" | "COMPLETED";
   notes?: string;
+  paymentStatus: string;
+  sessionType: {
+    id: string;
+    name: string;
+    price: string;
+    expert: {
+      id: string;
+      name: string;
+      avatar?: string;
+      email: string;
+    };
+  };
 }
 
 interface BookedSession {
@@ -39,6 +44,7 @@ interface BookedSession {
   sessionName: string;
   sessionPrice: number;
   time: string;
+  endtime: string;
   status: "upcoming" | "completed";
   notes?: string;
   type: string;
@@ -47,8 +53,7 @@ interface BookedSession {
   hasReviewed: boolean;
 }
 
-const statsColors =
- [
+const statsColors = [
   {
     gradient: "from-primary/10 via-primary/5 to-transparent",
     iconBg: "bg-primary/10",
@@ -68,50 +73,82 @@ const statsColors =
     gradient: "from-blue-50 via-blue-25 to-transparent",
     iconBg: "bg-blue-100",
     textColor: "text-blue-700",
-  }
+  },
 ];
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data: dashboardStats = [], isLoading: statsLoading } = useDashboardStats();
 
-  const { data: apiSessions = [], isLoading, error } = useQuery<Session[]>({
+  // Fetch completed courses count
+  const {
+    data: completedCount = 0,
+    isLoading: isCompletedLoading,
+    error: completedError,
+  } = useQuery<number>({
+    queryKey: ["completedCoursesCount", user?.id],
+    queryFn: () => CoursesExpertAPI.getCompletedCoursesCount(user!.id),
+    enabled: !!user?.id,
+  });
+
+  // Fetch total enrolled courses
+  const {
+    data: enrollmentLength = 0,
+    isLoading: isEnrolledLoading,
+    error: enrolledError,
+  } = useQuery<number>({
+    queryKey: ["enrollmentLength", user?.id],
+    queryFn: () => CoursesExpertAPI.getEnrollmentLength(user?.id || ""),
+    enabled: !!user?.id,
+  });
+
+  // Fetch booked sessions
+  const { data: apiSessions = [], isLoading: sessionsLoading, error: sessionsError } = useQuery<Session[]>({
     queryKey: ["bookedSessions", user?.id],
     queryFn: () => BookingSessionsAPI.getBooking(user?.id || ""),
     enabled: !!user?.id,
   });
 
   // Map API sessions to BookedSession format
-  const sessions: BookedSession[] = apiSessions.map((session) => ({
-    id: session.id,
-    expertName: session.sessionType.expert.name,
-    avatar: session.sessionType.expert.avatar,
-    date: new Date(session.sessionDate).toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }),
-    paymentStatus: session.paymentStatus,
-    sessionName: session.sessionType.name,
-    sessionPrice: session.sessionType.price,
-    time: session.startTime,
-    status: session.status === "PENDING" ? "upcoming" : "completed",
-    notes: session.notes,
-    type: session.sessionType.name, // Map sessionName to type
-    duration: "1 hr", // Hardcoded; adjust if API provides duration
-    canReview: session.status === "COMPLETED" && session.paymentStatus === "PAID",
-    hasReviewed: false, // Initialize as false; updated via handleReviewSubmitted
-  }));
+  const sessions: BookedSession[] = apiSessions.map((session, index) => {
+    const start = session.startTime.split(":").map(Number);
+    const end = session.endTime.split(":").map(Number);
+    const startMinutes = start[0] * 60 + start[1];
+    const endMinutes = end[0] * 60 + end[1];
+    const durationMinutes = endMinutes - startMinutes;
+    const durationHours = durationMinutes > 0 ? durationMinutes / 60 : 0;
+    const durationStr = `${Math.floor(durationHours)} hr${Math.floor(durationHours) !== 1 ? "s" : ""}`;
+
+    return {
+      id: index + 1, // Use index as a fallback ID
+      expertName: session.sessionType.expert.name,
+      avatar: session.sessionType.expert.avatar,
+      date: new Date(session.sessionDate).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      }),
+      paymentStatus: session.paymentStatus,
+      sessionName: session.sessionType.name,
+      sessionPrice: parseFloat(session.sessionType.price),
+      time: session.startTime,
+      endtime: session.endTime,
+      status: session.status === "COMPLETED" ? "completed" : "upcoming",
+      notes: session.notes,
+      type: session.sessionType.name,
+      duration: durationStr,
+      canReview: session.status === "COMPLETED" && session.paymentStatus === "PAID",
+      hasReviewed: false,
+    };
+  });
 
   const upcomingSessions = sessions.filter((session) => session.status === "upcoming");
   const completedSessions = sessions.filter((session) => session.status === "completed");
   const [completedSessionsState, setCompletedSessionsState] = useState(completedSessions);
 
-  // Update state when completedSessions changes
-  useState(() => {
+  useEffect(() => {
     setCompletedSessionsState(completedSessions);
-  });
+  }, [completedSessions]);
 
   const handleReviewSubmitted = (sessionId: number) => {
     setCompletedSessionsState((prev) =>
@@ -121,19 +158,35 @@ const Dashboard = () => {
     );
   };
 
-  function formatTo12Hour(time) {
+  function formatTo12Hour(time: string) {
     const [hour, minute] = time.split(":");
     const date = new Date();
-    date.setHours(hour, minute);
-    return date.toLocaleString('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true
+    date.setHours(parseInt(hour), parseInt(minute));
+    return date.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
     });
   }
 
-  const defaultStats = 
-  [
+  const completionPercentage =
+    enrollmentLength > 0 ? Math.round((completedCount / enrollmentLength) * 100) : 0;
+
+  // Calculate total hours of therapy
+  const [totalHours, setTotalHours] = useState(0);
+  useEffect(() => {
+    const hours = completedSessions.reduce((acc, session) => {
+      const start = session.time.split(":").map(Number);
+      const end = session.endtime.split(":").map(Number);
+      const startMinutes = start[0] * 60 + start[1];
+      const endMinutes = end[0] * 60 + end[1];
+      const durationMinutes = endMinutes - startMinutes;
+      return acc + (durationMinutes > 0 ? durationMinutes / 60 : 0);
+    }, 0);
+    setTotalHours(Math.round(hours * 10) / 10); // Round to 1 decimal place
+  }, [completedSessions]);
+
+  const defaultStats = [
     {
       title: "Total Sessions",
       value: upcomingSessions.length + completedSessions.length,
@@ -142,27 +195,28 @@ const Dashboard = () => {
     },
     {
       title: "Hours of Therapy",
-      value: "24.5",
+      value: totalHours > 0 ? `${totalHours}` : "0.0",
       icon: Clock,
-      change: "+4.2 hours",
+      change: `+${totalHours > 0 ? totalHours : 0} hours`,
     },
     {
-      title: "Progress Score",
-      value: "85%",
-      icon: TrendingUp,
-      change: "+12% improvement",
+      title: "Course Progress",
+      value: `${completionPercentage}%`,
+      icon: BookOpen,
+      change: `+${completedCount} completed`,
     },
     {
       title: "Completed Goals",
-      value: "7/10",
+      value: `${completedCount}/${enrollmentLength}`,
       icon: CheckCircle,
-      change: "3 remaining",
+      change: `${enrollmentLength - completedCount} remaining`,
     },
   ];
 
-  const stats = dashboardStats.length > 8 ? dashboardStats : defaultStats;
+  const stats = defaultStats;
 
-  if (isLoading || statsLoading) {
+  // Loading or Error States
+  if (isCompletedLoading || isEnrolledLoading || sessionsLoading) {
     return (
       <motion.div
         className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20"
@@ -177,10 +231,7 @@ const Dashboard = () => {
           transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
         >
           <div className="flex items-center justify-between p-6">
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
+            <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.4 }}>
               <SidebarTrigger />
             </motion.div>
             <motion.h1
@@ -200,17 +251,14 @@ const Dashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
         >
-          <div className="text-lg text-muted-foreground">
-            Loading Dashboard details...
-          </div>
+          <div className="text-lg text-muted-foreground">Loading Dashboard details...</div>
         </motion.div>
       </motion.div>
     );
   }
 
-  if (error) {
-    // Check for authentication errors (401, 403)
-    const errorStatus = (error as any).response?.status;
+  if (completedError || enrolledError || sessionsError) {
+    const errorStatus = (sessionsError as any)?.response?.status || (completedError as any)?.response?.status || (enrolledError as any)?.response?.status;
     if (errorStatus === 401 || errorStatus === 403) {
       localStorage.removeItem("token");
       navigate("/login");
@@ -229,10 +277,7 @@ const Dashboard = () => {
           transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
         >
           <div className="flex items-center justify-between p-6">
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
+            <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.4 }}>
               <SidebarTrigger />
             </motion.div>
             <motion.h1
@@ -253,9 +298,7 @@ const Dashboard = () => {
           transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
         >
           <div className="text-center text-red-600">
-            Error loading sessions: {(error as any).response?.data?.message || error.message}
-            <br />
-            Please try again later or contact support.
+            Error loading dashboard: {(sessionsError as any)?.response?.data?.message || (completedError as any)?.response?.data?.message || (enrolledError as any)?.response?.data?.message || "Please try again later or contact support."}
           </div>
         </motion.div>
       </motion.div>
@@ -276,10 +319,7 @@ const Dashboard = () => {
         transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
       >
         <div className="flex items-center justify-between p-6">
-          <motion.div
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.4 }}            
-          >
+          <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.4 }}>
             <SidebarTrigger />
           </motion.div>
           <motion.h1
@@ -297,7 +337,7 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
         {/* Welcome Section */}
         <motion.div
-          className="text-center py-6"  
+          className="text-center py-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
@@ -432,7 +472,7 @@ const Dashboard = () => {
                   </motion.div>
                 ) : (
                   <AnimatePresence>
-                  {upcomingSessions.slice(0, 2).map((session, index) => (
+                    {upcomingSessions.slice(0, 2).map((session, index) => (
                       <motion.div
                         key={session.id}
                         initial={{ opacity: 0, x: -20 }}
@@ -653,15 +693,15 @@ const Dashboard = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 2.7, ease: "easeInOut" }}
                 >
-                  <span className="text-sm font-medium text-muted-foreground">Overall Mental Wellness</span>
-                  <span className="text-lg font-bold text-foreground">85%</span>
+                  <span className="text-sm font-medium text-muted-foreground">Overall Course Progress</span>
+                  <span className="text-lg font-bold text-foreground">{completionPercentage}%</span>
                 </motion.div>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 0.8, delay: 2.8, ease: "easeInOut" }}
                 >
-                  <Progress value={85} className="h-3" />
+                  <Progress value={completionPercentage} className="h-3" />
                 </motion.div>
               </motion.div>
               
@@ -677,15 +717,15 @@ const Dashboard = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 3.0, ease: "easeInOut" }}
                 >
-                  <span className="text-sm font-medium text-muted-foreground">Anxiety Management</span>
-                  <span className="text-lg font-bold text-foreground">58%</span>
+                  <span className="text-sm font-medium text-muted-foreground">Completed Courses</span>
+                  <span className="text-lg font-bold text-foreground">{completedCount}</span>
                 </motion.div>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 0.8, delay: 3.1, ease: "easeInOut" }}
                 >
-                  <Progress value={58} className="h-3" />
+                  <Progress value={(completedCount / enrollmentLength) * 100 || 0} className="h-3" />
                 </motion.div>
               </motion.div>
               
@@ -701,15 +741,15 @@ const Dashboard = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 3.3, ease: "easeInOut" }}
                 >
-                  <span className="text-sm font-medium text-muted-foreground">Confidence Building</span>
-                  <span className="text-lg font-bold text-foreground">92%</span>
+                  <span className="text-sm font-medium text-muted-foreground">Total Enrolled</span>
+                  <span className="text-lg font-bold text-foreground">{enrollmentLength}</span>
                 </motion.div>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 0.8, delay: 3.4, ease: "easeInOut" }}
                 >
-                  <Progress value={92} className="h-3" />
+                  <Progress value={100} className="h-3" /> 
                 </motion.div>
               </motion.div>
             </CardContent>

@@ -274,6 +274,7 @@ const CourseDetail = () => {
                 courseId={id}
                 lessonId={currentLessonId || ""}
                 completed={currentLesson.completed}
+                allLessons={allLessons.length}
               />
               <Card>
                 <CardHeader>
