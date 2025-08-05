@@ -12,7 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import axios from "@/lib/axios";
-
+import { CustomLoader } from "@/components/CustomLoader";
 interface FAQCategory {
   id: number;
   category: string;
@@ -58,21 +58,43 @@ const FAQ = () => {
     setSearchQuery("");
   };
 
+  // if (loading) {
+  //   return (
+  //     <motion.div
+  //       className="min-h-screen flex items-center justify-center"
+  //       initial={{ opacity: 0 }}
+  //       animate={{ opacity: 1 }}
+  //       transition={{ duration: 0.5 }}
+  //     >
+  //       <motion.p
+  //         className="text-muted-foreground text-lg"
+  //         animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+  //         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+  //       >
+  //         Loading FAQs...
+  //       </motion.p>
+  //     </motion.div>
+  //   );
+  // }
+
   if (loading) {
     return (
       <motion.div
-        className="min-h-screen flex items-center justify-center"
+        className="min-h-screen flex items-center justify-center relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <motion.p
-          className="text-muted-foreground text-lg"
-          animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          Loading FAQs...
-        </motion.p>
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+          <CustomLoader />
+          <motion.p
+            className="text-lg text-muted-foreground"
+            animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            Loading FAQs...
+          </motion.p>
+        </div>
       </motion.div>
     );
   }

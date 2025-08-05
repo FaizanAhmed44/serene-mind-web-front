@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { TrainingSessionAPI } from '@/api/trainingsession';
 import { Calendar, Filter, Search ,CheckCircle, TrendingUp} from 'lucide-react';
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { CustomLoader } from "@/components/CustomLoader";
 
 const TrainingSessions: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
@@ -46,10 +47,56 @@ const TrainingSessions: React.FC = () => {
     { value: 'live', label: 'Live' },
   ];
 
+  // if (isLoading) {
+  //   return (
+  //     <motion.div
+  //       className="min-h-screen bg-background"
+  //       initial={{ opacity: 0 }}
+  //       animate={{ opacity: 1 }}
+  //       transition={{ duration: 0.5 }}
+  //     >
+  //       <motion.div
+  //         className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+  //         initial={{ y: -50, opacity: 0 }}
+  //         animate={{ y: 0, opacity: 1 }}
+  //         transition={{ duration: 0.4, delay: 0.1 }}
+  //       >
+  //         <div className="flex items-center justify-between p-4">
+  //           <motion.div
+  //             whileHover={{ scale: 1.1 }}
+  //             transition={{ duration: 0.3 }}
+  //           >
+  //             <SidebarTrigger />
+  //           </motion.div>
+  //           <motion.h1
+  //             className="text-xl font-semibold text-foreground truncate"
+  //             initial={{ x: -20, opacity: 0 }}
+  //             animate={{ x: 0, opacity: 1 }}
+  //             transition={{ duration: 0.4, delay: 0.2 }}
+  //           >
+  //             Loading...
+  //           </motion.h1>
+  //           <div className="w-10" />
+  //         </div>
+  //       </motion.div>
+  //       <motion.div
+  //         className="max-w-7xl mx-auto px-6 py-8"
+  //         initial={{ opacity: 0 }}
+  //         animate={{ opacity: 1 }}
+  //         transition={{ duration: 0.4, delay: 0.3 }}
+  //       >
+  //         <div className="text-center text-muted-foreground">
+  //           Loading training sessions...
+  //         </div>
+  //       </motion.div>
+  //     </motion.div>
+  //   );
+  // }
+
   if (isLoading) {
     return (
       <motion.div
-        className="min-h-screen bg-background"
+        className="min-h-screen bg-background relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -79,14 +126,13 @@ const TrainingSessions: React.FC = () => {
           </div>
         </motion.div>
         <motion.div
-          className="max-w-7xl mx-auto px-6 py-8"
+          className="absolute inset-0 flex flex-col items-center justify-center gap-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <div className="text-center text-muted-foreground">
-            Loading training sessions...
-          </div>
+          <CustomLoader />
+          <div className="text-lg text-muted-foreground">Loading training sessions...</div>
         </motion.div>
       </motion.div>
     );
