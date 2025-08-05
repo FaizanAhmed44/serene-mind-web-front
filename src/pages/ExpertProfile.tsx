@@ -80,24 +80,7 @@ const ExpertProfile = () => {
     );
   }
 
-  // if (isLoading || sessionTypesLoading || availabilitySlotsLoading) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
-  //       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
-  //         <div className="flex items-center justify-between p-4">
-  //           <SidebarTrigger />
-  //           <h1 className="text-xl font-semibold text-foreground">
-  //             Expert Profile
-  //           </h1>
-  //           <div className="w-10" />
-  //         </div>
-  //       </div>
-  //       <div className="flex items-center justify-center min-h-96">
-  //         <p className="text-muted-foreground">Loading expert profile...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+
 
   if (error || !expert || sessionTypesError || availabilitySlotsError) {
     return (

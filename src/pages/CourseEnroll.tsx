@@ -133,16 +133,6 @@ const CourseEnroll = () => {
 
     enrollCourse();
   };
-
-  // if (isEnrollPending) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
-  //       <div className="text-center">
-  //         <h1 className="text-2xl font-bold text-foreground mb-4">Loading...</h1>
-  //       </div>
-  //     </div>
-  //   );
-  // }
   if (isEnrollPending) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 relative">

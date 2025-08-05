@@ -16,6 +16,7 @@ import { useUserProfile, useUpdateUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { CoursesExpertAPI } from "@/api/courses";
+import { CustomLoader } from "@/components/CustomLoader";
 
 interface UserData {
   name: string;
@@ -65,7 +66,7 @@ const UserProfile = () => {
 
   if (isLoading || isCompletedLoading || isEnrolledLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background relative">
         <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
           <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
             <SidebarTrigger />
@@ -73,12 +74,13 @@ const UserProfile = () => {
             <div className="w-20" />
           </div>
         </div>
-        <div className="flex items-center justify-center min-h-96">
-          <motion.p 
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+          <CustomLoader />
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="text-muted-foreground"
+            className="text-lg text-muted-foreground"
           >
             Loading profile...
           </motion.p>

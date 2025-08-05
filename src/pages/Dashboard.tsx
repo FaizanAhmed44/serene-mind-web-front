@@ -216,48 +216,6 @@ const Dashboard = () => {
 
   const stats = defaultStats;
 
-  // Loading or Error States
-  // if (isCompletedLoading || isEnrolledLoading || sessionsLoading) {
-  //   return (
-  //     <motion.div
-  //       className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20"
-  //       initial={{ opacity: 0 }}
-  //       animate={{ opacity: 1 }}
-  //       transition={{ duration: 0.5, ease: "easeInOut" }}
-  //     >
-  //       <motion.div
-  //         className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
-  //         initial={{ y: -50, opacity: 0 }}
-  //         animate={{ y: 0, opacity: 1 }}
-  //         transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
-  //       >
-  //         <div className="flex items-center justify-between p-6">
-  //           <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.4 }}>
-  //             <SidebarTrigger />
-  //           </motion.div>
-  //           <motion.h1
-  //             className="text-xl font-semibold text-foreground"
-  //             initial={{ x: -20, opacity: 0 }}
-  //             animate={{ x: 0, opacity: 1 }}
-  //             transition={{ duration: 0.4, delay: 0.2, ease: "easeInOut" }}
-  //           >
-  //             Dashboard
-  //           </motion.h1>
-  //           <div className="w-10" />
-  //         </div>
-  //       </motion.div>
-  //       <motion.div
-  //         className="p-6 flex items-center justify-center"
-  //         initial={{ opacity: 0, y: 20 }}
-  //         animate={{ opacity: 1, y: 0 }}
-  //         transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
-  //       >
-  //         <div className="text-lg text-muted-foreground">Loading Dashboard details...</div>
-  //       </motion.div>
-  //     </motion.div>
-  //   );
-  // }
-
   if (isCompletedLoading || isEnrolledLoading || sessionsLoading) {
     return (
       <motion.div

@@ -58,25 +58,7 @@ const FAQ = () => {
     setSearchQuery("");
   };
 
-  // if (loading) {
-  //   return (
-  //     <motion.div
-  //       className="min-h-screen flex items-center justify-center"
-  //       initial={{ opacity: 0 }}
-  //       animate={{ opacity: 1 }}
-  //       transition={{ duration: 0.5 }}
-  //     >
-  //       <motion.p
-  //         className="text-muted-foreground text-lg"
-  //         animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-  //         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-  //       >
-  //         Loading FAQs...
-  //       </motion.p>
-  //     </motion.div>
-  //   );
-  // }
-
+  
   if (loading) {
     return (
       <motion.div

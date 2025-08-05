@@ -91,22 +91,7 @@ const CourseDetail = () => {
     },
   });
 
-  // if (courseLoading || (isEnrolled && progressLoading)) {
-  //   return (
-  //     <div className="min-h-screen bg-background">
-  //       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
-  //         <div className="flex items-center justify-between p-4">
-  //           <SidebarTrigger />
-  //           <h1 className="text-xl font-semibold truncate">Loading...</h1>
-  //           <div className="w-10" />
-  //         </div>
-  //       </div>
-  //       <div className="container mx-auto px-4 py-6">
-  //         <div className="text-center">Loading course details...</div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+
 
   if (courseLoading || (isEnrolled && progressLoading)) {
     return (

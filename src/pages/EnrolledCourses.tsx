@@ -60,52 +60,6 @@ const EnrolledCourses = () => {
     setSearchQuery("");
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <motion.div
-  //       className="min-h-screen bg-background"
-  //       initial={{ opacity: 0 }}
-  //       animate={{ opacity: 1 }}
-  //       transition={{ duration: 0.5 }}
-  //     >
-  //       <motion.div
-  //         className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
-  //         initial={{ y: -50, opacity: 0 }}
-  //         animate={{ y: 0, opacity: 1 }}
-  //         transition={{ duration: 0.4, delay: 0.1 }}
-  //       >
-  //         <div className="flex items-center justify-between p-4">
-  //           <motion.div
-  //             whileHover={{ scale: 1.1 }}
-  //             transition={{ duration: 0.3 }}
-  //           >
-  //             <SidebarTrigger />
-  //           </motion.div>
-  //           <motion.h1
-  //             className="text-xl font-semibold text-foreground truncate"
-  //             initial={{ x: -20, opacity: 0 }}
-  //             animate={{ x: 0, opacity: 1 }}
-  //             transition={{ duration: 0.4, delay: 0.2 }}
-  //           >
-  //             Loading...
-  //           </motion.h1>
-  //           <div className="w-10" />
-  //         </div>
-  //       </motion.div>
-  //       <motion.div
-  //         className="container mx-auto px-4 py-12"
-  //         initial={{ opacity: 0 }}
-  //         animate={{ opacity: 1 }}
-  //         transition={{ duration: 0.4, delay: 0.3 }}
-  //       >
-  //         <div className="text-center text-muted-foreground">
-  //           Loading enrolled courses...
-  //         </div>
-  //       </motion.div>
-  //     </motion.div>
-  //   );
-  // }
-
   if (isLoading) {
     return (
       <motion.div
