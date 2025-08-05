@@ -14,6 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { CoursesExpertAPI } from "@/api/courses";
 import type { Course } from "@/data/types/course";
 import { useAuth } from "@/hooks/useAuth";
+import { CustomLoader } from "@/components/CustomLoader";
 
 
 interface Review {
@@ -90,9 +91,26 @@ const CourseDetail = () => {
     },
   });
 
+  // if (courseLoading || (isEnrolled && progressLoading)) {
+  //   return (
+  //     <div className="min-h-screen bg-background">
+  //       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
+  //         <div className="flex items-center justify-between p-4">
+  //           <SidebarTrigger />
+  //           <h1 className="text-xl font-semibold truncate">Loading...</h1>
+  //           <div className="w-10" />
+  //         </div>
+  //       </div>
+  //       <div className="container mx-auto px-4 py-6">
+  //         <div className="text-center">Loading course details...</div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   if (courseLoading || (isEnrolled && progressLoading)) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background relative">
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
           <div className="flex items-center justify-between p-4">
             <SidebarTrigger />
@@ -100,8 +118,9 @@ const CourseDetail = () => {
             <div className="w-10" />
           </div>
         </div>
-        <div className="container mx-auto px-4 py-6">
-          <div className="text-center">Loading course details...</div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+          <CustomLoader />
+          <div className="text-lg text-muted-foreground">Loading course details...</div>
         </div>
       </div>
     );

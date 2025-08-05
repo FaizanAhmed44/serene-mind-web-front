@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ExpertsAPI } from "@/api/experts";
 import { ExpertProfile } from "@/data/types/expert";
+import { CustomLoader } from "@/components/CustomLoader";
 
 
 const Experts = () => {
@@ -48,10 +49,60 @@ const Experts = () => {
     setSearchQuery("");
   };
 
+  // if (isLoading) {
+  //   return (
+  //     <motion.div
+  //       className="min-h-screen bg-gradient-to-br from-background to-muted/30"
+  //       initial={{ opacity: 0 }}
+  //       animate={{ opacity: 1 }}
+  //       transition={{ duration: 0.5 }}
+  //     >
+  //       <motion.div
+  //         className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+  //         initial={{ y: -50, opacity: 0 }}
+  //         animate={{ y: 0, opacity: 1 }}
+  //         transition={{ duration: 0.5, delay: 0.2 }}
+  //       >
+  //         <div className="flex items-center justify-between p-4">
+  //           <motion.div
+  //             whileHover={{ rotate: 360 }}
+  //             transition={{ duration: 0.4 }}
+  //           >
+  //             <SidebarTrigger />
+  //           </motion.div>
+  //           <motion.h1
+  //             className="text-xl font-semibold text-foreground"
+  //             initial={{ x: -20, opacity: 0 }}
+  //             animate={{ x: 0, opacity: 1 }}
+  //             transition={{ duration: 0.5, delay: 0.3 }}
+  //           >
+  //             Find Experts
+  //           </motion.h1>
+  //           <div className="w-10" />
+  //         </div>
+  //       </motion.div>
+  //       <motion.div
+  //         className="flex items-center justify-center min-h-96"
+  //         initial={{ opacity: 0, scale: 0.8 }}
+  //         animate={{ opacity: 1, scale: 1 }}
+  //         transition={{ duration: 0.5, delay: 0.4 }}
+  //       >
+  //         <motion.p
+  //           className="text-muted-foreground"
+  //           animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+  //           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+  //         >
+  //           Loading experts...
+  //         </motion.p>
+  //       </motion.div>
+  //     </motion.div>
+  //   );
+  // }
+
   if (isLoading) {
     return (
       <motion.div
-        className="min-h-screen bg-gradient-to-br from-background to-muted/30"
+        className="min-h-screen bg-gradient-to-br from-background to-muted/30 relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -81,13 +132,14 @@ const Experts = () => {
           </div>
         </motion.div>
         <motion.div
-          className="flex items-center justify-center min-h-96"
+          className="absolute inset-0 flex flex-col items-center justify-center gap-4"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
+          <CustomLoader />
           <motion.p
-            className="text-muted-foreground"
+            className="text-lg text-muted-foreground"
             animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
           >

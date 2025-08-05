@@ -25,6 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { CoursesExpertAPI } from "@/api/courses";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CustomLoader } from "@/components/CustomLoader";
 
 const CourseEnroll = () => {
   const { id } = useParams();
@@ -133,16 +134,25 @@ const CourseEnroll = () => {
     enrollCourse();
   };
 
+  // if (isEnrollPending) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <h1 className="text-2xl font-bold text-foreground mb-4">Loading...</h1>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   if (isEnrollPending) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Loading...</h1>
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 relative">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+          <CustomLoader />
+          <div className="text-lg text-muted-foreground">Loading course enrollment...</div>
         </div>
       </div>
     );
   }
-
   if (!course) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">

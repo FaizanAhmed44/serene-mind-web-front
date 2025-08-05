@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { CoursesExpertAPI } from "@/api/courses";
+import { CustomLoader } from "@/components/CustomLoader";
 
 const CourseSuccess = () => {
   const { id } = useParams();
@@ -46,11 +47,22 @@ const CourseSuccess = () => {
     return () => clearInterval(timer);
   }, [id, navigate]);
 
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <h1 className="text-2xl font-bold text-foreground mb-4">Loading...</h1>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Loading...</h1>
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 relative">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+          <CustomLoader />
+          <div className="text-lg text-muted-foreground">Loading course success...</div>
         </div>
       </div>
     );
