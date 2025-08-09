@@ -1,6 +1,5 @@
-
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { AuthHeader } from "@/components/auth/AuthHeader";
@@ -10,6 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { signIn, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Redirect if already logged in
   useEffect(() => {
@@ -17,6 +17,47 @@ const Login = () => {
       navigate("/dashboard", { replace: true });
     }
   }, [user, navigate]);
+
+  // Handle verification query parameters
+  useEffect(() => {
+    const verified = searchParams.get('verified');
+    const error = searchParams.get('error');
+
+    if (verified === 'true') {
+      toast({
+        title: "Email Verified",
+        description: "Your email has been successfully verified. Please log in.",
+      });
+    } else if (verified === 'already_verified') {
+      toast({
+        title: "Email Already Verified",
+        description: "Your email is already verified. Please log in.",
+      });
+    } else if (error === 'no_token') {
+      toast({
+        title: "Verification Error",
+        description: "Verification token is missing.",
+        variant: "destructive",
+      });
+    } else if (error === 'invalid_token') {
+      toast({
+        title: "Verification Error",
+        description: "Invalid or expired verification token.",
+        variant: "destructive",
+      });
+    } else if (error === 'verification_failed') {
+      toast({
+        title: "Verification Failed",
+        description: "An error occurred during verification. Please try again.",
+        variant: "destructive",
+      });
+    }
+
+    // Clear query parameters to prevent repeated toasts on page refresh
+    if (verified || error) {
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams, toast]);
 
   const handleLogin = async (email: string, password: string) => {
     try {
