@@ -372,7 +372,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.01 }}
                   transition={{ duration: 0.2 }}
                 >
                   <Button variant="destructive" className="h-10 text-sm">Delete Account</Button>

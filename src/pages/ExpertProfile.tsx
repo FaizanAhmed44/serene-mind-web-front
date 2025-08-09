@@ -120,13 +120,24 @@ const ExpertProfile = () => {
         <Card className="animate-fade-in">
           <CardContent className="p-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="text-center lg:text-left">
+              <div className="text-center lg:text-left">                
                 <div className="relative flex justify-center flex-col items-center mb-4">
-                  <img
-                    src={expert.avatar}
-                    alt={expert.name}
-                    className="w-24 h-24 rounded-full object-cover mx-auto lg:mx-0"
-                  />
+                  {expert.avatar ? (
+                    <img
+                      src={expert.avatar}
+                      alt={expert.name}
+                      className="w-24 h-24 rounded-full object-cover mx-auto lg:mx-0"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-full bg-primary/90 flex items-center justify-center text-white text-xl font-bold">
+                      {expert.name
+                        ?.split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()}
+                    </div>
+                  )}
+                  
                   <h1 className="text-xl font-bold text-foreground mt-2">
                     {expert.name}
                   </h1>
@@ -134,6 +145,7 @@ const ExpertProfile = () => {
                     {expert.title}
                   </p>
                 </div>
+
                 <div className="flex items-center justify-between text-xs mb-5">
                   <div className="flex items-center gap-1.5">
                     <Star

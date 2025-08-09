@@ -157,11 +157,7 @@ const CourseSuccess = () => {
                   >
                     <Play className="h-4 w-4 mr-2" />
                     Start Learning
-                  </Button>
-                  <Button variant="outline" size="lg">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Resources
-                  </Button>
+                  </Button>                  
                 </div>
               </div>
             </div>

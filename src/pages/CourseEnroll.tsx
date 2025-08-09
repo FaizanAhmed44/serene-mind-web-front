@@ -218,7 +218,7 @@ const CourseEnroll = () => {
             </Card>
 
             {/* Personal Information */}
-            <Card className="animate-slide-up">
+            {/* <Card className="animate-slide-up">
               <CardHeader>
                 <CardTitle>Personal Information</CardTitle>
               </CardHeader>
@@ -254,7 +254,7 @@ const CourseEnroll = () => {
                   />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Payment Information */}
             <Card className="animate-slide-up">
