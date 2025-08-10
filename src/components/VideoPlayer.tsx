@@ -66,33 +66,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
   }
 
-  // const isYouTube = isYouTubeUrl(videoUrl);
-  // const videoId = isYouTube ? extractYouTubeId(videoUrl) : null;
-  // const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : null;
-
-  // return (
-  //   <div className="space-y-4">
-  //     <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-  //       {isYouTube && embedUrl ? (
-  //         <iframe
-  //           className="w-full h-full"
-  //           src={embedUrl}
-  //           title={title}
-  //           frameBorder="0"
-  //           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  //           allowFullScreen
-  //         ></iframe>
-  //       ) : (
-  //         <video
-  //           controls
-  //           src={videoUrl}
-  //           className="w-full h-full object-cover"
-  //           title={title}
-  //         >
-  //           Your browser does not support the video tag.
-  //         </video>
-  //       )}
-  //     </div>
   const isYouTube = isYouTubeUrl(videoUrl);
   const videoId = isYouTube ? extractYouTubeId(videoUrl) : null;
   const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : null;

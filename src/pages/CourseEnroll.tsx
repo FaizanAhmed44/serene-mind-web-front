@@ -376,10 +376,7 @@ const CourseEnroll = () => {
                     <Users className="h-4 w-4 text-green-500" />
                     <span>Expert support</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="h-4 w-4 text-green-500" />
-                    <span>30-day money-back guarantee</span>
-                  </div>  
+
                 </div>
 
                 {/* Pricing */}

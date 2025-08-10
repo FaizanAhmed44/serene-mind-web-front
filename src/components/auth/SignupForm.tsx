@@ -77,7 +77,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading }) => 
             <input
               id="terms"
               type="checkbox"
-              className="h-4 w-4 rounded border-gray-300"
+              className="h-4 w-4 rounded border-gray-300 accent-primary"
               required
               disabled={loading}
             />

@@ -268,7 +268,8 @@ const CourseDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               <VideoPlayer
-                videoUrl="https://youtu.be/_hik41Fm2PQ?si=YQWyQiiwS0k6bYWZ"
+                // videoUrl="https://youtu.be/_hik41Fm2PQ?si=YQWyQiiwS0k6bYWZ"
+                videoUrl="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                 title={currentLesson.title}
                 duration={currentLesson.duration}
                 hasNext={hasNext}

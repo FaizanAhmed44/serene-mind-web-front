@@ -216,7 +216,7 @@ const FAQ = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 50 }}
                   transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-                  whileHover={{ y: -10, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
+                  whileHover={{ y: -5, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
                 >
                   <Card>
                     <CardHeader>
@@ -300,7 +300,7 @@ const FAQ = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.4, delay: 0.3 }}
                     >
-                      Try searching with different keywords or browse our categories above.
+                      Try searching with different keywords about our categories above.
                     </motion.p>
                   </CardContent>
                 </Card>
@@ -315,7 +315,7 @@ const FAQ = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.9, ease: "easeOut" }}
-          whileHover={{ y: -10, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
+          whileHover={{ y: -5, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
         >
           <Card>
             <CardHeader>
