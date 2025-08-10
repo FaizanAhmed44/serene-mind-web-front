@@ -66,10 +66,37 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
   }
 
+  // const isYouTube = isYouTubeUrl(videoUrl);
+  // const videoId = isYouTube ? extractYouTubeId(videoUrl) : null;
+  // const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+
+  // return (
+  //   <div className="space-y-4">
+  //     <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+  //       {isYouTube && embedUrl ? (
+  //         <iframe
+  //           className="w-full h-full"
+  //           src={embedUrl}
+  //           title={title}
+  //           frameBorder="0"
+  //           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  //           allowFullScreen
+  //         ></iframe>
+  //       ) : (
+  //         <video
+  //           controls
+  //           src={videoUrl}
+  //           className="w-full h-full object-cover"
+  //           title={title}
+  //         >
+  //           Your browser does not support the video tag.
+  //         </video>
+  //       )}
+  //     </div>
   const isYouTube = isYouTubeUrl(videoUrl);
   const videoId = isYouTube ? extractYouTubeId(videoUrl) : null;
   const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : null;
-
+  
   return (
     <div className="space-y-4">
       <div className="aspect-video bg-muted rounded-lg overflow-hidden">
@@ -84,16 +111,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           ></iframe>
         ) : (
           <video
+            key={videoUrl} // ensures rerender when switching videos
             controls
+            preload="metadata"
             src={videoUrl}
             className="w-full h-full object-cover"
             title={title}
+            crossOrigin="anonymous"
           >
+            <track kind="captions" src="" label="English" />
             Your browser does not support the video tag.
           </video>
         )}
       </div>
-
+  
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
