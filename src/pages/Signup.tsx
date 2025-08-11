@@ -29,6 +29,17 @@ const Signup = () => {
       return;
     }
 
+    // Check if password contains at least one capital letter, one small letter, and one digit
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+    if (!passwordPattern.test(formData.password)) {
+      toast({
+        title: "Weak Password",
+        description: "Password must contain at least one uppercase letter, one lowercase letter, and one digit.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (formData.password.length < 6) {
       toast({
         title: "Password Too Short",

@@ -68,6 +68,7 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         blue: {
+          25: '#F5FAFF', 
           50: { 50: "rgba(239, 246, 255, 0.5)" },
           100: "#DBEAFE",
           500: "#3B82F6",

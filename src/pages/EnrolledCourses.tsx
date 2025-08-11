@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { CoursesExpertAPI } from "@/api/courses";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { CustomLoader } from "@/components/CustomLoader";
@@ -36,6 +38,7 @@ interface Enrollment {
 
 const EnrolledCourses = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { data: enrolledCourses = [], isLoading, error } = useQuery<Enrollment[]>({
     queryKey: ["enrolledCourses", user?.id],
     queryFn: () => CoursesExpertAPI.getEnrollment(user?.id || ""),
@@ -214,26 +217,52 @@ const EnrolledCourses = () => {
           </motion.div>
         </motion.div>
 
-        {enrolledCourses.length === 0 ? (
+        {enrolledCourses.length === 0 ? 
+        
+        (
           <motion.div
-            className="text-center py-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
           >
-            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
-              <BookOpen className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <motion.p
-              className="text-muted-foreground font-medium"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.7 }}
-            >
-              No enrolled courses yet.
-            </motion.p>
+            <Card className="text-center py-8 shadow-sm">
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
+                  <BookOpen className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">No enrolled courses yet.</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Start exploring courses and enrolled them to see here.
+                  </p>
+                  <Button onClick={() => navigate("/courses")}>Browse Courses</Button>
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
-        ) : filteredCourses.length === 0 ? (
+        ) 
+        
+        // (
+        //   <motion.div
+        //     className="text-center py-12"
+        //     initial={{ opacity: 0, y: 20 }}
+        //     animate={{ opacity: 1, y: 0 }}
+        //     transition={{ duration: 0.4, delay: 0.6 }}
+        //   >
+        //     <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
+        //       <BookOpen className="h-8 w-8 text-muted-foreground" />
+        //     </div>
+        //     <motion.p
+        //       className="text-muted-foreground font-medium"
+        //       initial={{ opacity: 0, y: 10 }}
+        //       animate={{ opacity: 1, y: 0 }}
+        //       transition={{ duration: 0.4, delay: 0.7 }}
+        //     >
+        //       No enrolled courses yet.
+        //     </motion.p>
+        //   </motion.div>
+        // ) 
+        : filteredCourses.length === 0 ? (
           <motion.div
             className="text-center py-12 text-muted-foreground"
             initial={{ opacity: 0, y: 20 }}

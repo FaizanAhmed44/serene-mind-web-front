@@ -324,7 +324,8 @@ const UserProfile = () => {
                             {userData.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
-                        {isEditing && (
+                        {isEditing && 
+                        (
                           <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
@@ -474,7 +475,7 @@ const UserProfile = () => {
                             <Label htmlFor={field.id} className="text-xs md:text-sm font-medium text-muted-foreground">
                               {field.label}
                             </Label>
-                            {isEditing ? (
+                            {isEditing && field.id !== "email"  ? (
                               <motion.div
                                 whileFocus={{ scale: 1.02 }}
                                 transition={{ duration: 0.2 }}

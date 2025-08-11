@@ -90,7 +90,7 @@ const Favorites = () => {
             </motion.p>
           </div>
 
-          {/* Search Bar */}
+          {favorites.length === 0  ? <div></div> : (        
           <motion.div
             className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2"
             initial={{ opacity: 0, y: 20 }}
@@ -117,7 +117,8 @@ const Favorites = () => {
                 </Button>
               )}
             </div>
-          </motion.div>
+          </motion.div>)  }
+          
         </motion.div>
 
         {/* Content */}

@@ -71,7 +71,9 @@ const statsColors = [
     textColor: "text-green-700",
   },
   {
-    gradient: "from-blue-50 via-blue-25 to-transparent",
+    // gradient: "from-blue-50 via-blue-100 to-transparent",
+
+    gradient: "from-blue-25 via-blue-25 to-transparent",
     iconBg: "bg-blue-100",
     textColor: "text-blue-700",
   },

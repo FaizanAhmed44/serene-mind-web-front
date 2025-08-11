@@ -11,9 +11,10 @@ import { Calendar, Filter, Clock, CheckCircle, BookOpen } from 'lucide-react';
 import { Session, BookedSession } from '@/data/types/bookedSession';
 import { BookingSessionsAPI } from '@/api/bookingSessions';
 import { CustomLoader } from "@/components/CustomLoader";
-
+import { useNavigate } from "react-router-dom";
 
 const BookedSessions: React.FC = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>('all');
   const { user } = useAuth();
 
@@ -244,32 +245,56 @@ const BookedSessions: React.FC = () => {
           </motion.p>
         </motion.div>
 
-        {sessions.length === 0 ? (
+        {sessions.length === 0 ?
+        (
           <motion.div
-            className="text-center py-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
           >
-            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
-              <BookOpen className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <motion.p
-              className="text-muted-foreground font-medium"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.7 }}
-            >
+            <Card className="text-center py-8 shadow-sm">
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
+                  <BookOpen className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">No Sessions yet</h3>
+                  <p className="text-muted-foreground mb-4">                    
               No booked sessions yet. Book a session with our expert therapists to get started.
-            </motion.p>
-            <Button
-              size="lg"
-              className="mt-4 px-8 py-3 rounded-xl font-medium bg-primary hover:bg-primary/90 transition-all duration-200"
-            >
-              Find Experts
-            </Button>
+                  </p>
+                  <Button onClick={() => navigate("/experts")}>Find Experts</Button>
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
-        ) : (
+        ) 
+        // (
+        //   <motion.div
+        //     className="text-center py-12"
+        //     initial={{ opacity: 0, y: 20 }}
+        //     animate={{ opacity: 1, y: 0 }}
+        //     transition={{ duration: 0.4, delay: 0.6 }}
+        //   >
+        //     <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
+        //       <BookOpen className="h-8 w-8 text-muted-foreground" />
+        //     </div>
+        //     <motion.p
+        //       className="text-muted-foreground font-medium"
+        //       initial={{ opacity: 0, y: 10 }}
+        //       animate={{ opacity: 1, y: 0 }}
+        //       transition={{ duration: 0.4, delay: 0.7 }}
+        //     >
+        //       No booked sessions yet. Book a session with our expert therapists to get started.
+        //     </motion.p>
+        //     <Button
+        //       size="lg"
+        //       className="mt-4 px-8 py-3 rounded-xl font-medium bg-primary hover:bg-primary/90 transition-all duration-200"
+        //     >
+        //       Find Experts
+        //     </Button>
+        //   </motion.div>
+        // )
+         : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {stats.map((stat, index) => (
