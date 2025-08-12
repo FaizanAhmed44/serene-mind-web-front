@@ -17,6 +17,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { CoursesExpertAPI } from "@/api/courses";
 import { CustomLoader } from "@/components/CustomLoader";
+import { BookingSessionsAPI } from '@/api/bookingSessions';
 
 interface UserData {
   name: string;
@@ -57,6 +58,17 @@ const UserProfile = () => {
     queryFn: () => CoursesExpertAPI.getCompletedCoursesCount(user!.id),
     enabled: !!user?.id,
   });
+    // Fetch total enrolled courses
+  const {
+    data: enrolledSessionLength = 0,
+    isLoading: isEnrolledSessionLoading,
+    error: enrolledSessionError,
+  } = useQuery<number>({
+    queryKey: ["enrolledSessionLength", user?.id],
+    queryFn: () => BookingSessionsAPI.getBookingLength(user?.id || ""),
+    enabled: !!user?.id,
+  });
+
 
   const { data: enrollmentLength = 0, isLoading:isEnrolledLoading, error:enrolledError } = useQuery<number>({
     queryKey: ["enrollmentLength", user?.id],
@@ -64,7 +76,7 @@ const UserProfile = () => {
     enabled: !!user?.id,
   });
 
-  if (isLoading || isCompletedLoading || isEnrolledLoading) {
+  if (isLoading || isCompletedLoading || isEnrolledLoading || isEnrolledSessionLoading) {
     return (
       <div className="min-h-screen bg-background relative">
         <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
@@ -89,7 +101,7 @@ const UserProfile = () => {
     );
   }
 
-  if (error || !userData || completedError || enrolledError) {
+  if (error || !userData || completedError || enrolledError || enrolledSessionError) {
     return (
       <div className="min-h-screen bg-background">
         <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
@@ -420,7 +432,7 @@ const UserProfile = () => {
                       {[
                         { label: "Courses Enrolled", value: enrollmentLength, key: "enrolled" },
                         { label: "Completed", value: completedCount, key: "completed" },
-                        { label: "Hours Learned", value: "45", key: "hours" },
+                        { label: "Enrolled Sessions", value: enrolledSessionLength, key: "hours" },
                       ].map((stat, index) => (
                         <motion.div 
                           key={stat.key}
