@@ -28,6 +28,8 @@ import BookedSessions from "./pages/BookedSessions";
 import LandingPage from "./pages/landing";
 import Courses from "./pages/Courses";
 import EnrolledCourses from "./pages/EnrolledCourses";
+import ProfileSettings from "./components/ProfileSettings";
+import PaymentHistory from "./components/PaymentHistory";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +70,8 @@ const App: React.FC = () => {
                             <Route path="/courses/:id" element={<CourseDetail />} />
                             <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
                             <Route path="/courses/:id/success" element={<CourseSuccess />} />
+                            <Route path="/payment-history" element={<PaymentHistory />} />
+                            <Route path="/settings" element={<ProfileSettings />} />
                             <Route path="*" element={<NotFound />} />
                           </Routes>
                         </main>
