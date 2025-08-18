@@ -269,7 +269,7 @@ const CourseDetail = () => {
             <div className="lg:col-span-2 space-y-6">
               <VideoPlayer
                 // videoUrl="https://youtu.be/_hik41Fm2PQ?si=YQWyQiiwS0k6bYWZ"
-                videoUrl="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                videoUrl={currentLesson.videoUrl}
                 title={currentLesson.title}
                 duration={currentLesson.duration}
                 hasNext={hasNext}
