@@ -33,6 +33,7 @@ const CourseDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const [showAll, setShowAll] = useState(false); // Declare showAll state
   const queryClient = useQueryClient();
   const { user } = useAuth(); 
   const isEnrolled = location.state?.isEnrolled;
@@ -375,56 +376,65 @@ const CourseDetail = () => {
                   </CardContent>
                 </Card>
               )}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Course Reviews</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {reviewsLoading ? (
-                    <div className="space-y-4">
-                      {[1, 2].map((i) => (
-                        <div key={i} className="animate-pulse">
-                          <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
-                          <div className="h-3 bg-muted rounded w-1/4 mb-2"></div>
-                          <div className="h-6 bg-muted rounded w-full"></div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : reviewsError ? (
-                    <p className="text-sm text-destructive">Failed to load reviews.</p>
-                  ) : reviews.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No reviews yet.</p>
-                  ) : (
-                    <div className="space-y-6">
-                      {reviews.map((review) => (
-                        <div key={review.id} className="border-b pb-4 last:border-b-0">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-sm font-semibold">{review.userName}</h4>
-                            <div className="flex space-x-1">
-                              {[1, 2, 3, 4, 5].map((star) => (
-                                <Star
-                                  key={star}
-                                  className={`h-4 w-4 ${
-                                    star <= review.rating ? "fill-primary text-primary" : "text-muted-foreground"
-                                  }`}
-                                />
-                              ))}
-                            </div>
+                  
+            <Card>
+              <CardHeader>
+                <CardTitle>Course Reviews</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {reviewsLoading ? (
+                  <div className="space-y-4">
+                    {[1, 2].map((i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
+                        <div className="h-3 bg-muted rounded w-1/4 mb-2"></div>
+                        <div className="h-6 bg-muted rounded w-full"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : reviewsError ? (
+                  <p className="text-sm text-destructive">Failed to load reviews.</p>
+                ) : reviews.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No reviews yet.</p>
+                ) : (
+                  <div className="space-y-6">
+                    {reviews.slice(0, showAll ? reviews.length : 3).map((review) => (
+                      <div key={review.id} className="border-b pb-4 last:border-b-0">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="text-sm font-semibold">{review.userName}</h4>
+                          <div className="flex space-x-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                className={`h-4 w-4 ${
+                                  star <= review.rating ? 'fill-primary text-primary' : 'text-muted-foreground'
+                                }`}
+                              />
+                            ))}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{review.comment}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(review.createdAt).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}
-                          </p>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                        <p className="text-sm text-muted-foreground mb-2">{review.comment}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(review.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
+                        </p>
+                      </div>
+                    ))}
+                    {reviews.length > 4 && (
+                      <button
+                        onClick={() => setShowAll(!showAll)}
+                        className="text-sm text-primary hover:underline mt-4"
+                      >
+                        {showAll ? 'Show Less' : 'See More'}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
             </div>
             <div>
               <CourseSidebar
