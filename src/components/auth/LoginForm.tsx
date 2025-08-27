@@ -23,57 +23,77 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading }) => {
   };
 
   return (
-    <Card className="animate-fade-in">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">Sign In</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <EmailField
-            value={email}
-            onChange={setEmail}
-            disabled={loading}
-          />
+    <div className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <EmailField
+          value={email}
+          onChange={setEmail}
+          disabled={loading}
+        />
 
-          <PasswordField
-            label="Password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={setPassword}
-            disabled={loading}
-          />
+        <PasswordField
+          label="Password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={setPassword}
+          disabled={loading}
+        />
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <input
-                id="remember"
-                type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 accent-primary"
-              />
-              <Label htmlFor="remember" className="text-sm">
-                Remember me
-              </Label>
-            </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <input
+              id="remember"
+              type="checkbox"
+              className="h-4 w-4 rounded border-input bg-background accent-primary focus:ring-2 focus:ring-ring"
+            />
+            <Label htmlFor="remember" className="text-sm font-medium">
+              Remember me
+            </Label>
           </div>
-
-          <Button type="submit" className="w-full " size="lg" disabled={loading}>
-            {loading ? "Signing In..." : "Sign In"}
-            {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link
-              to="/signup"
-              className="text-primary hover:underline font-medium"
-            >
-              Sign up
-            </Link>
-          </p>
+          <Link
+            to="/forgot-password"
+            className="text-sm text-primary hover:underline font-medium"
+          >
+            Forgot password?
+          </Link>
         </div>
-      </CardContent>
-    </Card>
+
+        <Button 
+          type="submit" 
+          className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg shadow-sm transition-all duration-200 hover:shadow-md" 
+          disabled={loading}
+        >
+          {loading ? (
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              <span>Signing in...</span>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <span>Sign in</span>
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          )}
+        </Button>
+      </form>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-border" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-background text-muted-foreground">New to Core Cognitive?</span>
+        </div>
+      </div>
+
+      <div className="text-center">
+        <Link
+          to="/signup"
+          className="inline-flex items-center justify-center w-full h-12 px-6 text-base font-semibold border border-border rounded-lg bg-background hover:bg-muted/50 text-foreground transition-all duration-200 hover:shadow-sm"
+        >
+          Create an account
+        </Link>
+      </div>
+    </div>
   );
 };
