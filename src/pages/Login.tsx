@@ -86,58 +86,85 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/10 flex">
-      {/* Left Side - Hero Section */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary/10 to-primary/5 items-center justify-center p-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-        <div className="relative z-10 max-w-md text-center space-y-6">
-          <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-8">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row">
+      {/* Left Side - Hero Section with Gradient */}
+      <div className="lg:w-1/2 w-full min-h-[40vh] lg:min-h-screen bg-gradient-to-br from-primary via-primary/90 to-secondary relative overflow-hidden flex items-center justify-center p-6 sm:p-8 lg:p-12">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-white/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.1),transparent)] bg-[size:20px_20px]" />
+        
+        {/* Content */}
+        <div className="relative z-10 max-w-lg text-center text-white space-y-6 lg:space-y-8">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 lg:mb-8">
             <img 
               src="/lovable-uploads/0d5f19e2-335b-46b8-85f6-4784451740ba.png" 
               alt="Core Cognitive Logo" 
-              className="w-12 h-12 rounded-full"
+              className="w-8 h-8 sm:w-12 sm:h-12 rounded-full"
             />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Transform Your Mind</h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Join thousands of learners on their journey to mental wellness and cognitive growth.
-          </p>
-          <div className="flex items-center justify-center space-x-8 pt-8">
+          
+          <div className="space-y-4">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
+              Transform Your Mind,
+              <br />
+              <span className="text-white/90">Transform Your Life</span>
+            </h1>
+            <p className="text-base sm:text-lg text-white/80 leading-relaxed max-w-md mx-auto">
+              Join thousands of learners on their journey to mental wellness and cognitive growth with expert-guided sessions.
+            </p>
+          </div>
+          
+          {/* Stats */}
+          <div className="flex items-center justify-center space-x-6 sm:space-x-8 pt-6 lg:pt-8">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">10k+</div>
-              <div className="text-sm text-muted-foreground">Active Learners</div>
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">10k+</div>
+              <div className="text-xs sm:text-sm text-white/70">Active Learners</div>
             </div>
+            <div className="w-px h-8 bg-white/30" />
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">500+</div>
-              <div className="text-sm text-muted-foreground">Expert Sessions</div>
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">500+</div>
+              <div className="text-xs sm:text-sm text-white/70">Expert Sessions</div>
+            </div>
+            <div className="w-px h-8 bg-white/30" />
+            <div className="text-center">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">95%</div>
+              <div className="text-xs sm:text-sm text-white/70">Success Rate</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-12">
-        <div className="w-full max-w-md space-y-8">
-          <div className="lg:hidden text-center mb-8">
+      <div className="lg:w-1/2 w-full flex items-center justify-center p-6 sm:p-8 lg:p-12 bg-background">
+        <div className="w-full max-w-md space-y-6 lg:space-y-8">
+          {/* Mobile Logo */}
+          <div className="lg:hidden text-center">
             <img 
               src="/lovable-uploads/0d5f19e2-335b-46b8-85f6-4784451740ba.png" 
               alt="Core Cognitive Logo" 
-              className="w-16 h-16 mx-auto rounded-full mb-4"
+              className="w-12 h-12 sm:w-16 sm:h-16 mx-auto rounded-full mb-4"
             />
           </div>
           
+          {/* Header */}
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-foreground">Welcome back</h2>
-            <p className="text-muted-foreground">Continue your learning journey with Core Cognitive</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Welcome back</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Continue your learning journey with Core Cognitive
+            </p>
           </div>
           
-          <LoginForm onSubmit={handleLogin} loading={authLoading} />
+          {/* Form */}
+          <div className="space-y-6">
+            <LoginForm onSubmit={handleLogin} loading={authLoading} />
+          </div>
           
-          <div className="text-center text-sm text-muted-foreground">
+          {/* Footer */}
+          <div className="text-center text-xs sm:text-sm text-muted-foreground">
             By signing in, you agree to our{" "}
-            <a href="#" className="text-primary hover:underline">Terms of Service</a>
+            <a href="#" className="text-primary hover:underline font-medium">Terms of Service</a>
             {" "}and{" "}
-            <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+            <a href="#" className="text-primary hover:underline font-medium">Privacy Policy</a>
           </div>
         </div>
       </div>
