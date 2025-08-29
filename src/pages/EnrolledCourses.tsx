@@ -243,26 +243,6 @@ const EnrolledCourses = () => {
           </motion.div>
         ) 
         
-        // (
-        //   <motion.div
-        //     className="text-center py-12"
-        //     initial={{ opacity: 0, y: 20 }}
-        //     animate={{ opacity: 1, y: 0 }}
-        //     transition={{ duration: 0.4, delay: 0.6 }}
-        //   >
-        //     <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
-        //       <BookOpen className="h-8 w-8 text-muted-foreground" />
-        //     </div>
-        //     <motion.p
-        //       className="text-muted-foreground font-medium"
-        //       initial={{ opacity: 0, y: 10 }}
-        //       animate={{ opacity: 1, y: 0 }}
-        //       transition={{ duration: 0.4, delay: 0.7 }}
-        //     >
-        //       No enrolled courses yet.
-        //     </motion.p>
-        //   </motion.div>
-        // ) 
         : filteredCourses.length === 0 ? (
           <motion.div
             className="text-center py-12 text-muted-foreground"
