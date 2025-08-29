@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Star, Clock, Users, BookOpen, Search, X } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -173,43 +173,66 @@ const Favorites = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
                     transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
-                    whileHover={{
-                      scale: 1.03,
-                      boxShadow: "0 10px 20px rgba(0,0,0,0.08)",
-                      transition: { duration: 0.3 }
-                    }}                    
-
+                    whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                    className="h-full"
                   >
-                    <Card
-                      className="overflow-hidden rounded-2xl bg-card hover:shadow-xl transition-all duration-300 cursor-pointer border"
-                      onClick={() => navigate(`/courses/${course.id}`)}
-                    >
-                      <div className="relative">
-                        <img
-                          src={course.thumbnail}
-                          alt={course.title}
-                          className="w-full h-48 object-cover"
+                    <Card className="h-full flex flex-col group relative overflow-hidden bg-card border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
+                      {/* Course Thumbnail with Overlay */}
+                      <motion.div
+                        className="relative overflow-hidden"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4, delay: 0.1 }}
+                      >
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 z-10"
+                          transition={{ duration: 0.3 }}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
-                        <div className="absolute top-2 right-2">
+                        <motion.div
+                          className="absolute top-3 right-3 z-20"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3, delay: 0.2 }}
+                        >
                           <FavoriteButton course={course} />
-                        </div>
-                        <Badge className="absolute bottom-2 left-2 bg-primary/90 text-white shadow-sm">
-                          {course.status}
-                        </Badge>
-                      </div>
+                        </motion.div>
+                        <motion.img
+                          src={course.thumbnail}
+                          alt={`${course.title} course thumbnail`}
+                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.5 }}
+                        />
+                      </motion.div>
+                      
+                      {/* Course Content */}
+                      <div className="flex flex-col flex-1 p-5">
+                        {/* Title Section */}
+                        <motion.div
+                          className="mb-3"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.2 }}
+                        >
+                          <h3 className="text-lg font-bold text-foreground line-clamp-2 leading-tight group-hover:text-primary transition-colors duration-300">
+                            {course.title}
+                          </h3>
+                        </motion.div>
+                        
+                        {/* Description */}
+                        <motion.div
+                          className="mb-4 flex-1"
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.3 }}
+                        >
+                          <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                            {course.description}
+                          </p>
+                        </motion.div>
 
-                      <CardHeader className="p-4 space-y-1">
-                        <CardTitle className="text-lg font-semibold leading-snug line-clamp-2">
-                          {course.title}
-                        </CardTitle>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {course.description}
-                        </p>
-                      </CardHeader>
-
-                      <CardContent className="p-4 pt-0 space-y-4">
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        {/* Rating and Duration */}
+                        <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                           <div className="flex items-center space-x-1">
                             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                             <span className="font-medium text-foreground">{course.rating}</span>
@@ -221,16 +244,43 @@ const Favorites = () => {
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        {/* Expert and Price */}
+                        <motion.div
+                          className="flex items-center justify-between mb-4"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: 0.4 }}
+                        >
                           <div className="flex items-center space-x-2 text-sm">
                             <Users className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-foreground">{course.expert?.name || "Unknown"}</span>
+                            <span className="text-foreground font-medium">{course.expert?.name || "Unknown"}</span>
                           </div>
                           <div className="text-lg font-bold text-primary">
                             {course.price ? `$${course.price}` : "Free"}
                           </div>
-                        </div>
-                      </CardContent>
+                        </motion.div>
+
+                        {/* Action Button */}
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                          <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Button
+                              onClick={() => navigate(`/courses/${course.id}`)}
+                              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary hover:to-primary/90 text-primary-foreground font-semibold shadow-md hover:shadow-lg transition-all duration-300 group-hover:shadow-primary/25"
+                              size="sm"
+                            >
+                              View Course
+                            </Button>
+                          </motion.div>
+                        </motion.div>
+                      </div>
                     </Card>
                   </motion.div>
                 ))}
