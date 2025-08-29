@@ -9,11 +9,22 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { CoursesExpertAPI } from "@/api/courses";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
+import { CustomLoader } from "@/components/CustomLoader";
 
 const Favorites = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const { favorites, isFavorite } = useFavorites();
+
+  const { data: enrolledCourses = [], isLoading: enrolledLoading } = useQuery({
+    queryKey: ["enrolledCourses", user?.id],
+    queryFn: () => CoursesExpertAPI.getEnrollment(user?.id || ""),
+    enabled: !!user?.id,
+  });
 
   const filteredCourses = favorites.filter(course => {
     const matchesSearch =
@@ -29,6 +40,58 @@ const Favorites = () => {
   const handleClearSearch = () => {
     setSearchTerm("");
   };
+
+  
+  if (enrolledLoading) {
+    return (
+      <motion.div
+        className="min-h-screen bg-background relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div
+          className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b"
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="flex items-center justify-between p-4">
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SidebarTrigger />
+            </motion.div>
+            <motion.h1
+              className="text-xl font-semibold truncate"
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+             My Interests
+            </motion.h1>
+            <div className="w-10" />
+          </div>
+        </motion.div>
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <CustomLoader />
+          <motion.div
+            className="text-lg text-muted-foreground"
+            animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            Loading Interests...
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -271,13 +334,21 @@ const Favorites = () => {
                             whileTap={{ scale: 0.98 }}
                             transition={{ duration: 0.2 }}
                           >
-                            <Button
-                              onClick={() => navigate(`/courses/${course.id}`)}
+                        <button
+                        onClick={() => navigate(`/courses/${course.id}` ,{ state: { isEnrolled: enrolledCourses.some((c: any) => c.courseId === course.id)  } })}
+                        className="w-full py-1.5 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-300"
+                        type="button"
+                        >
+                          View Course
+                        </button>
+
+                            {/* <Button
+                              onClick={() => navigate(`/courses/${course.id}` ,{ state: { isEnrolled: enrolledCourses.some((c: any) => c.courseId === course.id)  } })}
                               className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary hover:to-primary/90 text-primary-foreground font-semibold shadow-md hover:shadow-lg transition-all duration-300 group-hover:shadow-primary/25"
                               size="sm"
                             >
                               View Course
-                            </Button>
+                            </Button> */}
                           </motion.div>
                         </motion.div>
                       </div>

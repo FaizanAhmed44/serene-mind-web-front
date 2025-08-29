@@ -107,12 +107,18 @@ export const CourseCard = ({ course }: CourseCardProps) => {
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
-                <Button
-                  className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary hover:to-primary/90 text-primary-foreground font-semibold shadow-md hover:shadow-lg transition-all duration-300 group-hover:shadow-primary/25"
-                  size="sm"
-                >
-                  Continue Learning
-                </Button>
+                <button
+              className="w-full py-1.5 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-300"
+              type="button"
+            >
+               Continue learning
+            </button>
+                {/* <Button */}
+                  {/* className="w-full bg-gradient-to-r from-primary to-primary/70 hover:from-primary hover:to-primary/90 text-primary-foreground font-semibold shadow-md hover:shadow-lg transition-all duration-300 group-hover:shadow-primary/25" */}
+                  {/* size="sm" */}
+                {/* > */}
+                  {/* Continue Learning */}
+                {/* </Button>  */}
               </motion.div>
             </Link>
           </motion.div>
