@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { Calendar, Users } from "lucide-react";
+import { Calendar, Star, Clock, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Link } from "react-router-dom";
@@ -12,6 +12,8 @@ interface CourseCardProps {
     thumbnail: string;
     publishedWeeksAgo: number;
     students: number;
+    duration:string;
+    rating: number;
     description: string;
   };
 }
@@ -79,34 +81,20 @@ export const CourseCard = ({ course }: CourseCardProps) => {
               {course.description}
             </p>
           </motion.div>
-          
-          {/* Course Stats */}
-          <motion.div
-            className="mb-4 p-3 bg-muted/30 rounded-lg border border-border/50"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-          >
-            <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5 text-primary" />
-                  <span className="font-medium">Published</span>
-                </div>
-                <span>{course.publishedWeeksAgo} weeks ago</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5 text-primary" />
-                  <span className="font-medium">Students</span>
-                </div>
-                <span className="font-semibold text-foreground">
-                  {course.students.toLocaleString()}
-                </span>
-              </div>
+
+
+          <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+            <div className="flex items-center space-x-1">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="font-medium text-foreground">{course.rating}</span>
+              <span>({course.students})</span>
             </div>
-          </motion.div>
-          
+            <div className="flex items-center space-x-1">
+              <Clock className="h-4 w-4" />
+              <span>{course.duration}</span>
+            </div>
+          </div>    
+
           {/* Action Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

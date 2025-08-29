@@ -281,6 +281,8 @@ const EnrolledCourses = () => {
                         publishedWeeksAgo: weeksAgo,
                         students: enrollment.course.enrolledStudents,
                         description: enrollment.course.description,
+                        rating:enrollment.course.rating,
+                        duration:enrollment.course.duration,
                       }}
                     />
                   </motion.div>
