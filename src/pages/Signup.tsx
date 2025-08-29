@@ -154,7 +154,7 @@ const Signup = () => {
           
           {/* Header */}
           <div className="text-center space-y-2 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#272829]">Join Core Cognitive</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary">Join Core Cognitive</h2>
             <p className="text-sm sm:text-base text-[#272829]/70">
               Create your account and start your mental wellness journey
             </p>

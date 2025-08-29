@@ -13,7 +13,7 @@ interface EmailFieldProps {
 export const EmailField: React.FC<EmailFieldProps> = ({ value, onChange, disabled }) => {
   return (
     <div className="space-y-3">
-      <Label htmlFor="email" className="text-sm font-semibold text-foreground">
+      <Label htmlFor="email" className="text-sm font-semibold text-primary">
         Email address
       </Label>
       <div className="relative">

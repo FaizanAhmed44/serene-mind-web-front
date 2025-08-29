@@ -22,7 +22,7 @@ export const NameFields: React.FC<NameFieldsProps> = ({
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="space-y-2">
-        <Label htmlFor="firstName">First Name</Label>
+        <Label htmlFor="firstName" className='text-sm font-semibold text-primary'>First Name</Label>
         <div className="relative">
           <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -39,7 +39,7 @@ export const NameFields: React.FC<NameFieldsProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="lastName">Last Name</Label>
+        <Label htmlFor="lastName" className='text-sm font-semibold text-primary'>Last Name</Label>
         <Input
           id="lastName"
           type="text"

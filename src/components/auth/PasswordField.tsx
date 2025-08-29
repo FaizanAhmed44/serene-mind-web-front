@@ -23,7 +23,7 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
 
   return (
     <div className="space-y-3">
-      <Label htmlFor={label.toLowerCase().replace(' ', '-')} className="text-sm font-semibold text-foreground">
+      <Label htmlFor={label.toLowerCase().replace(' ', '-')} className="text-sm font-semibold text-primary">
         {label}
       </Label>
       <div className="relative">

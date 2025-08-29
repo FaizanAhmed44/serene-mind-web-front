@@ -159,7 +159,7 @@
               
               {/* Header */}
               <div className="text-center space-y-2 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Welcome back</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold text-primary">Welcome back</h2>
                 <p className="text-sm sm:text-base text-muted-foreground">
                   Continue your learning journey with Core Cognitive
                 </p>
