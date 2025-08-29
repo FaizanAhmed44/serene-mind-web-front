@@ -58,25 +58,47 @@ const FAQ = () => {
     setSearchQuery("");
   };
 
-  
   if (loading) {
     return (
       <motion.div
-        className="min-h-screen flex items-center justify-center relative"
+        className="min-h-screen bg-background relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+        <motion.div
+          className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <div className="flex items-center justify-between p-4">
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SidebarTrigger />
+            </motion.div>
+            <motion.h1
+              className="text-xl font-semibold text-foreground truncate"
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
+             FAQ & Help Center
+            </motion.h1>
+            <div className="w-10" />
+          </div>
+        </motion.div>
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+        >
           <CustomLoader />
-          <motion.p
-            className="text-lg text-muted-foreground"
-            animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            Loading FAQs...
-          </motion.p>
-        </div>
+          <div className="text-lg text-muted-foreground">Loading FAQs...</div>
+        </motion.div>
       </motion.div>
     );
   }

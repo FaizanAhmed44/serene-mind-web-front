@@ -88,8 +88,8 @@ const TrainingSessions: React.FC = () => {
         >
           <div className="flex items-center justify-between p-4">
             <motion.div
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.3 }}
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.4 }}
             >
               <SidebarTrigger />
             </motion.div>
@@ -99,7 +99,7 @@ const TrainingSessions: React.FC = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.2 }}
             >
-              Loading...
+              Training Sessions
             </motion.h1>
             <div className="w-10" />
           </div>

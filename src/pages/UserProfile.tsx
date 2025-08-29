@@ -81,8 +81,13 @@ const UserProfile = () => {
       <div className="min-h-screen bg-background relative">
         <div className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10">
           <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
-            <SidebarTrigger />
-            <h1 className="text-xl font-semibold text-foreground">Profile</h1>
+          <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SidebarTrigger />
+            </motion.div> 
+            <h1 className="text-xl font-semibold text-foreground">My Profile</h1>
             <div className="w-20" />
           </div>
         </div>

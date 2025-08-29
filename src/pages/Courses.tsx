@@ -174,7 +174,7 @@ export default function Courses() {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              Loading...
+              Courses
             </motion.h1>
             <div className="w-10" />
           </div>
