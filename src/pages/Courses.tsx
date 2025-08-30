@@ -28,89 +28,124 @@ function truncateWords(text: string, wordLimit: number): string {
 const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
   return (
     <motion.div
-      className="relative flex flex-col h-full bg-gradient-to-br from-gray-50 to-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300"
-      initial={{ opacity: 0, scale: 0.95, y: 50 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      whileHover={{ y: -8, boxShadow: "0 15px 30px rgba(0,0,0,0.1)" }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      whileHover={{ y: -8, transition: { duration: 0.3 } }}
+      className="h-full"
     >
-      {/* Thumbnail with Gradient Overlay */}
-      <div className="relative w-full h-48 overflow-hidden">
-        <img
-          alt={course.title}
-          loading="lazy"
-          width={768}
-          height={768}
-          decoding="async"
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-          src={course.thumbnail || "/placeholder-image.jpg"} // Fallback image
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-        <div className="absolute top-4 left-4">
-          <span className="inline-block bg-primary/80 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
-            {course.status || "Ongoing"}
-          </span>
-        </div>
-      </div>
-
-      {/* Course Details */}
-      <div className="flex flex-col flex-1 p-5">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <span>{course.duration || "N/A"}</span>
-            <span className="text-gray-400">•</span>
-            <span>{course.enrolledStudents || 0} Students</span>
-          </div>
-          {course.rating && (
-            <div className="flex items-center gap-1 text-yellow-500">
-              <span className="text-sm font-medium">{course.rating}</span>
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            </div>
-          )}
-        </div>
-
-        <Link
-          to={`/courses/${course.id}`}
-          className="block hover:text-primary transition-colors"
-        >
-          <h5 className="text-lg font-semibold text-gray-900 leading-tight line-clamp-2 mb-2">
-            {course.title}
-          </h5>
-        </Link>
-
-        <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
-          {truncateWords(course.description || "No description available", 15)}
-        </p>
-
-        {/* Price and Expert */}
-        <div className="flex items-center justify-between text-sm mb-4">
-          <div className="flex items-center gap-2 text-gray-500">
-            <span className="font-medium text-gray-700">
-              {course.expert?.name || "Unknown Expert"}
-            </span>
-          </div>
-          <span className="font-semibold text-primary">
-            {course.price ? `$${course.price}` : "Free"}
-          </span>
-        </div>
-
-        {/* Action Button */}
+      <div className="h-full flex flex-col group relative overflow-hidden bg-card border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg rounded-lg">
+        {/* Course Thumbnail with Overlay */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.5 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="relative overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <Link to={`/courses/${course.id}`} state={{ isEnrolled: isEnrolled }}>
-            <button
-              className="w-full py-2 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-200"
-              type="button"
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 z-10"
+            transition={{ duration: 0.3 }}
+          />
+          {isEnrolled && (
+            <motion.div
+              className="absolute top-3 right-3 bg-primary/10 backdrop-blur-sm rounded-full px-2 py-1 z-20"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
             >
-              {isEnrolled ? "Continue Course" : "Enroll Now"}
-            </button>
-          </Link>
+              <span className="text-xs font-medium text-primary">Enrolled</span>
+            </motion.div>
+          )}
+          <motion.img
+            src={course.thumbnail || "/placeholder-image.jpg"}
+            alt={`${course.title} course thumbnail`}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.5 }}
+          />
         </motion.div>
+        
+        {/* Course Content */}
+        <div className="flex flex-col flex-1 p-5">
+          {/* Title Section */}
+          <motion.div
+            className="mb-3"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            <h3 className="text-lg font-bold text-foreground line-clamp-2 leading-tight group-hover:text-primary transition-colors duration-300">
+              {course.title}
+            </h3>
+          </motion.div>
+          
+          {/* Description */}
+          <motion.div
+            className="mb-4 flex-1"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+          >
+            <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+              {truncateWords(course.description || "No description available", 15)}
+            </p>
+          </motion.div>
+
+          {/* Stats Section */}
+          <motion.div
+            className="grid grid-cols-2 gap-4 mb-4 p-3 bg-muted/30 rounded-lg"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+          >
+            <div className="text-center">
+              <div className="text-sm font-semibold text-foreground">{course.rating || "N/A"}</div>
+              <div className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                Rating
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-sm font-semibold text-foreground">{course.enrolledStudents || 0}</div>
+              <div className="text-xs text-muted-foreground">Students</div>
+            </div>
+          </motion.div>
+
+          {/* Duration and Price */}
+          <motion.div
+            className="flex items-center justify-between text-sm text-muted-foreground mb-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.45 }}
+          >
+            <span>{course.duration || "N/A"}</span>
+            <span className="font-semibold text-primary">
+              {course.price ? `$${course.price}` : "Free"}
+            </span>
+          </motion.div>
+
+          {/* Action Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.5 }}
+          >
+            <Link to={`/courses/${course.id}`} state={{ isEnrolled: isEnrolled }} className="block">
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                <button
+                  className="w-full py-1.5 px-4 bg-gradient-to-r from-primary to-primary/70 text-white font-semibold rounded-lg shadow-md hover:from-primary hover:to-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-300"
+                  type="button"
+                >
+                  {isEnrolled ? "Continue Course" : "Enroll Now"}
+                </button>
+              </motion.div>
+            </Link>
+          </motion.div>
+        </div>
       </div>
     </motion.div>
   );
