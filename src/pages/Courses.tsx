@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
-import { Search, X,Star } from "lucide-react";
+import { Search, X,Star, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CustomLoader } from "@/components/CustomLoader";
 
@@ -92,7 +92,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
           </motion.div>
 
           {/* Stats Section */}
-          <motion.div
+          {/* <motion.div
             className="grid grid-cols-2 gap-4 mb-4 p-3 bg-muted/30 rounded-lg"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -109,7 +109,20 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
               <div className="text-sm font-semibold text-foreground">{course.enrolledStudents || 0}</div>
               <div className="text-xs text-muted-foreground">Students</div>
             </div>
-          </motion.div>
+          </motion.div> */}
+
+          {/* Rating and Duration */}
+          <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+            <div className="flex items-center space-x-1">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="font-medium text-foreground">{course.rating}</span>
+              <span>({course.enrolledStudents})</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <Clock className="h-4 w-4" />
+              <span>{course.duration}</span>
+            </div>
+          </div>
 
           {/* Duration and Price */}
           <motion.div
@@ -327,7 +340,7 @@ export default function Courses() {
 
         {/* Courses Grid */}
         <motion.div
-          className="container mx-auto grid grid-cols-1 gap-x-2 gap-y-24 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-6"
+          className="grid grid-cols-1 gap-x-2 gap-y-24 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.7 }}
