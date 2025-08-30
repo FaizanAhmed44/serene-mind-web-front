@@ -298,9 +298,10 @@ export const TrainingSessionCard: React.FC<TrainingSessionCardProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4, scale: 1.01 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="group h-full border-md shadow-sm hover:shadow-md transition-all duration-300 bg-white">
+      <Card className="group h-full border-md shadow-sm hover:border-primary/50 transition-all duration-300 hover:shadow-lg rounded-lg bg-white">
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">

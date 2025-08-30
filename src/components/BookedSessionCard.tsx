@@ -65,10 +65,10 @@ export const BookedSessionCard: React.FC<BookedSessionCardProps> = ({ session })
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4, scale: 1.01 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.4 }}
       className="h-full"
     >
-      <Card className="group h-full border border-border shadow-sm hover:shadow-md bg-card transition-all duration-200">
+      <Card className="group h-full border bg-card border-border hover:border-primary/50 shadow-sm hover:shadow-lg bg-card transition-all duration-300">
         {/* Header Section */}
         <CardHeader className="pb-4">
           <div className="flex items-start gap-4">
@@ -98,7 +98,7 @@ export const BookedSessionCard: React.FC<BookedSessionCardProps> = ({ session })
 
         <CardContent className="p-6 pt-0 space-y-5">
           {/* Date & Time */}
-          <div className="bg-muted/30 rounded-lg p-4">
+          {/* <div className="bg-muted/30 rounded-lg p-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-muted-foreground">
@@ -120,14 +120,69 @@ export const BookedSessionCard: React.FC<BookedSessionCardProps> = ({ session })
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
+{/* <div className="bg-muted/30 rounded-xl p-5 shadow-sm">
+  <div className="space-y-4">
+    
+  
+    <div className="flex items-center justify-between border-b border-muted/40 pb-3">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <Calendar className="w-5 h-5" />
+        <span className="text-xs font-medium uppercase tracking-wide">Date</span>
+      </div>
+      <p className="text-sm font-semibold text-foreground">
+        {formatDate(session.date)}
+      </p>
+    </div>
+
+  
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <Clock className="w-5 h-5" />
+        <span className="text-xs font-medium uppercase tracking-wide">Time</span>
+      </div>
+      <p className="text-sm font-semibold text-foreground">
+        {session.time}
+      </p>
+    </div>
+
+  </div>
+</div> */}
+<div className="rounded-xl p-2 space-y-4">
+  {/* Date */}
+  <div className="flex items-center gap-3">
+    <Calendar className="w-5 h-5 text-muted-foreground" />
+    <div>
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        Date
+      </p>
+      <p className="text-sm font-semibold text-foreground">
+        {formatDate(session.date)}
+      </p>
+    </div>
+  </div>
+
+  {/* Time */}
+  <div className="flex items-center gap-3">
+    <Clock className="w-5 h-5 text-muted-foreground" />
+    <div>
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        Time
+      </p>
+      <p className="text-sm font-semibold text-foreground">
+        {session.time}
+      </p>
+    </div>
+  </div>
+</div>
+
 
           <Separator />
 
           {/* Payment Information */}
           <div className="space-y-3">
             <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-muted-foreground" />
+              <DollarSign className="w-4 h-4 text-primary" />
               Payment Details
             </h4>
             <div className="space-y-2">
@@ -147,10 +202,10 @@ export const BookedSessionCard: React.FC<BookedSessionCardProps> = ({ session })
           {/* Session Type */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <FileText className="w-4 h-4" />
-              <span className="text-sm font-semibold">Session Type</span>
+              <FileText className="w-4 h-4 text-primary" />
+              <span className="text-sm text-black font-semibold">Session Type</span>
             </div>
-            <p className="text-sm text-foreground bg-muted/50 px-3 py-2 rounded-md">
+            <p className="text-sm text-foreground bg-muted/30 px-3 py-2 rounded-md">
               {session.sessionName}
             </p>
           </div>
