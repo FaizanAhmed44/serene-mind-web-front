@@ -61,30 +61,46 @@ const FAQ = () => {
   if (loading) {
     return (
       <motion.div
-        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        className="min-h-screen bg-background relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
       >
-        <div className="flex items-center justify-between p-4">
-          <motion.div
-            whileHover={{ rotate: 360, scale: 1.1 }}
-            transition={{ duration: 0.4 }}
-          >
-            <SidebarTrigger />
-          </motion.div>
-          <motion.h1
-            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            FAQ & Help Center
-          </motion.h1>
-          <div className="w-10" />
-        </div>
+        <motion.div 
+          className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <div className="flex items-center justify-between p-4">
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SidebarTrigger />
+            </motion.div>
+            <motion.h1 
+              className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
+              FAQ & Help Center
+            </motion.h1>
+            <div className="w-10" />
+          </div>
+        </motion.div>
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+        >
+          <CustomLoader />
+          <div className="text-lg text-muted-foreground">Loading faqs...</div>
+        </motion.div>
       </motion.div>
-    );
+    );    
   }
 
   if (error) {
@@ -107,17 +123,19 @@ const FAQ = () => {
   }
 
   return (
-    <motion.div
+        <motion.div
       className="min-h-screen bg-gradient-to-br from-background via-background to-muted/50 relative overflow-hidden"
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
+
 
       {/* Top Bar */}
       <motion.div

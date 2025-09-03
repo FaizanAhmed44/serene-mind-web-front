@@ -219,33 +219,48 @@ const Dashboard = () => {
   const stats = defaultStats;
 
   if (isCompletedLoading || isEnrolledLoading || sessionsLoading) {
-    return (
-      <motion.div
-        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
-      >
-        <div className="flex items-center justify-between p-6">
+      return (
+        <motion.div
+          className="min-h-screen bg-background relative"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <motion.div 
-            whileHover={{ rotate: 360, scale: 1.1 }} 
-            transition={{ duration: 0.4 }}
+            className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <SidebarTrigger />
+            <div className="flex items-center justify-between p-4">
+              <motion.div
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.4 }}
+              >
+                <SidebarTrigger />
+              </motion.div>
+              <motion.h1 
+                className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+              >
+                Dashboard
+              </motion.h1>
+              <div className="w-10" />
+            </div>
           </motion.div>
-          <motion.h1
-            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.2, ease: "easeInOut" }}
+          <motion.div
+            className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
           >
-            Dashboard
-          </motion.h1>
-          <div className="w-10" />
-        </div>
-      </motion.div>
-      
-    );
+            <CustomLoader />
+            <div className="text-lg text-muted-foreground">Loading dashboard...</div>
+          </motion.div>
+        </motion.div>
+      );    
   }
 
   if (completedError || enrolledError || sessionsError) {
@@ -310,15 +325,16 @@ const Dashboard = () => {
         <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
+
       <motion.div
         className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <div className="flex items-center justify-between p-6">
-          <motion.div 
-            whileHover={{ rotate: 360, scale: 1.1 }} 
+        <div className="flex items-center justify-between p-4">
+          <motion.div
+            whileHover={{ rotate: 360, scale: 1.1 }}
             transition={{ duration: 0.4 }}
           >
             <SidebarTrigger />
@@ -327,7 +343,7 @@ const Dashboard = () => {
             className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.2, ease: "easeInOut" }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
             Dashboard
           </motion.h1>
@@ -342,23 +358,7 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
-        >
-          {/* <motion.div
-            className="flex justify-center mb-6"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-          >
-            <motion.div
-              className="relative p-4 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/20"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ duration: 0.4 }}
-            >
-              <User className="h-16 w-16 text-primary" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent rounded-2xl animate-pulse" />
-            </motion.div>
-          </motion.div> */}
-
+        >        
           <motion.h1
             className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent mb-6"
             initial={{ opacity: 0, y: 20 }}
