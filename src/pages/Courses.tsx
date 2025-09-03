@@ -89,27 +89,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isEnrolled }) => {
             <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
               {truncateWords(course.description || "No description available", 15)}
             </p>
-          </motion.div>
-
-          {/* Stats Section */}
-          {/* <motion.div
-            className="grid grid-cols-2 gap-4 mb-4 p-3 bg-muted/30 rounded-lg"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-          >
-            <div className="text-center">
-              <div className="text-sm font-semibold text-foreground">{course.rating || "N/A"}</div>
-              <div className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                Rating
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-sm font-semibold text-foreground">{course.enrolledStudents || 0}</div>
-              <div className="text-xs text-muted-foreground">Students</div>
-            </div>
-          </motion.div> */}
+          </motion.div>          
 
           {/* Rating and Duration */}
           <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
@@ -281,71 +261,9 @@ export default function Courses() {
           </motion.h1>
           <div className="w-10" />
         </div>
-      </motion.div>      
+      </motion.div>            
 
-      {/* <div className="p-6 space-y-12">
-        
-        <motion.div
-          className="text-center space-y-8 py-10"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <div className="space-y-6">
-            <motion.div
-              className="flex items-center justify-center gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/20 to-secondary/30 blur-3xl rounded-full scale-150 opacity-70" />
-                <h1 className="relative text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent leading-tight">
-                  Mental Wellness Courses
-                </h1>
-              </div>
-            </motion.div>
-            <motion.p
-              className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Explore curated courses designed to elevate your mental wellness and career growth. 
-              Expert-led programs for lasting transformation.
-            </motion.p>
-          </div>
-          
-          <motion.div
-            className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-          >
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search courses..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="pl-10 pr-10"
-              />
-              {searchQuery && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                  onClick={handleClearSearch}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          </motion.div>
-        </motion.div> */}
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-6 space-y-4">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 space-y-4">
         {/* Welcome Section */}
         <motion.div
           className="text-center py-12"
