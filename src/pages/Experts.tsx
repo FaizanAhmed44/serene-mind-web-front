@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Star, Calendar, CheckCircle, BadgeCheck, Award, Users, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
@@ -52,16 +51,16 @@ const Experts = () => {
   if (isLoading) {
     return (
       <motion.div
-        className="min-h-screen bg-gradient-to-br from-background to-muted/30 relative"
+        className="min-h-screen bg-background relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <motion.div
-          className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+        <motion.div 
+          className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
         >
           <div className="flex items-center justify-between p-4">
             <motion.div
@@ -70,11 +69,11 @@ const Experts = () => {
             >
               <SidebarTrigger />
             </motion.div>
-            <motion.h1
-              className="text-xl font-semibold text-foreground"
+            <motion.h1 
+              className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
             >
               Find Experts
             </motion.h1>
@@ -83,22 +82,16 @@ const Experts = () => {
         </motion.div>
         <motion.div
           className="absolute inset-0 flex flex-col items-center justify-center gap-4"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
         >
           <CustomLoader />
-          <motion.p
-            className="text-lg text-muted-foreground"
-            animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            Loading experts...
-          </motion.p>
+          <div className="text-lg text-muted-foreground">Loading Expert Details...</div>
         </motion.div>
       </motion.div>
-    );
-  }
+    );   
+ }
 
   if (error) {
     return (
@@ -151,27 +144,35 @@ const Experts = () => {
   }
 
   return (
-    <motion.div
-      className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20"
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
-    >
       <motion.div
-        className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm"
+        className="min-h-screen bg-gradient-to-br from-background via-background to-muted/50 relative overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
+
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+       </div>
+
+       <motion.div
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-      >
+       >
         <div className="flex items-center justify-between p-4">
           <motion.div
-            whileHover={{ rotate: 360 }}
+            whileHover={{ rotate: 360, scale: 1.1 }}
             transition={{ duration: 0.4 }}
           >
             <SidebarTrigger />
           </motion.div>
           <motion.h1
-            className="text-xl font-semibold text-foreground"
+            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -180,68 +181,62 @@ const Experts = () => {
           </motion.h1>
           <div className="w-10" />
         </div>
-      </motion.div>
+      </motion.div>            
 
-      <div className="p-6 space-y-12">
-        {/* Header */}
+
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 space-y-4">
+        {/* Welcome Section */}
         <motion.div
-          className="text-center space-y-8 py-12 mb-10"
-          initial={{ opacity: 0, y: -20 }}
+          className="text-center py-12"
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <div className="space-y-6">
-            <motion.div
-              className="flex items-center justify-center gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/20 to-secondary/30 blur-3xl rounded-full scale-150 opacity-70" />
-                <h1 className="relative text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent leading-tight">
-                  Mental Wellness Experts
-                </h1>
-              </div>
-            </motion.div>
-            <motion.p
-              className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Connect with verified therapists and coaches for personalized support.
-              Find the perfect expert to guide your mental wellness journey.
-            </motion.p>
-            {/* Search Bar */}
-            <motion.div
-              className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Search experts..."
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  className="pl-10 pr-10"
-                />
-                {searchQuery && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                    onClick={handleClearSearch}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </motion.div>
-          </div>
+          transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
+        >        
+          <motion.h1
+            className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.4, ease: "easeInOut" }}
+          >
+            Mental Wellness Experts
+          </motion.h1>
+          <motion.p
+            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.5, ease: "easeInOut" }}
+          >
+           Connect with verified therapists and coaches for personalized support.
+           Find the perfect expert to guide your mental wellness journey.
+          </motion.p>
+          <motion.div
+            className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search courses..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-10 pr-10"
+              />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                  onClick={handleClearSearch}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </motion.div>
         </motion.div>
 
         {/* Experts Grid */}
