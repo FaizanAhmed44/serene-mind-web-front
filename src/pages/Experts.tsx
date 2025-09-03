@@ -152,13 +152,13 @@ const Experts = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-background to-muted/30"
+      className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
     >
       <motion.div
-        className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -182,32 +182,36 @@ const Experts = () => {
         </div>
       </motion.div>
 
-      <div className="p-6 space-y-8">
+      <div className="p-6 space-y-12">
         {/* Header */}
         <motion.div
-          className="text-center space-y-6 mb-10"
+          className="text-center space-y-8 py-12 mb-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <div className="space-y-4">
+          <div className="space-y-6">
             <motion.div
               className="flex items-center justify-center gap-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                Mental Wellness Experts
-              </h1>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/20 to-secondary/30 blur-3xl rounded-full scale-150 opacity-70" />
+                <h1 className="relative text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent leading-tight">
+                  Mental Wellness Experts
+                </h1>
+              </div>
             </motion.div>
             <motion.p
-              className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
+              className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              Connect with verified therapists and coaches for personalized support
+              Connect with verified therapists and coaches for personalized support.
+              Find the perfect expert to guide your mental wellness journey.
             </motion.p>
             {/* Search Bar */}
             <motion.div

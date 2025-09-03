@@ -95,14 +95,14 @@ const Favorites = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-background"
+      className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
       {/* Header */}
       <motion.div
-        className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b"
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.1, ease: "easeInOut" }}
@@ -124,32 +124,36 @@ const Favorites = () => {
         </div>
       </motion.div>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-12">
         {/* Title & Search */}
         <motion.div
-          className="text-center space-y-6 mb-12"
+          className="text-center space-y-8 py-12 mb-12"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <div className="space-y-3">
+          <div className="space-y-6">
             <motion.div
               className="flex items-center justify-center gap-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                Courses You Loved
-              </h1>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/20 to-secondary/30 blur-3xl rounded-full scale-150 opacity-70" />
+                <h1 className="relative text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent leading-tight">
+                  Courses You Loved
+                </h1>
+              </div>
             </motion.div>
             <motion.p
-              className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+              className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               Access your favorite courses instantly and continue your learning journey at your own pace.
+              Your curated collection of transformative experiences.
             </motion.p>
           </div>
 
@@ -191,17 +195,32 @@ const Favorites = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.4 }}
           >
-            <Card className="text-center py-8 shadow-sm">
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
-                  <BookOpen className="h-8 w-8 text-muted-foreground" />
+            <Card className="text-center py-16 shadow-elegant border-0 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm">
+              <CardContent className="space-y-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 blur-xl rounded-full scale-150 opacity-60" />
+                  <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 mx-auto border border-primary/20">
+                    <BookOpen className="h-10 w-10 text-primary" />
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">No interests yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Start exploring courses and add them to your interests to see them here.
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold text-foreground">Discover Your Interests</h3>
+                  <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+                    Start exploring courses and add them to your interests to create your personalized learning collection.
                   </p>
-                  <Button onClick={() => navigate("/courses")}>Browse Courses</Button>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Button 
+                      onClick={() => navigate("/courses")}
+                      size="lg"
+                      className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground px-8 py-3 rounded-full font-semibold shadow-lg"
+                    >
+                      Browse Courses
+                    </Button>
+                  </motion.div>
                 </div>
               </CardContent>
             </Card>
