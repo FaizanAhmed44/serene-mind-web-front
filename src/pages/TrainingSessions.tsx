@@ -141,13 +141,13 @@ const TrainingSessions: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-background"
+      className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <motion.div
-        className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.1 }}
@@ -171,10 +171,10 @@ const TrainingSessions: React.FC = () => {
         </div>
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
         {/* Header Section */}
         <motion.div
-          className="text-center space-y-6"
+          className="text-center space-y-8 py-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
@@ -185,22 +185,26 @@ const TrainingSessions: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.4 }}
           >
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Strategic Mental Wealth Training
-            </h1>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/20 to-secondary/30 blur-3xl rounded-full scale-150 opacity-70" />
+              <h1 className="relative text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent leading-tight">
+                Mental Wealth Training
+              </h1>
+            </div>
           </motion.div>
           <motion.p
-            className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
+            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.5 }}
           >
-            Join immersive sessions to strengthen your personal and professional growth
+            Join immersive group sessions to strengthen your personal and professional growth. 
+            Transform your mindset with expert-led training programs designed for lasting impact.
           </motion.p>
         </motion.div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
               title: "Total Sessions",
@@ -209,7 +213,7 @@ const TrainingSessions: React.FC = () => {
               icon: <Calendar className="h-6 w-6 text-primary" />,
               iconBg: "bg-primary/10",
               gradient: "from-primary/10 via-primary/5 to-transparent",
-              bg: "from-primary/5 to-primary/10",
+              description: "Available programs",
             },
             {
               title: "Available Now",
@@ -218,16 +222,16 @@ const TrainingSessions: React.FC = () => {
               icon: <TrendingUp className="h-6 w-6 text-amber-700" />,
               iconBg: "bg-amber-100",
               gradient: "from-amber-50 via-amber-25 to-transparent",
-              bg: "from-secondary/5 to-secondary/10",
+              description: "Open for enrollment",
             },
             {
               title: "Enrolled Sessions",
               value: "0",
               textColor:"text-green-700",
               icon: <Calendar className="h-6 w-6 text-green-700" />,
-              gradient: "from-green-50 via-amber-25 to-transparent via-green-50 to-transparent",
+              gradient: "from-green-50 via-green-25 to-transparent",
               iconBg: "bg-green-100",
-              bg: "from-accent/5 to-accent/10",
+              description: "Your registrations",
             },
           ].map((stat, index) => (
             <motion.div
@@ -235,13 +239,14 @@ const TrainingSessions: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
             >
-              <Card className={`border-0 shadow-sm bg-gradient-to-br ${stat.gradient}`}>
-                <CardContent className="p-6">
+              <Card className={`border-0 shadow-elegant bg-gradient-to-br ${stat.gradient} backdrop-blur-sm hover:shadow-elevated transition-all duration-300`}>
+                <CardContent className="p-8">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="space-y-2">
                       <motion.p
-                        className="text-sm font-medium text-muted-foreground uppercase tracking-wide"
+                        className="text-sm font-semibold text-muted-foreground uppercase tracking-widest"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
@@ -249,15 +254,23 @@ const TrainingSessions: React.FC = () => {
                         {stat.title}
                       </motion.p>
                       <motion.p
-                        className={`text-3xl font-bold ${stat.textColor} mt-2`}
+                        className={`text-4xl font-bold ${stat.textColor}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
                       >
                         {stat.value}
                       </motion.p>
+                      <motion.p
+                        className="text-sm text-muted-foreground font-medium"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
+                      >
+                        {stat.description}
+                      </motion.p>
                     </div>
-                    <div className={`flex items-center justify-center w-12 h-12 rounded-full ${stat.iconBg}`}>
+                    <div className={`flex items-center justify-center w-16 h-16 rounded-2xl ${stat.iconBg} shadow-soft`}>
                       {stat.icon}
                     </div>
                   </div>
@@ -273,11 +286,15 @@ const TrainingSessions: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.9 }}
         >
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="pb-4">
-              <div className="flex items-center gap-3">
-                <Filter className="h-5 w-5 text-primary" />
-                <CardTitle className="text-xl font-semibold">Filter Sessions</CardTitle>
+          <Card className="border-0 shadow-elegant bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md">
+            <CardHeader className="pb-6">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20">
+                  <Filter className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                  Filter Training Sessions
+                </CardTitle>
               </div>
             </CardHeader>
             <CardContent className="pt-0">

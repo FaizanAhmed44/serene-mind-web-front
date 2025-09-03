@@ -188,13 +188,13 @@ const BookedSessions: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-background"
+      className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <motion.div
-        className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.1 }}
@@ -218,9 +218,9 @@ const BookedSessions: React.FC = () => {
         </div>
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
         <motion.div
-          className="text-center space-y-6"
+          className="text-center space-y-8 py-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
@@ -231,60 +231,80 @@ const BookedSessions: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.4 }}
           >
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Your Scheduled Wellness Sessions
-            </h1>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/20 to-secondary/30 blur-3xl rounded-full scale-150 opacity-70" />
+              <h1 className="relative text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent leading-tight">
+                Your Wellness Journey
+              </h1>
+            </div>
           </motion.div>
           <motion.p
-            className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center"
+            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.5 }}
           >
-            Track and manage your one-on-one sessions with our expert mental health professionals
+            Track and manage your transformative sessions with our expert mental health professionals. 
+            Your path to personal growth and wellness starts here.
           </motion.p>
         </motion.div>
 
         {sessions.length === 0 ?
         (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-          >
-            <Card className="text-center py-8 shadow-sm">
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mx-auto mb-4">
-                  <BookOpen className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">No Sessions yet</h3>
-                  <p className="text-muted-foreground mb-4">                    
-              No booked sessions yet. Book a session with our expert therapists to get started.
-                  </p>
-                  <Button onClick={() => navigate("/experts")}>Find Experts</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+            >
+              <Card className="text-center py-16 shadow-elegant border-0 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm">
+                <CardContent className="space-y-8">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 blur-xl rounded-full scale-150 opacity-60" />
+                    <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 mx-auto border border-primary/20">
+                      <BookOpen className="h-10 w-10 text-primary" />
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-bold text-foreground">Begin Your Wellness Journey</h3>
+                    <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">                    
+                      No booked sessions yet. Connect with our expert therapists and start your transformative journey today.
+                    </p>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Button 
+                        onClick={() => navigate("/experts")}
+                        size="lg"
+                        className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground px-8 py-3 rounded-full font-semibold shadow-lg"
+                      >
+                        Find Expert Therapists
+                      </Button>
+                    </motion.div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
         ) 
         
          : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {stats.map((stat, index) => (
                 <motion.div
                   key={stat.title}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
                 >
-                  <Card className={`border-0 shadow-sm bg-gradient-to-br ${stat.gradient}`}>
-                    <CardContent className="p-6">
+                  <Card className={`border-0 shadow-elegant bg-gradient-to-br ${stat.gradient} backdrop-blur-sm hover:shadow-elevated transition-all duration-300`}>
+                    <CardContent className="p-8">
                       <div className="flex items-center justify-between">
-                        <div>
+                        <div className="space-y-2">
                           <motion.p
-                            className="text-sm font-medium text-muted-foreground uppercase tracking-wide"
+                            className="text-sm font-semibold text-muted-foreground uppercase tracking-widest"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
@@ -292,7 +312,7 @@ const BookedSessions: React.FC = () => {
                             {stat.title}
                           </motion.p>
                           <motion.p
-                            className={`text-3xl font-bold ${stat.textColor}`}
+                            className={`text-4xl font-bold ${stat.textColor}`}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
@@ -300,7 +320,7 @@ const BookedSessions: React.FC = () => {
                             {stat.value}
                           </motion.p>
                           <motion.p
-                            className="text-xs text-muted-foreground"
+                            className="text-sm text-muted-foreground font-medium"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
@@ -308,7 +328,7 @@ const BookedSessions: React.FC = () => {
                             {stat.description}
                           </motion.p>
                         </div>
-                        <div className={`flex items-center justify-center w-12 h-12 rounded-full ${stat.iconBg}`}>
+                        <div className={`flex items-center justify-center w-16 h-16 rounded-2xl ${stat.iconBg} shadow-soft`}>
                           {stat.icon}
                         </div>
                       </div>
@@ -323,12 +343,16 @@ const BookedSessions: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.9 }}
             >
-              <Card className="border-0 shadow-sm bg-card/50 backdrop-blur-sm">
-                <CardHeader className="pb-6">
-                  <CardTitle className="text-2xl font-semibold flex items-center gap-3">
-                    <Filter className="w-6 h-6 text-primary" />
-                    Session Management
-                  </CardTitle>
+              <Card className="border-0 shadow-elegant bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md">
+                <CardHeader className="pb-8">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20">
+                      <Filter className="w-6 h-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                      Session Management
+                    </CardTitle>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
