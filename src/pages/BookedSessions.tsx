@@ -118,7 +118,7 @@ const BookedSessions: React.FC = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.2 }}
             >
-              Booked Session
+              My Booked Session
             </motion.h1>
             <div className="w-10" />
           </div>
@@ -219,7 +219,7 @@ const BookedSessions: React.FC = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          Booked Sessions
+          My Booked Sessions
         </motion.h1>
         <div className="w-10" />
       </div>
