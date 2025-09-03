@@ -101,7 +101,7 @@ const FAQ = () => {
         </motion.div>
       </motion.div>
     );    
-  }
+     }
 
   if (error) {
     return (
@@ -197,7 +197,7 @@ const FAQ = () => {
           </motion.h1>
           
           <motion.p
-            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
@@ -207,6 +207,33 @@ const FAQ = () => {
           
           {/* Search Bar */}
           <motion.div
+            className="max-w-full sm:max-w-lg mx-auto flex items-center gap-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search for answers..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-10 pr-10"
+              />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                  onClick={handleClearSearch}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </motion.div>
+          {/* <motion.div     
             className="max-w-2xl mx-auto mt-10"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -232,7 +259,7 @@ const FAQ = () => {
                 </Button>
               )}
             </div>
-          </motion.div>
+          </motion.div> */}
         </motion.div>
 
         {/* FAQ Content */}
