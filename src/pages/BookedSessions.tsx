@@ -99,8 +99,8 @@ const BookedSessions: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <motion.div
-          className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border"
+        <motion.div 
+          className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.1 }}
@@ -112,13 +112,13 @@ const BookedSessions: React.FC = () => {
             >
               <SidebarTrigger />
             </motion.div>
-            <motion.h1
-              className="text-xl font-semibold text-foreground truncate"
+            <motion.h1 
+              className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.2 }}
             >
-              Booked Sessions
+              Booked Session
             </motion.h1>
             <div className="w-10" />
           </div>
@@ -130,12 +130,11 @@ const BookedSessions: React.FC = () => {
           transition={{ duration: 0.4, delay: 0.3 }}
         >
           <CustomLoader />
-          <div className="text-lg text-muted-foreground">
-            Loading booked sessions...
-          </div>
+          <div className="text-lg text-muted-foreground">Loading Booked Sessions...</div>
         </motion.div>
       </motion.div>
-    );
+    ); 
+    
   }
 
   if (error) {
@@ -188,66 +187,74 @@ const BookedSessions: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <motion.div
-        className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.1 }}
-      >
-        <div className="flex items-center justify-between p-4">
-          <motion.div
-           whileHover={{ rotate: 360 }}
-           transition={{ duration: 0.4 }}
-          >
-            <SidebarTrigger />
-          </motion.div>
-          <motion.h1
-            className="text-xl font-semibold text-foreground"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            My Booked Sessions
-          </motion.h1>
-          <div className="w-10" />
-        </div>
-      </motion.div>
+    className="min-h-screen bg-gradient-to-br from-background via-background to-muted/50 relative overflow-hidden"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5, ease: "easeInOut" }}
+  >
 
-      <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
+  {/* Animated background elements */}
+  <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+    <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+  </div>
+
+    <motion.div
+      className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+      initial={{ y: -50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      <div className="flex items-center justify-between p-4">
         <motion.div
-          className="text-center space-y-8 py-12"
+          whileHover={{ rotate: 360, scale: 1.1 }}
+          transition={{ duration: 0.4 }}
+        >
+          <SidebarTrigger />
+        </motion.div>
+        <motion.h1
+          className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          Booked Sessions
+        </motion.h1>
+        <div className="w-10" />
+      </div>
+    </motion.div>            
+
+
+
+    <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 space-y-4">
+        {/* Welcome Section */}
+        <motion.div
+          className="text-center py-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-        >
-          <motion.div
-            className="flex items-center justify-center gap-4"
+          transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
+        >        
+          <motion.h1
+            className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
+            transition={{ duration: 0.4, delay: 0.4, ease: "easeInOut" }}
           >
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/20 to-secondary/30 blur-3xl rounded-full scale-150 opacity-70" />
-              <h1 className="relative text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent leading-tight">
-                Your Wellness Journey
-              </h1>
-            </div>
-          </motion.div>
+            Your Wellness Journey
+          </motion.h1>
           <motion.p
-            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium"
+            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed "
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.5 }}
+            transition={{ duration: 0.4, delay: 0.5, ease: "easeInOut" }}
           >
             Track and manage your transformative sessions with our expert mental health professionals. 
             Your path to personal growth and wellness starts here.
-          </motion.p>
+          </motion.p>          
         </motion.div>
+
+
 
         {sessions.length === 0 ?
         (
