@@ -94,24 +94,47 @@ const CourseDetail = () => {
 
   if (courseLoading || (isEnrolled && progressLoading)) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-50">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
-        </div>
-        <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-xl border-b border-border/20">
+      <motion.div
+        className="min-h-screen bg-background relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
           <div className="flex items-center justify-between p-4">
-            <SidebarTrigger />
-            <h1 className="text-xl font-semibold truncate">Loading...</h1>
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SidebarTrigger />
+            </motion.div>
+            <motion.h1 
+              className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
+              Course Details
+            </motion.h1>
             <div className="w-10" />
           </div>
-        </div>
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">
+        </motion.div>
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+        >
           <CustomLoader />
-          <div className="text-lg text-muted-foreground">Loading course details...</div>
-        </div>
-      </div>
-    );
+          <div className="text-lg text-muted-foreground">Loading Course Details...</div>
+        </motion.div>
+      </motion.div>
+    );    
   }
 
   if (courseError || !course || (isEnrolled && progressError)) {
@@ -254,14 +277,17 @@ const CourseDetail = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 relative overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 opacity-50">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl"></div>
-      </div>
+      
+      
+    {/* Animated background elements */}
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+    </div>
 
       {/* Header */}
-      <motion.div 
+      {/* <motion.div 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -284,7 +310,34 @@ const CourseDetail = () => {
           </motion.h1>
           <FavoriteButton course={course} />
         </div>
-      </motion.div>
+      </motion.div> */}
+
+      
+      <motion.div
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <div className="flex items-center justify-between p-4">
+          <motion.div
+            whileHover={{ rotate: 360, scale: 1.1 }}
+            transition={{ duration: 0.4 }}
+          >
+            <SidebarTrigger />
+          </motion.div>
+          <motion.h1
+            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            {course.title}
+          </motion.h1>
+          <FavoriteButton course={course} />
+          {/* <div className="w-10" /> */}
+        </div>
+      </motion.div>       
 
       <div className="container mx-auto px-4 py-6 relative z-10">
         {isEnrolled ? (

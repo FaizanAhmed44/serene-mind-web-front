@@ -149,56 +149,36 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/80 to-primary/5 relative overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-primary/10 via-primary/5 to-transparent rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-radial from-accent/10 via-accent/5 to-transparent rounded-full blur-3xl" />
+     <div className="min-h-screen bg-gradient-to-br from-background via-background/80 to-primary/5 relative overflow-hidden">
       
-      {/* Hero Section */}
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
+
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-b border-border/30"
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/50 to-transparent" />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 text-center">
-          <motion.h1
-            className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            Account Settings
-          </motion.h1>
-          
-          <motion.p
-            className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            Manage your account preferences, security settings, and personal information
-          </motion.p>
-        </div>
-      </motion.div>
-      
-      {/* Header */}
-      <motion.div 
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="border-b border-border/30 bg-background/80 backdrop-blur-xl sticky top-0 z-50 relative"
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <div className="flex items-center justify-between px-4 md:px-6 py-4 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between p-4">
           <motion.div
-            whileHover={{ scale: 1.2, rotate: 360 }}
+            whileHover={{ rotate: 360, scale: 1.1 }}
             transition={{ duration: 0.4 }}
           >
             <SidebarTrigger />
           </motion.div>
-          <h1 className="text-lg md:text-xl font-semibold text-foreground">Settings</h1>
+          <motion.h1
+            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            Settings
+          </motion.h1>
           <motion.div
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.2 }}
@@ -214,7 +194,35 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
             </Button>
           </motion.div>
         </div>
-      </motion.div>
+      </motion.div>    
+
+    <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 ">      
+
+      {/* Welcome Section */}
+      <motion.div
+          className="text-center py-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3, ease: "easeInOut" }}
+        >        
+          <motion.h1
+            className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.4, ease: "easeInOut" }}
+          >
+            Account Settings
+          </motion.h1>
+          <motion.p
+            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed "
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.5, ease: "easeInOut" }}
+          >
+           Manage your account preferences, security settings, and personal information
+          </motion.p>
+          
+        </motion.div>
 
       {/* Content */}
       <motion.div 
@@ -487,6 +495,8 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
           </Card>
         </motion.div>
       </motion.div>
+      </div>
+
     </div>
   );
 };

@@ -9,8 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
-import ProfileSettings from "@/components/ProfileSettings";
-import PaymentHistory from "@/components/PaymentHistory";
 import { useUserProfile, useUpdateUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
@@ -87,7 +85,14 @@ const UserProfile = () => {
             >
               <SidebarTrigger />
             </motion.div> 
-            <h1 className="text-xl font-semibold text-foreground">My Profile</h1>
+            <motion.h1
+            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            My Profile
+          </motion.h1>
             <div className="w-20" />
           </div>
         </div>
@@ -226,17 +231,20 @@ const UserProfile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/80 to-primary/5 relative overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-primary/10 via-primary/5 to-transparent rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-radial from-accent/10 via-accent/5 to-transparent rounded-full blur-3xl" />
       
+      
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
       {/* Header */}
       <motion.div 
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="border-b border-border/30 bg-background/80 backdrop-blur-xl sticky top-0 z-50 relative"
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
         <div className="flex items-center justify-between px-4 md:px-6 py-4 max-w-7xl mx-auto">
           <motion.div
@@ -245,7 +253,14 @@ const UserProfile = () => {
           >
             <SidebarTrigger />
           </motion.div>
-          <h1 className="text-lg md:text-xl font-semibold text-foreground">My Profile</h1>
+          <motion.h1
+            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            My Profile
+          </motion.h1>
           <div className="flex items-center gap-2">
             <motion.div
               whileHover={{ scale: 1.1 }}
