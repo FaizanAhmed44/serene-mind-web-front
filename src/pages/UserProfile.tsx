@@ -225,13 +225,18 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/80 to-primary/5 relative overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-primary/10 via-primary/5 to-transparent rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-radial from-accent/10 via-accent/5 to-transparent rounded-full blur-3xl" />
+      
       {/* Header */}
       <motion.div 
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10"
+        className="border-b border-border/30 bg-background/80 backdrop-blur-xl sticky top-0 z-50 relative"
       >
         <div className="flex items-center justify-between px-4 md:px-6 py-4 max-w-7xl mx-auto">
           <motion.div
@@ -318,7 +323,7 @@ const UserProfile = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8"
+        className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 relative z-10"
       >
         <div className="space-y-6 md:space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
@@ -330,7 +335,7 @@ const UserProfile = () => {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <Card className="border border-border/50">
+                <Card className="border border-border/20 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/20">
                   <CardContent className="p-6 text-center">
                     <motion.div 
                       whileHover={{ scale: 1.05 }}
@@ -431,9 +436,9 @@ const UserProfile = () => {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
               >
-                <Card className="border border-border/50">
+                <Card className="border border-border/20 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/20">
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-base md:text-lg font-semibold text-primary">Quick Stats</CardTitle>
+                    <CardTitle className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Quick Stats</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {[
@@ -465,16 +470,16 @@ const UserProfile = () => {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <Card className="border border-border/50">
+                <Card className="border border-border/20 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/20">
                   <CardHeader>
                     <motion.div 
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.5 }}
-                      className="flex items-center gap-2 text-base md:text-lg text-primary font-semibold"
+                      className="flex items-center gap-2"
                     >
                       <User className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-                      Personal Information
+                      <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Personal Information</h3>
                     </motion.div>
                   </CardHeader>
                   <CardContent className="space-y-4 md:space-y-6">
@@ -559,16 +564,16 @@ const UserProfile = () => {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
               >
-                <Card className="border border-border/50">
+                <Card className="border border-border/20 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/20">
                   <CardHeader>
                     <motion.div 
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.5 }}
-                      className="flex items-center gap-2 text-base md:text-lg text-primary font-semibold"
+                      className="flex items-center gap-2"
                     >
                       <Award className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-                      Learning Progress
+                      <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Learning Progress</h3>
                     </motion.div>
                   </CardHeader>
                   <CardContent>

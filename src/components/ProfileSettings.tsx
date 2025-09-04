@@ -149,13 +149,47 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/80 to-primary/5 relative overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-primary/10 via-primary/5 to-transparent rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-radial from-accent/10 via-accent/5 to-transparent rounded-full blur-3xl" />
+      
+      {/* Hero Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-b border-border/30"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/50 to-transparent" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 text-center">
+          <motion.h1
+            className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Account Settings
+          </motion.h1>
+          
+          <motion.p
+            className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            Manage your account preferences, security settings, and personal information
+          </motion.p>
+        </div>
+      </motion.div>
+      
       {/* Header */}
       <motion.div 
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10"
+        className="border-b border-border/30 bg-background/80 backdrop-blur-xl sticky top-0 z-50 relative"
       >
         <div className="flex items-center justify-between px-4 md:px-6 py-4 max-w-7xl mx-auto">
           <motion.div
@@ -187,7 +221,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6"
+        className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6 relative z-10"
       >
         {/* Password & Security */}
         <motion.div
@@ -195,16 +229,16 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Card>
+          <Card className="border border-border/20 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/20">
             <CardHeader>
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="flex items-center text-primary"
+                className="flex items-center"
               >
                 <Shield className="h-5 w-5 mr-2 text-primary" />
-                <CardTitle>Password & Security</CardTitle>
+                <CardTitle className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Password & Security</CardTitle>
               </motion.div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -328,16 +362,16 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <Card>
+          <Card className="border border-border/20 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/20">
             <CardHeader>
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="flex items-center text-primary"
+                className="flex items-center"
               >
                 <Bell className="h-5 w-5 mr-2 text-primary" />
-                <CardTitle>Notification Preferences</CardTitle>
+                <CardTitle className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Notification Preferences</CardTitle>
               </motion.div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -384,7 +418,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Card className="border-destructive">
+          <Card className="border border-destructive/30 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:border-destructive/50">
             <CardHeader>
               <motion.div 
                 initial={{ opacity: 0 }}
@@ -393,7 +427,7 @@ const ProfileSettings = ({ onPasswordUpdate, onAccountDelete }: ProfileSettingsP
                 className="flex items-center text-destructive"
               >
                 <Trash2 className="h-5 w-5 mr-2" />
-                <CardTitle>Delete Account</CardTitle>
+                <CardTitle className="text-destructive">Delete Account</CardTitle>
               </motion.div>
             </CardHeader>
             <CardContent>
