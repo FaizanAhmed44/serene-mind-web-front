@@ -97,25 +97,39 @@ const PaymentHistory = () => {
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <motion.div 
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/80 to-primary/5 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
+
+
+      <motion.div
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-10"
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <div className="flex items-center justify-between px-4 md:px-6 py-4 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between p-4">
           <motion.div
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            whileHover={{ rotate: 360, scale: 1.1 }}
+            transition={{ duration: 0.4 }}
           >
             <SidebarTrigger />
           </motion.div>
-          <h1 className="text-lg md:text-xl font-semibold text-foreground">Payment History</h1>
+          <motion.h1
+            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            Payment History
+          </motion.h1>
           <motion.div
             whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.2 }}
           >
             <Button 
               variant="outline" 
@@ -128,7 +142,7 @@ const PaymentHistory = () => {
             </Button>
           </motion.div>
         </div>
-      </motion.div>
+      </motion.div>    
 
       {/* Content */}
       <motion.div 
