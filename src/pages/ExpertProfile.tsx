@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import BookingModal from "@/components/BookingModal";
 import { ExpertsAPI } from "@/api/experts";
+import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { AvailabilitySlot, Booking, SessionType } from "@/data/types";
 import { days, getAvailableTimes } from "@/lib/utils";
@@ -60,29 +61,50 @@ const ExpertProfile = () => {
     enabled: !!id,
   });
 
-  if (isLoading || sessionTypesLoading || availabilitySlotsLoading) {
+  if (isLoading || sessionTypesLoading || availabilitySlotsLoading) {    
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/30 relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 animate-pulse" />
-        <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-bounce" />
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary/10 rounded-full blur-xl animate-pulse" />
-        
-        <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-border/50 shadow-sm">
+      <motion.div
+        className="min-h-screen bg-background relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
           <div className="flex items-center justify-between p-4">
-            <SidebarTrigger />
-            <h1 className="text-xl font-semibold text-foreground bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SidebarTrigger />
+            </motion.div>
+            <motion.h1 
+              className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
               Expert Profile
-            </h1>
+            </motion.h1>
             <div className="w-10" />
           </div>
-        </div>
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">
+        </motion.div>
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+        >
           <CustomLoader />
-          <p className="text-lg text-muted-foreground animate-pulse">Loading expert profile...</p>
-        </div>
-      </div>
-    );
+          <div className="text-lg text-muted-foreground">Loading Expert Profile...</div>
+        </motion.div>
+      </motion.div>
+    );    
+   
   }
 
   if (error || !expert || sessionTypesError || availabilitySlotsError) {
@@ -112,22 +134,44 @@ const ExpertProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/30 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5" />
-      <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary/10 rounded-full blur-xl animate-bounce" />
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-full blur-3xl animate-pulse" />
-      
-      <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-border/50 shadow-sm">
+    <motion.div
+      className="min-h-screen bg-gradient-to-br from-background via-background to-muted/50 relative overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+    >
+
+    {/* Animated background elements */}
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+    </div>        
+
+      <motion.div
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         <div className="flex items-center justify-between p-4">
-          <SidebarTrigger />
-          <h1 className="text-xl font-semibold text-foreground bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+          <motion.div
+            whileHover={{ rotate: 360, scale: 1.1 }}
+            transition={{ duration: 0.4 }}
+          >
+            <SidebarTrigger />
+          </motion.div>
+          <motion.h1
+            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             Expert Profile
-          </h1>
+          </motion.h1>
           <div className="w-10" />
         </div>
-      </div>
+      </motion.div> 
 
       <div className="relative z-10 p-6 space-y-8">
         {/* Expert Header */}
@@ -188,7 +232,7 @@ const ExpertProfile = () => {
                     <Badge 
                       key={spec} 
                       variant="secondary" 
-                      className="bg-gradient-to-r from-primary/10 to-primary/5 text-primary border-primary/20 hover:bg-primary/15 hover:scale-105 transition-all duration-300 font-medium px-4 py-2"
+                      className="bg-gradient-to-r from-primary/10 to-primary/5 text-white/80 hover:text-primary border-primary/20 hover:bg-primary/20 hover:scale-105 transition-all duration-300 font-medium px-4 py-2"
                       style={{
                         animationDelay: `${index * 100}ms`
                       }}
@@ -211,8 +255,10 @@ const ExpertProfile = () => {
 
               <div className="lg:col-span-2 space-y-8">
                 <div className="p-6 rounded-xl bg-muted/20 backdrop-blur-sm border border-border/30 hover:bg-muted/30 transition-all duration-300">
-                  <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-                    <MessageSquare className="h-5 w-5 text-primary" />
+                  <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">                    
+                    <div className="p-2 rounded-lg bg-secondary/10">
+              <MessageSquare className="h-6 w-6 text-secondary" />
+            </div>
                     About
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
@@ -222,15 +268,17 @@ const ExpertProfile = () => {
 
                 {expert.credentials && expert.credentials.length > 0 && (
                   <div className="p-6 rounded-xl bg-muted/20 backdrop-blur-sm border border-border/30 hover:bg-muted/30 transition-all duration-300">
-                    <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-                      <Award className="h-5 w-5 text-primary" />
+                    <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">                      
+                      <div className="p-2 rounded-lg bg-secondary/10">
+                        <Award className="h-6 w-6 text-secondary" />
+                      </div>
                       Credentials
                     </h3>
                     <ul className="space-y-3">
                       {expert.credentials.map((cred, index) => (
                         <li 
                           key={index} 
-                          className="flex items-center space-x-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-all duration-300 hover:scale-[1.02]"
+                          className="flex items-center space-x-3 p-3 rounded-lg bg-background/80 hover:bg-background transition-all duration-300 hover:scale-[1.02]"
                           style={{
                             animationDelay: `${index * 100}ms`
                           }}
@@ -262,7 +310,7 @@ const ExpertProfile = () => {
         expert={expert}
         sessionTypes={sessionTypes}
       />
-    </div>
+    </motion.div>
   );
 };
 
@@ -316,7 +364,7 @@ function AvailabilityAccordion({
                   className={`transition-all duration-300 ${
                     open === day 
                       ? "bg-primary/20 text-primary border-primary/30" 
-                      : "bg-muted/30 group-hover:bg-primary/10 group-hover:text-primary"
+                      : "bg-muted/30 text-primary/70 group-hover:bg-primary/10 group-hover:text-primary"
                   }`}
                 >
                   {slotsByDay[day].length} slot{slotsByDay[day].length > 1 ? "s" : ""}
@@ -375,8 +423,8 @@ const SessionTypes = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Session Types */}
-      <Card className="animate-fade-in bg-card/80 backdrop-blur-sm border-border/50 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5" />
+      <Card className="animate-fade-in bg-card/80 backdrop-blur-sm border-border/50 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5" />
         <CardHeader className="relative">
           <CardTitle className="flex text-xl items-center space-x-3 font-bold">
             <div className="p-2 rounded-lg bg-primary/10">
@@ -389,7 +437,7 @@ const SessionTypes = ({
           {sessionTypes.map((session: SessionType, index: number) => (
             <div
               key={index}
-              className="group flex justify-between items-center p-5 bg-gradient-to-r from-muted/30 to-muted/20 rounded-xl border border-border/30 hover:from-muted/50 hover:to-muted/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+              className="group flex justify-between items-center p-5 bg-gradient-to-r from-muted/30 to-muted/20 rounded-xl border border-border/30 hover:from-muted/50 hover:to-muted/30 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg"
               style={{
                 animationDelay: `${index * 100}ms`
               }}
@@ -418,8 +466,8 @@ const SessionTypes = ({
       </Card>
 
       {/* Availability */}
-      <Card className="animate-fade-in bg-card/80 backdrop-blur-sm border-border/50 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-primary/5" />
+      <Card className="animate-fade-in bg-card/80 backdrop-blur-sm border-border/50 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5" />
         <CardHeader className="relative">
           <CardTitle className="flex text-xl items-center space-x-3 font-bold">
             <div className="p-2 rounded-lg bg-secondary/10">
@@ -448,12 +496,12 @@ const SessionTypes = ({
 const Reviews = ({ reviews }: { reviews: any[] }) => {
   return (
     <Card className="animate-fade-in bg-card/80 backdrop-blur-sm border-border/50 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-orange-500/5" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5" />
       <CardHeader className="relative">
-        <CardTitle className="flex items-center space-x-3 text-xl font-bold">
-          <div className="p-2 rounded-lg bg-yellow-500/10">
-            <MessageSquare className="h-6 w-6 text-yellow-600" />
-          </div>
+        <CardTitle className="flex items-center space-x-3 text-xl font-bold">          
+          <div className="p-2 rounded-lg bg-secondary/10">
+              <MessageSquare className="h-6 w-6 text-secondary" />
+            </div>
           <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">Recent Reviews</span>
         </CardTitle>
       </CardHeader>
@@ -461,7 +509,7 @@ const Reviews = ({ reviews }: { reviews: any[] }) => {
         {reviews.map((review, index) => (
           <div 
             key={index} 
-            className="group p-6 bg-gradient-to-r from-muted/30 to-muted/20 rounded-xl border border-border/30 hover:from-muted/50 hover:to-muted/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+            className="group p-6 bg-gradient-to-r from-muted/30 to-muted/20 rounded-xl border border-border/30 hover:from-muted/50 hover:to-muted/30 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg"
             style={{
               animationDelay: `${index * 150}ms`
             }}
