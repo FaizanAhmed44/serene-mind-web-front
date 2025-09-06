@@ -23,6 +23,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { motion, AnimatePresence } from "framer-motion";
 import { CoursesExpertAPI } from "@/api/courses";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CustomLoader } from "@/components/CustomLoader";
@@ -133,6 +134,52 @@ const CourseEnroll = () => {
 
     enrollCourse();
   };
+
+if(isLoading){
+  return (
+    <motion.div
+      className="min-h-screen bg-background relative"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div 
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+      >
+        <div className="flex items-center justify-between p-4">
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.4 }}
+          >
+            <SidebarTrigger />
+          </motion.div>
+          <motion.h1 
+            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            Course Enrollment
+          </motion.h1>
+          <div className="w-10" />
+        </div>
+      </motion.div>
+      <motion.div
+        className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.3 }}
+      >
+        <CustomLoader />
+        <div className="text-lg text-muted-foreground">Loading Course Details...</div>
+      </motion.div>
+    </motion.div>
+  );   
+}
+
   if (isEnrollPending) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/30 relative overflow-hidden">
@@ -164,33 +211,55 @@ const CourseEnroll = () => {
   const selectedPlanData = pricingPlans.find(plan => plan.id === selectedPlan);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/30 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5" />
-      <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary/10 rounded-full blur-xl animate-bounce" />
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-full blur-3xl animate-pulse" />
-      
-      <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-border/50 shadow-sm">
+    <motion.div
+    className="min-h-screen bg-gradient-to-br from-background via-background to-muted/50 relative overflow-hidden"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5, ease: "easeInOut" }}
+  >
+
+  {/* Animated background elements */}
+  <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+    <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+  </div>
+
+      <motion.div
+        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         <div className="flex items-center justify-between p-4">
-          <SidebarTrigger />
-          <div className="text-center">
-            <h1 className="text-lg font-semibold text-foreground bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">Course Enrollment</h1>
-          </div>
+          <motion.div
+            whileHover={{ rotate: 360, scale: 1.1 }}
+            transition={{ duration: 0.4 }}
+          >
+            <SidebarTrigger />
+          </motion.div>
+          <motion.h1
+            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            Courses Enrollment
+          </motion.h1>
           <div className="w-10" />
         </div>
-      </div>
+      </motion.div>            
 
       <div className="relative z-10 max-w-6xl mx-auto p-6">
         <div className="mb-8">
-          <Button variant="ghost" asChild className="mb-6 hover:bg-muted/50 transition-all duration-300">
+          <Button variant="ghost" asChild className="mb-6 hover:bg-muted/50 hover:text-black transition-all duration-300">
             <Link to={`/courses/${course.id}`}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Course
             </Link>
           </Button>
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-3 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text">
+          <div className="text-center mb-8"> 
+            <h1 className="text-4xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent mb-3">
               Enroll in {course.title}
             </h1>
             <p className="text-muted-foreground text-lg">Complete your enrollment to start your learning journey</p>
@@ -240,7 +309,7 @@ const CourseEnroll = () => {
 
             {/* Payment Information */}
             <Card className="animate-fade-in bg-card/80 backdrop-blur-sm border-border/50 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center space-x-3 text-xl font-bold">
                   <div className="p-3 rounded-xl bg-green-500/10">
@@ -251,7 +320,7 @@ const CourseEnroll = () => {
               </CardHeader>
               <CardContent className="relative space-y-6">
                 <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-                  <div className="flex items-center space-x-3 p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all duration-300 hover:scale-[1.02]">
+                  <div className="flex items-center space-x-3 p-4 rounded-xl bg-muted/50 hover:bg-muted/80 transition-all duration-300 hover:scale-[1.02]">
                     <RadioGroupItem value="card" id="card" />
                     <Label htmlFor="card" className="flex items-center space-x-3 cursor-pointer font-medium">
                       <CreditCard className="h-5 w-5 text-primary" />
@@ -269,7 +338,7 @@ const CourseEnroll = () => {
                         value={formData.cardNumber}
                         onChange={(e) => handleInputChange("cardNumber", e.target.value)}
                         placeholder="1234 5678 9012 3456"
-                        className="bg-background/50 border-border/50 focus:bg-background focus:border-primary/50 transition-all duration-300"
+                        className="bg-background/80 border-border/80 focus:bg-background focus:border-primary/50 transition-all duration-300"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -280,7 +349,7 @@ const CourseEnroll = () => {
                           value={formData.expiryDate}
                           onChange={(e) => handleInputChange("expiryDate", e.target.value)}
                           placeholder="MM/YY"
-                          className="bg-background/50 border-border/50 focus:bg-background focus:border-primary/50 transition-all duration-300"
+                          className="bg-background/80 border-border/80 focus:bg-background focus:border-primary/50 transition-all duration-300"
                         />
                       </div>
                       <div>
@@ -290,7 +359,7 @@ const CourseEnroll = () => {
                           value={formData.cvv}
                           onChange={(e) => handleInputChange("cvv", e.target.value)}
                           placeholder="123"
-                          className="bg-background/50 border-border/50 focus:bg-background focus:border-primary/50 transition-all duration-300"
+                          className="bg-background/80 border-border/80 focus:bg-background focus:border-primary/50 transition-all duration-300"
                         />
                       </div>
                     </div>
@@ -301,9 +370,9 @@ const CourseEnroll = () => {
 
             {/* Terms and Conditions */}
             <Card className="animate-fade-in bg-card/80 backdrop-blur-sm border-border/50 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5" />
               <CardContent className="relative p-6 space-y-6">
-                <div className="flex items-start space-x-3 p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all duration-300">
+                <div className="flex items-start space-x-3 p-4 rounded-xl bg-muted/50 hover:bg-muted/80 transition-all duration-300">
                   <Checkbox
                     id="terms"
                     checked={formData.agreeTerms}
@@ -314,7 +383,7 @@ const CourseEnroll = () => {
                     I agree to the <Link to="#" className="text-primary underline hover:text-primary/80 transition-colors">Terms of Service</Link> and <Link to="#" className="text-primary underline hover:text-primary/80 transition-colors">Privacy Policy</Link>
                   </Label>
                 </div>
-                <div className="flex items-start space-x-3 p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all duration-300">
+                <div className="flex items-start space-x-3 p-4 rounded-xl bg-muted/50 hover:bg-muted/80 transition-all duration-300">
                   <Checkbox
                     id="marketing"
                     checked={formData.agreeMarketing}
@@ -414,7 +483,7 @@ const CourseEnroll = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
