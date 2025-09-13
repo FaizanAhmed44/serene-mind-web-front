@@ -3,6 +3,7 @@ import { Send, Mic, StopCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 
 interface Message {
@@ -116,13 +117,13 @@ const AIMinaCoach: React.FC = () => {
   };
 
   const TypingIndicator = () => (
-    <div className="flex items-center space-x-2 px-4 py-3 bg-secondary/50 rounded-2xl rounded-bl-md max-w-xs">
+    <div className="flex items-center space-x-3 px-6 py-4 bg-gray-50 rounded-2xl max-w-xl">
       <div className="flex space-x-1">
-        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
-        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
       </div>
-      <span className="text-sm text-muted-foreground">Mina is thinking...</span>
+      <span className="text-sm text-gray-600">Mina is thinking...</span>
     </div>
   );
 
@@ -130,15 +131,15 @@ const AIMinaCoach: React.FC = () => {
     if (!state.showVoiceOverlay) return null;
 
     return (
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="flex flex-col items-center space-y-8">
           <div className={cn(
-            "w-32 h-32 rounded-full bg-accent/20 flex items-center justify-center",
+            "w-32 h-32 rounded-full bg-purple-100 flex items-center justify-center",
             "transition-all duration-300",
-            state.isRecording && "scale-110 bg-accent/30"
+            state.isRecording && "scale-110 bg-purple-200"
           )}>
             <div className={cn(
-              "w-20 h-20 rounded-full bg-accent flex items-center justify-center",
+              "w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center",
               state.isRecording && "animate-pulse"
             )}>
               <Mic className="w-10 h-10 text-white" />
@@ -150,7 +151,7 @@ const AIMinaCoach: React.FC = () => {
               {[...Array(5)].map((_, i) => (
                 <div
                   key={i}
-                  className="w-1 bg-accent rounded-full animate-pulse"
+                  className="w-1 bg-purple-600 rounded-full animate-pulse"
                   style={{
                     height: `${Math.random() * 40 + 20}px`,
                     animationDelay: `${i * 0.1}s`
@@ -175,95 +176,113 @@ const AIMinaCoach: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-background">
-      {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="px-6 py-4">
-          <h1 className="text-2xl font-bold text-primary mb-1">
-            Mina – Your Mind Science Coach
+    <div className="min-h-screen bg-slate-50">
+      {/* Main Container */}
+      <div className="max-w-4xl mx-auto h-screen flex flex-col">
+        {/* Header */}
+        <div className="text-center py-12 px-8">
+          <div className="mb-6">
+            <Avatar className="w-16 h-16 mx-auto mb-4 ring-2 ring-purple-200">
+              <AvatarFallback className="bg-gradient-to-br from-purple-500 to-purple-600 text-white text-xl font-semibold">
+                M
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <h1 className="text-3xl font-light text-gray-800 mb-2">
+            Good Evening
           </h1>
-          <p className="text-sm text-muted-foreground">
-            A safe space for self-growth, mindset building, and emotional clarity
+          <p className="text-gray-500 text-lg">
+            I'm Mina, your Mind Science Coach. How can I support you today?
           </p>
         </div>
-      </div>
 
-      {/* Chat Area */}
-      <div className="flex-1 relative">
-        <ScrollArea className="h-full" ref={scrollAreaRef}>
-          <div className="px-6 py-4 space-y-4">
-            {state.messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex",
-                  message.sender === 'user' ? 'justify-end' : 'justify-start'
-                )}
-              >
-                <div
-                  className={cn(
-                    "max-w-xs lg:max-w-md px-4 py-3 rounded-2xl",
-                    "shadow-sm transition-all duration-200 hover:shadow-md",
-                    message.sender === 'user'
-                      ? 'bg-primary text-primary-foreground rounded-br-md'
-                      : 'bg-secondary/80 text-secondary-foreground rounded-bl-md'
-                  )}
-                >
-                  <p className="text-sm leading-relaxed">{message.text}</p>
-                  <div className="mt-2">
-                    <span className="text-xs opacity-70">
-                      {message.timestamp.toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
-                    </span>
+        {/* Chat Area */}
+        <div className="flex-1 px-8 pb-8">
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 h-full flex flex-col">
+            <ScrollArea className="flex-1 p-8" ref={scrollAreaRef}>
+              <div className="space-y-8">
+                {state.messages.slice(1).map((message) => (
+                  <div
+                    key={message.id}
+                    className={cn(
+                      "flex gap-4",
+                      message.sender === 'user' ? 'justify-end' : 'justify-start'
+                    )}
+                  >
+                    {message.sender === 'mina' && (
+                      <Avatar className="w-10 h-10 ring-2 ring-purple-100 shrink-0">
+                        <AvatarFallback className="bg-gradient-to-br from-purple-500 to-purple-600 text-white text-sm font-semibold">
+                          M
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                    
+                    <div
+                      className={cn(
+                        "max-w-xl px-6 py-4 rounded-2xl",
+                        message.sender === 'user'
+                          ? 'bg-purple-600 text-white ml-12'
+                          : 'bg-gray-50 text-gray-800'
+                      )}
+                    >
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {message.text}
+                      </p>
+                    </div>
+                    
+                    {message.sender === 'user' && (
+                      <div className="w-10 h-10 shrink-0" />
+                    )}
                   </div>
-                </div>
+                ))}
+                
+                {state.isLoading && (
+                  <div className="flex gap-4 justify-start">
+                    <Avatar className="w-10 h-10 ring-2 ring-purple-100 shrink-0">
+                      <AvatarFallback className="bg-gradient-to-br from-purple-500 to-purple-600 text-white text-sm font-semibold">
+                        M
+                      </AvatarFallback>
+                    </Avatar>
+                    <TypingIndicator />
+                  </div>
+                )}
+                
+                <div ref={messagesEndRef} />
               </div>
-            ))}
-            
-            {state.isLoading && (
-              <div className="flex justify-start">
-                <TypingIndicator />
-              </div>
-            )}
-            
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
-      </div>
+            </ScrollArea>
 
-      {/* Input Area */}
-      <div className="border-t border-border bg-card/50 backdrop-blur-sm">
-        <div className="px-6 py-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex-1 relative">
-              <Input
-                value={state.input}
-                onChange={(e) => updateState({ input: e.target.value })}
-                onKeyPress={handleKeyPress}
-                placeholder="Share what's on your mind..."
-                className="pr-12 py-3 rounded-xl border-input bg-background focus:ring-2 focus:ring-ring"
-                disabled={state.isLoading}
-              />
+            {/* Input Area */}
+            <div className="p-8 border-t border-gray-100">
+              <div className="flex items-center gap-4">
+                <div className="flex-1 relative">
+                  <Input
+                    value={state.input}
+                    onChange={(e) => updateState({ input: e.target.value })}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Ask whatever you want"
+                    className="h-12 px-6 rounded-full border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-200 focus:border-purple-300 text-sm"
+                    disabled={state.isLoading}
+                  />
+                </div>
+                
+                <Button
+                  onClick={handleSendClick}
+                  disabled={!state.input.trim() || state.isLoading}
+                  className="h-12 w-12 rounded-full bg-purple-600 hover:bg-purple-700 p-0"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+                
+                <Button
+                  onClick={startVoiceRecording}
+                  variant="outline"
+                  className="h-12 w-12 rounded-full border-gray-200 text-gray-600 hover:bg-gray-50 p-0"
+                  disabled={state.isLoading}
+                >
+                  <Mic className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
-            
-            <Button
-              onClick={handleSendClick}
-              disabled={!state.input.trim() || state.isLoading}
-              className="rounded-xl px-4 py-3 h-auto"
-            >
-              <Send className="w-4 h-4" />
-            </Button>
-            
-            <Button
-              onClick={startVoiceRecording}
-              variant="outline"
-              className="rounded-xl px-4 py-3 h-auto border-accent text-accent hover:bg-accent hover:text-accent-foreground"
-              disabled={state.isLoading}
-            >
-              <Mic className="w-4 h-4" />
-            </Button>
           </div>
         </div>
       </div>
