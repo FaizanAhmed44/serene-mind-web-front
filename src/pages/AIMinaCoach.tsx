@@ -177,7 +177,7 @@ const AIMinaCoach: React.FC = () => {
   return (
     <div className="h-screen flex flex-col bg-background">
       {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm">
+      <div className="shrink-0 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-6 py-4">
           <h1 className="text-2xl font-bold text-primary mb-1">
             Mina – Your Mind Science Coach
@@ -189,69 +189,87 @@ const AIMinaCoach: React.FC = () => {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 relative">
-        <ScrollArea className="h-full" ref={scrollAreaRef}>
-          <div className="px-6 py-4 space-y-4">
-            {state.messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex",
-                  message.sender === 'user' ? 'justify-end' : 'justify-start'
-                )}
-              >
-                <div
-                  className={cn(
-                    "max-w-xs lg:max-w-md px-4 py-3 rounded-2xl",
-                    "shadow-sm transition-all duration-200 hover:shadow-md",
-                    message.sender === 'user'
-                      ? 'bg-primary text-primary-foreground rounded-br-md'
-                      : 'bg-secondary/80 text-secondary-foreground rounded-bl-md'
-                  )}
-                >
-                  <p className="text-sm leading-relaxed">{message.text}</p>
-                  <div className="mt-2">
-                    <span className="text-xs opacity-70">
-                      {message.timestamp.toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
-                    </span>
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full">
+            <div className="px-6 py-6 space-y-6 min-h-full flex flex-col">
+              <div className="flex-1">
+                {state.messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={cn(
+                      "flex mb-6",
+                      message.sender === 'user' ? 'justify-end' : 'justify-start'
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "max-w-xs lg:max-w-lg px-4 py-3 rounded-2xl relative",
+                        "shadow-sm transition-all duration-200 hover:shadow-md",
+                        message.sender === 'user'
+                          ? 'bg-primary text-primary-foreground rounded-br-md ml-12'
+                          : 'bg-muted/60 text-foreground rounded-bl-md mr-12'
+                      )}
+                    >
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
+                      <div className="mt-2">
+                        <span className="text-xs opacity-70">
+                          {message.timestamp.toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
+                
+                {state.isLoading && (
+                  <div className="flex justify-start mb-6">
+                    <TypingIndicator />
+                  </div>
+                )}
               </div>
-            ))}
-            
-            {state.isLoading && (
-              <div className="flex justify-start">
-                <TypingIndicator />
-              </div>
-            )}
-            
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
+        </div>
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-border bg-card/50 backdrop-blur-sm">
+      <div className="shrink-0 border-t border-border bg-background/95 backdrop-blur-sm sticky bottom-0">
         <div className="px-6 py-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex-1 relative">
-              <Input
+          <div className="flex items-end space-x-3 max-w-4xl mx-auto">
+            <div className="flex-1">
+              <textarea
                 value={state.input}
                 onChange={(e) => updateState({ input: e.target.value })}
-                onKeyPress={handleKeyPress}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage(state.input);
+                  }
+                }}
                 placeholder="Share what's on your mind..."
-                className="pr-12 py-3 rounded-xl border-input bg-background focus:ring-2 focus:ring-ring"
+                className="w-full min-h-[44px] max-h-32 px-4 py-3 rounded-xl border border-input bg-background/50 focus:outline-none focus:ring-2 focus:ring-ring resize-none"
                 disabled={state.isLoading}
+                rows={1}
+                style={{ 
+                  height: 'auto',
+                  minHeight: '44px'
+                }}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = Math.min(target.scrollHeight, 128) + 'px';
+                }}
               />
             </div>
             
             <Button
               onClick={handleSendClick}
               disabled={!state.input.trim() || state.isLoading}
-              className="rounded-xl px-4 py-3 h-auto"
+              className="rounded-xl px-4 py-3 h-11 shrink-0"
             >
               <Send className="w-4 h-4" />
             </Button>
@@ -259,7 +277,7 @@ const AIMinaCoach: React.FC = () => {
             <Button
               onClick={startVoiceRecording}
               variant="outline"
-              className="rounded-xl px-4 py-3 h-auto border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+              className="rounded-xl px-4 py-3 h-11 border-accent text-accent hover:bg-accent hover:text-accent-foreground shrink-0"
               disabled={state.isLoading}
             >
               <Mic className="w-4 h-4" />
