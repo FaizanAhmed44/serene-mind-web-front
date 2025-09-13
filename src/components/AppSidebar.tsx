@@ -9,6 +9,7 @@ import {
   CalendarCheck,
   GraduationCap,
   LogOut,
+  Bot,
 } from "lucide-react";
 import {
   Sidebar,
@@ -59,6 +60,11 @@ const menuItems = [
     title: "Training Sessions",
     url: "/training-sessions",
     icon: Calendar,
+  },
+  {
+    title: "AI Mina Coach",
+    url: "/ai-mina-coach",
+    icon: Bot,
   },
   {
     title: "FAQ & Help",

@@ -28,6 +28,7 @@ import BookedSessions from "./pages/BookedSessions";
 import LandingPage from "./pages/landing";
 import Courses from "./pages/Courses";
 import EnrolledCourses from "./pages/EnrolledCourses";
+import AIMinaCoach from "./pages/AIMinaCoach";
 import ProfileSettings from "./components/ProfileSettings";
 import PaymentHistory from "./components/PaymentHistory";
 
@@ -70,6 +71,7 @@ const App: React.FC = () => {
                             <Route path="/courses/:id" element={<CourseDetail />} />
                             <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
                             <Route path="/courses/:id/success" element={<CourseSuccess />} />
+                            <Route path="/ai-mina-coach" element={<AIMinaCoach />} />
                             <Route path="/payment-history" element={<PaymentHistory />} />
                             <Route path="/settings" element={<ProfileSettings />} />
                             <Route path="*" element={<NotFound />} />
