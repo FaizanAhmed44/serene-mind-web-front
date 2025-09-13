@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Mic, StopCircle } from 'lucide-react';
+import { Send, Mic, StopCircle, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 
 interface Message {
@@ -198,17 +199,25 @@ const AIMinaCoach: React.FC = () => {
                   <div
                     key={message.id}
                     className={cn(
-                      "flex mb-6",
+                      "flex mb-6 items-start",
                       message.sender === 'user' ? 'justify-end' : 'justify-start'
                     )}
                   >
+                    {message.sender === 'mina' && (
+                      <Avatar className="w-8 h-8 mr-3 mt-1 shrink-0">
+                        <AvatarFallback className="bg-accent text-accent-foreground">
+                          <Brain className="w-4 h-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                    
                     <div
                       className={cn(
                         "max-w-xs lg:max-w-lg px-4 py-3 rounded-2xl relative",
                         "shadow-sm transition-all duration-200 hover:shadow-md",
                         message.sender === 'user'
                           ? 'bg-primary text-primary-foreground rounded-br-md ml-12'
-                          : 'bg-muted/60 text-foreground rounded-bl-md mr-12'
+                          : 'bg-muted/60 text-foreground rounded-bl-md'
                       )}
                     >
                       <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
@@ -225,7 +234,12 @@ const AIMinaCoach: React.FC = () => {
                 ))}
                 
                 {state.isLoading && (
-                  <div className="flex justify-start mb-6">
+                  <div className="flex justify-start mb-6 items-start">
+                    <Avatar className="w-8 h-8 mr-3 mt-1 shrink-0">
+                      <AvatarFallback className="bg-accent text-accent-foreground">
+                        <Brain className="w-4 h-4" />
+                      </AvatarFallback>
+                    </Avatar>
                     <TypingIndicator />
                   </div>
                 )}
@@ -251,17 +265,21 @@ const AIMinaCoach: React.FC = () => {
                   }
                 }}
                 placeholder="Share what's on your mind..."
-                className="w-full min-h-[44px] max-h-32 px-4 py-3 rounded-xl border border-input bg-background/50 focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                className="w-full min-h-[44px] max-h-32 px-4 py-3 rounded-xl border border-input bg-background/50 focus:outline-none focus:ring-2 focus:ring-ring resize-none overflow-hidden"
                 disabled={state.isLoading}
                 rows={1}
                 style={{ 
-                  height: 'auto',
-                  minHeight: '44px'
+                  height: '44px',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none'
                 }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = Math.min(target.scrollHeight, 128) + 'px';
+                  target.style.height = '44px';
+                  const scrollHeight = target.scrollHeight;
+                  if (scrollHeight > 44) {
+                    target.style.height = Math.min(scrollHeight, 128) + 'px';
+                  }
                 }}
               />
             </div>
