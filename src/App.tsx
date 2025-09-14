@@ -51,7 +51,7 @@ const App: React.FC = () => {
                 
                 {/* Protected routes with sidebar */}
                 <Route path="/*" element={
-                  <ProtectedRoute>
+                  // <ProtectedRoute>
                     <SidebarProvider>
                       <div className="min-h-screen flex w-full">
                         <AppSidebar />
@@ -79,7 +79,7 @@ const App: React.FC = () => {
                         </main>
                       </div>
                     </SidebarProvider>
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 } />
               </Routes>
             </BrowserRouter>

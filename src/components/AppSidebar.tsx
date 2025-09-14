@@ -37,6 +37,11 @@ const menuItems = [
     icon: Book,
   },
   {
+    title: "AI Mina Coach",
+    url: "/ai-mina-coach",
+    icon: Bot,
+  },
+  {
     title: "My Enrolled Courses",
     url: "/enrolled-courses",
     icon: GraduationCap,
@@ -61,11 +66,7 @@ const menuItems = [
     url: "/training-sessions",
     icon: Calendar,
   },
-  {
-    title: "AI Mina Coach",
-    url: "/ai-mina-coach",
-    icon: Bot,
-  },
+  
   {
     title: "FAQ & Help",
     url: "/faq",
@@ -84,11 +85,10 @@ export function AppSidebar() {
 
   return (
     <Sidebar className="border-r border-gray-200 bg-white flex flex-col h-full">
-     
-       <SidebarHeader className="border-b border-gray-200 p-4 lg:p-6">
-         <div className="flex items-center space-x-4">
-           <div className="relative">
-             <img 
+      <SidebarHeader className="border-b border-gray-200 p-4 lg:p-6">
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <img
               src="/lovable-uploads/0d5f19e2-335b-46b8-85f6-4784451740ba.png" 
               alt="Core Cognitive Logo" 
               className="h-10 w-10 rounded-full border-3 border-white shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -100,7 +100,7 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="px-3 py-4 flex-1">
+      <SidebarContent className="px-3 py-4 flex-1 overflow-y-auto hide-scrollbar">
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-medium text-black mb-3 px-3 uppercase tracking-wider font-montserrat">
             Menu
