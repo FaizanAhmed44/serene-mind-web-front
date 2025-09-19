@@ -55,36 +55,68 @@ const AIMinaCoach: React.FC = () => {
   };
 
   const sendMessage = async (text: string) => {
-    if (!text.trim()) return;
+  if (!text.trim()) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: text.trim(),
-      sender: 'user',
+  const userMessage: Message = {
+    id: Date.now().toString(),
+    text: text.trim(),
+    sender: "user",
+    timestamp: new Date(),
+  };
+
+  updateState({
+    messages: [...state.messages, userMessage],
+    input: "",
+    isLoading: true,
+  });
+
+  try {
+    // ✅ Send request in the shape FastAPI expects
+    const response = await fetch("http://localhost:8000/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        session_id: "default", // or generate unique session ids per user
+        user_message: userMessage.text,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // ✅ Use therapist_reply (not reply) from FastAPI response
+    const minaResponse: Message = {
+      id: (Date.now() + 1).toString(),
+      text: data.therapist_reply || "I couldn’t understand that. Can you rephrase?",
+      sender: "mina",
       timestamp: new Date(),
     };
 
     updateState({
-      messages: [...state.messages, userMessage],
-      input: '',
-      isLoading: true,
+      messages: [...state.messages, userMessage, minaResponse],
+      isLoading: false,
     });
+  } catch (error) {
+    console.error("Error sending message:", error);
 
-    // Simulate Mina's response
-    setTimeout(() => {
-      const minaResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "I hear what you're saying, and I want you to know that your feelings are completely valid. Let's explore this together. What do you think might be the underlying belief or pattern that's contributing to this experience?",
-        sender: 'mina',
-        timestamp: new Date(),
-      };
+    const errorMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      text: "⚠️ Couldn’t reach the server. Please try again.",
+      sender: "mina",
+      timestamp: new Date(),
+    };
 
-      updateState({
-        messages: [...state.messages, userMessage, minaResponse],
-        isLoading: false,
-      });
-    }, 2000);
-  };
+    updateState({
+      messages: [...state.messages, userMessage, errorMessage],
+      isLoading: false,
+    });
+  }
+};
+
+
 
   const handleSendClick = () => {
     sendMessage(state.input);
