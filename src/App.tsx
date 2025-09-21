@@ -31,6 +31,9 @@ import EnrolledCourses from "./pages/EnrolledCourses";
 import AIMinaCoach from "./pages/AIMinaCoach";
 import ProfileSettings from "./components/ProfileSettings";
 import PaymentHistory from "./components/PaymentHistory";
+import { ASSESSMENT_ROUTES } from "./routes/routes";
+import QuizPage from "./pages/assesment";
+import { QuizDetail } from "./pages/assesment/quizDetail";
 
 const queryClient = new QueryClient();
 
@@ -48,10 +51,15 @@ const App: React.FC = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/" element={<LandingPage />} />
-                
+
+                {/* Quiz detail route without sidebar */}
+                <Route path={ASSESSMENT_ROUTES.ASSESSMENT_DETAILS} element={<QuizDetail />} />
+
                 {/* Protected routes with sidebar */}
-                <Route path="/*" element={
-                  // <ProtectedRoute>
+                <Route
+                  path="/*"
+                  element={
+                    // <ProtectedRoute>
                     <SidebarProvider>
                       <div className="min-h-screen flex w-full">
                         <AppSidebar />
@@ -74,13 +82,15 @@ const App: React.FC = () => {
                             <Route path="/ai-mina-coach" element={<AIMinaCoach />} />
                             <Route path="/payment-history" element={<PaymentHistory />} />
                             <Route path="/settings" element={<ProfileSettings />} />
+                            <Route path={ASSESSMENT_ROUTES.ASSESSMENT} element={<QuizPage />} />
                             <Route path="*" element={<NotFound />} />
                           </Routes>
                         </main>
                       </div>
                     </SidebarProvider>
-                  // </ProtectedRoute>
-                } />
+                    // </ProtectedRoute>
+                  }
+                />
               </Routes>
             </BrowserRouter>
           </FavoritesProvider>
