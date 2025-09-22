@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { User, Phone, MapPin, Calendar, Edit2, Save, X, Upload, Settings, CreditCard, Award, Clock, BookOpen } from "lucide-react";
+import { User, Phone, MapPin, Calendar, Edit2, Save, X, Upload, Settings, CreditCard, Award, Clock, BookOpen, MoveRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +15,9 @@ import { useQuery } from '@tanstack/react-query';
 import { CoursesExpertAPI } from "@/api/courses";
 import { CustomLoader } from "@/components/CustomLoader";
 import { BookingSessionsAPI } from '@/api/bookingSessions';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AssesmentsAPI } from "@/api/assesments";
+import { ProfilePageGrowthAssesment } from "../components/assesment/profileList";
 
 interface UserData {
   name: string;
@@ -72,6 +74,11 @@ const UserProfile = () => {
     queryKey: ["enrollmentLength", user?.id],
     queryFn: () => CoursesExpertAPI.getEnrollmentLength(user?.id || ""),
     enabled: !!user?.id,
+  });
+
+  const { data: quizzes = [], isLoading: isQuizzesLoading, error: quizzesError } = useQuery({
+    queryKey: ["assesments"],
+    queryFn: () => AssesmentsAPI.getAssesments(),
   });
 
   if (isLoading || isCompletedLoading || isEnrolledLoading || isEnrolledSessionLoading) {
@@ -133,6 +140,14 @@ const UserProfile = () => {
         </div>
       </div>
     );
+  }
+
+  if (isQuizzesLoading || isLoading || isCompletedLoading || isEnrolledLoading || isEnrolledSessionLoading) {
+    return <CustomLoader />;
+  }
+
+  if (quizzesError || error || completedError || enrolledError || enrolledSessionError) {
+    return <div>Error loading quizzes</div>;
   }
 
   const handleEdit = () => {
@@ -620,6 +635,8 @@ const UserProfile = () => {
                   </CardContent>
                 </Card>              
               </motion.div>
+
+              <ProfilePageGrowthAssesment />
             </div>
           </div>
         </div>
