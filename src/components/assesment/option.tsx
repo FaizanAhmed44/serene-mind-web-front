@@ -1,36 +1,33 @@
 import React from "react";
+import { QuizOption, SubmitAnswer } from "../../pages/assesment/types";
 
 interface OptionProps {
-  id: string;
+  questionId: string;
   name: string;
-  value: string;
-  label: string;
+  option: QuizOption;
   badge?: string;
   checked?: boolean;
-  onChange?: (value: string) => void;
+  onChange?: (answer: SubmitAnswer) => void;
 }
 
 const Option: React.FC<OptionProps> = ({
-  id,
+  option,
+  questionId,
   name,
-  value,
-  label,
   badge,
   checked,
-  onChange
+  onChange,
 }) => {
-
-  // Make the whole box clickable by wrapping everything in a label
   return (
     <label
-      htmlFor={id}
-      className={`get-option block cursor-pointer`}
-      onClick={() => onChange?.(value)}
+      htmlFor={option.id}
+      className="block cursor-pointer"
+      onClick={() => onChange?.({ questionId: questionId, optionId: option.id })}
       tabIndex={0}
       onKeyDown={e => {
         if (e.key === " " || e.key === "Enter") {
           e.preventDefault();
-          onChange?.(value);
+          onChange?.({ questionId: questionId, optionId: option.id });
         }
       }}
     >
@@ -40,12 +37,12 @@ const Option: React.FC<OptionProps> = ({
       >
         <div className="w-6 h-6 border rounded-full flex items-center justify-center">
           <input
-            id={id}
+            id={option.id}
             type="radio"
             name={name}
-            value={value}
+            value={option.id}
             checked={checked}
-            onChange={() => onChange?.(value)}
+            onChange={() => onChange?.({ questionId: questionId, optionId: option.id })}
             className="w-4 h-4 rounded-full checked:bg-green-600 transition cursor-pointer accent-green-600"
             style={{ accentColor: "#16a34a" }}
             tabIndex={-1}
@@ -56,7 +53,10 @@ const Option: React.FC<OptionProps> = ({
           <div className="toast-align-container flex items-center justify-between gap-2">
             <div className="custom-style">
               <div className="toastui-editor-contents break-words">
-                <p>{label}</p>
+                <p>{option.text}</p>
+                {option.image && <div className="max-w-[120px]">
+                  <img src={option.image} alt={option.text} className="w-full h-auto" />
+                </div>}
               </div>
             </div>
             {badge && (

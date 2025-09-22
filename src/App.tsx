@@ -33,7 +33,7 @@ import ProfileSettings from "./components/ProfileSettings";
 import PaymentHistory from "./components/PaymentHistory";
 import { ASSESSMENT_ROUTES } from "./routes/routes";
 import QuizPage from "./pages/assesment";
-import { QuizDetail } from "./pages/assesment/quizDetail";
+import { QuizDetail } from "./components/assesment/quizDetail";
 
 const queryClient = new QueryClient();
 

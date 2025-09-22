@@ -1,12 +1,11 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import { useState } from "react";
-import CompletionDialog from "./completion";
 
 interface NavigateProps {
   currentQuestionIndex: number;
   totalQuestions: number;
   onPrevious: () => void;
   onNext: () => void;
+  isNextDisabled: boolean;
 }
 
 const Navigate = ({
@@ -14,15 +13,17 @@ const Navigate = ({
   totalQuestions,
   onPrevious,
   onNext,
+  isNextDisabled
 }: NavigateProps) => {
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white  z-0 flex justify-end items-center gap-2 h-14 px-10">
+    <div className="border-t border-gray-200 fixed bottom-0 left-0 w-full bg-white  z-0 flex justify-end items-center gap-2 h-20 px-10">
       <PreviousButton
         onClick={onPrevious}
         disabled={currentQuestionIndex === 0}
       />
       <NextButton
         onClick={onNext}
+        disabled={isNextDisabled}
         isLast={currentQuestionIndex === totalQuestions - 1}
       />
     </div>
@@ -40,16 +41,14 @@ interface ButtonProps {
 export const NextButton: React.FC<ButtonProps> = ({
   onClick,
   disabled = false,
-  isLast = false,
+  isLast = false
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <>
       <button
-        type="button"
+        type={isLast ? "submit" : "button"}
         disabled={disabled}
-        onClick={isLast ? () => setIsOpen(true) : onClick}
+        onClick={isLast ? undefined : onClick}
         className="relative inline-flex items-center justify-center gap-2 rounded-xl bg-primary border  text-white text-sm font-medium h-10 px-5 py-1 transition-all duration-200 hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLast ? (
@@ -61,7 +60,6 @@ export const NextButton: React.FC<ButtonProps> = ({
           </>
         )}
       </button>
-      <CompletionDialog isOpen={isOpen} />
     </>
   );
 };

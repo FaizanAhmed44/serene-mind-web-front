@@ -1,133 +1,57 @@
 export type Quiz = {
   id: string;
   title: string;
-  description: string;
-  icon: string;
-  iconbg: string;
-  questions?: Question[];
+  description?: string | null;
+  instructions?: string | null;
+  scoring_criteria?: string | null;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  questions: QuizQuestion[];
+  // Optionally, you can add submissions?: QuizSubmission[] if needed
 };
+
+export type QuizQuestion = {
+  id: string;
+  quizId: string;
+  text?: string | null;
+  image?: string | null;
+  order: number;
+  options: QuizOption[];
+};
+
+export type QuizOption = {
+  id: string;
+  questionId: string;
+  text?: string | null;
+  image?: string | null;
+  isCorrect: boolean;
+  // Optionally, you can add submissions?: QuizSubmissionAnswer[] if needed
+};
+
+export type QuizSubmission = {
+  id: string;
+  quizId: string;
+  userId: string;
+  score: number;
+  submittedAt: string; // ISO date string
+  answers: QuizSubmissionAnswer[];
+};
+
+export type QuizSubmissionAnswer = {
+  id: string;
+  submissionId: string;
+  questionId: string;
+  optionId?: string | null;
+  isCorrect?: boolean | null;
+};
+
+export type SubmitAnswer = {
+  questionId: string;
+  optionId: string;
+};
+
+export type AssesmentSubmission = {
+  answers: SubmitAnswer[];
+}
 
 export type Quizzes = Quiz[];
-
-export type Option = {
-  id: string;
-  value: string;
-  label: string;
-};
-
-export type Question = {
-  question: string;
-  options: Option[];
-  answer: string;
-};
-
-export const QUIZ_DATA: Quiz[] = [
-  {
-    id: "1",
-    title: "Mental Well-being Self-Assessment",
-    description: "This assessment will help you understand your mental well-being and identify areas for improvement.",
-    icon: "https://cdn-icons-png.flaticon.com/512/3062/3062637.png", // relevant icon: brain/mental health
-    iconbg: "#4F8A8B",
-    questions: [
-      {
-        question: "How often have you felt down, depressed, or hopeless in the last two weeks?",
-        options: [
-          { id: "1", value: "0", label: "Not at all" },
-          { id: "2", value: "1", label: "Several days" },
-          { id: "3", value: "2", label: "More than half the days" },
-          { id: "4", value: "3", label: "Nearly every day" }
-        ],
-        answer: ""
-      },
-      {
-        question: "How often have you had trouble falling or staying asleep, or sleeping too much?",
-        options: [
-          { id: "1", value: "0", label: "Not at all" },
-          { id: "2", value: "1", label: "Several days" },
-          { id: "3", value: "2", label: "More than half the days" },
-          { id: "4", value: "3", label: "Nearly every day" }
-        ],
-        answer: ""
-      },
-      {
-        question: "How often have you felt little interest or pleasure in doing things?",
-        options: [
-          { id: "1", value: "0", label: "Not at all" },
-          { id: "2", value: "1", label: "Several days" },
-          { id: "3", value: "2", label: "More than half the days" },
-          { id: "4", value: "3", label: "Nearly every day" }
-        ],
-        answer: ""
-      },
-      {
-        question: "How often have you felt nervous, anxious, or on edge?",
-        options: [
-          { id: "1", value: "0", label: "Not at all" },
-          { id: "2", value: "1", label: "Several days" },
-          { id: "3", value: "2", label: "More than half the days" },
-          { id: "4", value: "3", label: "Nearly every day" }
-        ],
-        answer: ""
-      },
-      {
-        question: "How often have you been unable to stop or control worrying?",
-        options: [
-          { id: "1", value: "0", label: "Not at all" },
-          { id: "2", value: "1", label: "Several days" },
-          { id: "3", value: "2", label: "More than half the days" },
-          { id: "4", value: "3", label: "Nearly every day" }
-        ],
-        answer: ""
-      }
-    ]
-  },
-  {
-    id: "2",
-    title: "Stress Level Check",
-    description: "This assessment will help you understand your stress level and identify areas for improvement.",
-    icon: "https://cdn-icons-png.flaticon.com/512/1680/1680899.png", // stress/pressure icon
-    iconbg: "#F9B208",
-    questions: [
-      {
-        question: "How often do you feel overwhelmed by your responsibilities?",
-        options: [
-          { id: "1", value: "0", label: "Never" },
-          { id: "2", value: "1", label: "Rarely" },
-          { id: "3", value: "2", label: "Sometimes" },
-          { id: "4", value: "3", label: "Often" }
-        ],
-        answer: ""
-      },
-      {
-        question: "How often do you find it hard to relax?",
-        options: [
-          { id: "1", value: "0", label: "Never" },
-          { id: "2", value: "1", label: "Rarely" },
-          { id: "3", value: "2", label: "Sometimes" },
-          { id: "4", value: "3", label: "Often" }
-        ],
-        answer: ""
-      },
-      {
-        question: "How often do you feel irritable or easily annoyed?",
-        options: [
-          { id: "1", value: "0", label: "Never" },
-          { id: "2", value: "1", label: "Rarely" },
-          { id: "3", value: "2", label: "Sometimes" },
-          { id: "4", value: "3", label: "Often" }
-        ],
-        answer: ""
-      },
-      {
-        question: "How often do you experience headaches, muscle tension, or other physical symptoms of stress?",
-        options: [
-          { id: "1", value: "0", label: "Never" },
-          { id: "2", value: "1", label: "Rarely" },
-          { id: "3", value: "2", label: "Sometimes" },
-          { id: "4", value: "3", label: "Often" }
-        ],
-        answer: ""
-      }
-    ]
-  }
-];

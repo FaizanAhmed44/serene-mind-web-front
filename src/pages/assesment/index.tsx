@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { Quiz, QUIZ_DATA } from "./types";
-import { useState } from "react";
-import { ArrowLeftIcon, ArrowRight, ChevronRight, MoveLeft } from "lucide-react";
-import AgreementDialog from "./agreement";
-import QuizCard from "./quizCard";
+import QuizCard from "../../components/assesment/quizCard";
+import { useQuery } from "@tanstack/react-query";
+import { AssesmentsAPI } from "@/api/assesments";
+import { CustomLoader } from "@/components/CustomLoader";
+import { MoveLeft } from "lucide-react";
 
 const QuizPage = () => {
 
@@ -20,10 +20,19 @@ const QuizPage = () => {
 export default QuizPage;
 
 const QuizList = () => {
+  const { data: quizzes = [], isLoading, error } = useQuery({
+    queryKey: ["assesments"],
+    queryFn: () => AssesmentsAPI.getAssesments(),
+  });
+
+  if (isLoading) return <CustomLoader />;
+
+  console.log(quizzes);
+
   return (
     <main>
       <section className="grid gap-4 sm:gap-6 md:gap-8 sm:grid-cols-2">
-        {QUIZ_DATA.map((quiz) => (
+        {quizzes?.map((quiz) => (
           <QuizCard quiz={quiz} />
         ))}
       </section>

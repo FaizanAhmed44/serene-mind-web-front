@@ -16,7 +16,8 @@ import { CoursesExpertAPI } from "@/api/courses";
 import { CustomLoader } from "@/components/CustomLoader";
 import { BookingSessionsAPI } from '@/api/bookingSessions';
 import { Link, useNavigate } from 'react-router-dom';
-import { QUIZ_DATA } from "./assesment/types";
+import { AssesmentsAPI } from "@/api/assesments";
+import { ProfilePageGrowthAssesment } from "../components/assesment/profileList";
 
 interface UserData {
   name: string;
@@ -73,6 +74,11 @@ const UserProfile = () => {
     queryKey: ["enrollmentLength", user?.id],
     queryFn: () => CoursesExpertAPI.getEnrollmentLength(user?.id || ""),
     enabled: !!user?.id,
+  });
+
+  const { data: quizzes = [], isLoading: isQuizzesLoading, error: quizzesError } = useQuery({
+    queryKey: ["assesments"],
+    queryFn: () => AssesmentsAPI.getAssesments(),
   });
 
   if (isLoading || isCompletedLoading || isEnrolledLoading || isEnrolledSessionLoading) {
@@ -134,6 +140,14 @@ const UserProfile = () => {
         </div>
       </div>
     );
+  }
+
+  if (isQuizzesLoading || isLoading || isCompletedLoading || isEnrolledLoading || isEnrolledSessionLoading) {
+    return <CustomLoader />;
+  }
+
+  if (quizzesError || error || completedError || enrolledError || enrolledSessionError) {
+    return <div>Error loading quizzes</div>;
   }
 
   const handleEdit = () => {
@@ -622,36 +636,7 @@ const UserProfile = () => {
                 </Card>              
               </motion.div>
 
-              {/* Growth Assesments */}
-              <motion.div
-                initial={{ x: -50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-              >
-                <Card className="border border-border/20 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/20">
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-center">
-                      <CardTitle className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Growth Assesments</CardTitle>
-                      <Link to="/assesment" className="text-sm text-muted-foreground hover:text-primary cursor-pointer transition-all duration-200">View All
-                      </Link>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {QUIZ_DATA.map((quiz, index) => (
-                      <motion.div 
-                        key={quiz.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                        className="flex justify-between items-center"
-                      >
-                        <span className="text-xs md:text-sm text-muted-foreground">{quiz.title}</span>
-                        <span className="text-sm md:text-base font-semibold text-foreground">78%</span>
-                      </motion.div>
-                    ))}
-                  </CardContent>
-                </Card>
-              </motion.div>
+              <ProfilePageGrowthAssesment />
             </div>
           </div>
         </div>

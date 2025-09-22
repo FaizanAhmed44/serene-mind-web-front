@@ -12,19 +12,25 @@ interface AgreementDialogProps {
   id: string;
   isOpen: boolean;
   onClose: () => void;
+  instructions: string;
 }
 
-const AgreementDialog = ({id, isOpen, onClose}: AgreementDialogProps) => {
+const AgreementDialog = ({id, isOpen, onClose, instructions}: AgreementDialogProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
-            <span>Agreement</span>
+            <span>Instructions</span>
           </DialogTitle>
         </DialogHeader>
 
+        {instructions && (
+          <div className="text-sm text-muted-foreground">
+            <p>{instructions}</p>
+          </div>
+        )}
         <Agreement id={id} onClose={onClose} />        
       </DialogContent>
     </Dialog>
