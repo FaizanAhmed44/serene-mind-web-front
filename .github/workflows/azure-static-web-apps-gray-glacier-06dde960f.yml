@@ -36,7 +36,7 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          # Sync files and remove outdated ones
+          # Sync files and remove outdated one
           aws s3 sync dist/ s3://corecognitive-user-frontend --delete \
             --cache-control "max-age=0,no-cache,no-store,must-revalidate" \
             --exclude "index.html"
@@ -45,3 +45,4 @@ jobs:
           aws s3 cp dist/index.html s3://corecognitive-user-frontend/index.html \
             --cache-control "max-age=0,no-cache,no-store,must-revalidate" \
             --content-type "text/html"
+
