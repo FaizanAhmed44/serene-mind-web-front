@@ -24,6 +24,7 @@ interface ChatState {
   showVoiceOverlay: boolean;
   sessionActive: boolean;
   sessionId: string | null;
+  isStreaming: boolean;
 }
 
 interface ReportData {
@@ -61,6 +62,7 @@ const AIMinaCoach: React.FC = () => {
     showVoiceOverlay: false,
     sessionActive: true,
     sessionId: null,
+    isStreaming: false,
   });
 
   const [reportModal, setReportModal] = useState<{
@@ -104,22 +106,39 @@ const AIMinaCoach: React.FC = () => {
       timestamp: new Date(),
     };
 
+    // Add user message immediately
     updateState({
       messages: [...state.messages, userMessage],
       input: "",
-      isLoading: true,
+      isLoading: false,
+      isStreaming: true,
       error: null,
     });
 
+    // Create placeholder for MINA's response
+    const minaResponseId = (Date.now() + 1).toString();
+    const minaResponse: Message = {
+      id: minaResponseId,
+      text: "",
+      sender: "mina",
+      timestamp: new Date(),
+    };
+
+    // Add empty MINA response to start streaming
+    updateState({
+      messages: [...state.messages, userMessage, minaResponse],
+    });
+
     try {
-      // ✅ Send request to MINA backend at localhost:8000 (stateless)
+      // ✅ Use same /chat endpoint with stream=true
       const response = await fetch("http://localhost:8000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_message: userMessage.text,
           is_session_end: isSessionEnd,
-          session_id: state.sessionId,  // ✅ Pass current session ID for continuity
+          session_id: state.sessionId,
+          stream: true,  // ✅ Enable streaming
         }),
       });
 
@@ -127,32 +146,63 @@ const AIMinaCoach: React.FC = () => {
         throw new Error(`Server error: ${response.status}`);
       }
 
-      const data = await response.json();
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedText = "";
 
-      // ✅ Use mina_reply from MINA backend response
-      const minaResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: data.mina_reply || "I couldn't understand that. Can you rephrase?",
-        sender: "mina",
-        timestamp: new Date(),
-      };
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-      updateState({
-        messages: [...state.messages, userMessage, minaResponse],
-        isLoading: false,
-        sessionActive: data.session_active,
-        sessionId: data.session_id,  // ✅ Store session ID for future requests
-      });
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
 
-      // If session ended, generate report
-      if (isSessionEnd || !data.session_active) {
-        await generateUserReport(data.session_id);
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                
+                if (data.token) {
+                  accumulatedText += data.token;
+                  
+                  // Update MINA's message with accumulated text
+                  setState(prevState => ({
+                    ...prevState,
+                    messages: prevState.messages.map(msg => 
+                      msg.id === minaResponseId 
+                        ? { ...msg, text: accumulatedText }
+                        : msg
+                    ),
+                  }));
+                } else if (data.type === 'complete') {
+                  // Finalize the response
+                  updateState({
+                    isLoading: false,
+                    isStreaming: false,
+                    sessionActive: data.session_active,
+                    sessionId: data.session_id,
+                  });
+
+                  // If session ended, generate report
+                  if (isSessionEnd || !data.session_active) {
+                    await generateUserReport(data.session_id);
+                  }
+
+                  // ✅ Refocus textarea after streaming completes
+                  setTimeout(() => {
+                    textareaRef.current?.focus();
+                  }, 100);
+                } else if (data.type === 'error') {
+                  throw new Error(data.error);
+                }
+              } catch (parseError) {
+                console.warn('Failed to parse SSE data:', parseError);
+              }
+            }
+          }
+        }
       }
-
-      // ✅ Refocus textarea after sending message
-      setTimeout(() => {
-        textareaRef.current?.focus();
-      }, 100);
 
     } catch (error) {
       console.error("Error sending message:", error);
@@ -167,6 +217,7 @@ const AIMinaCoach: React.FC = () => {
       updateState({
         messages: [...state.messages, userMessage, errorMessage],
         isLoading: false,
+        isStreaming: false,
         error: "Connection error",
       });
 
@@ -198,6 +249,7 @@ const AIMinaCoach: React.FC = () => {
       messages: [],
       input: "",
       isLoading: false,
+      isStreaming: false,
       error: null,
       sessionActive: true,
       sessionId: null,
@@ -288,7 +340,9 @@ const AIMinaCoach: React.FC = () => {
         <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
         <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
       </div>
-      <span className="text-sm text-muted-foreground">Mina is thinking...</span>
+      <span className="text-sm text-muted-foreground">
+        {state.isStreaming ? "MINA is typing..." : "Mina is thinking..."}
+      </span>
     </div>
   );
 
@@ -414,7 +468,9 @@ const AIMinaCoach: React.FC = () => {
                           : 'bg-muted/60 text-foreground rounded-bl-md'
                       )}
                     >
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {message.text || (message.sender === 'mina' && state.isStreaming ? '...' : '')}
+                      </p>
                       <div className="mt-2">
                         <span className="text-xs opacity-70">
                           {message.timestamp.toLocaleTimeString([], { 
@@ -427,7 +483,7 @@ const AIMinaCoach: React.FC = () => {
                   </div>
                 ))}
                 
-                {state.isLoading && (
+                {(state.isLoading || state.isStreaming) && (
                   <div className="flex justify-start mb-6 items-start">
                     <Avatar className="w-8 h-8 mr-3 mt-1 shrink-0">
                       <AvatarFallback className="bg-accent text-accent-foreground">
@@ -483,7 +539,7 @@ const AIMinaCoach: React.FC = () => {
                   onClick={handleTextareaClick}
                   placeholder="Share what's on your mind..."
                   className="w-full min-h-[44px] max-h-32 px-4 py-3 rounded-xl border border-input bg-background/50 focus:outline-none focus:ring-2 focus:ring-ring resize-none overflow-hidden"
-                  disabled={state.isLoading}
+                  disabled={state.isLoading || state.isStreaming}
                   rows={1}
                   style={{ 
                     height: '44px',
@@ -503,7 +559,7 @@ const AIMinaCoach: React.FC = () => {
               
               <Button
                 onClick={handleSendClick}
-                disabled={!state.input.trim() || state.isLoading}
+                disabled={!state.input.trim() || state.isLoading || state.isStreaming}
                 className="rounded-xl px-4 py-3 h-11 shrink-0"
               >
                 <Send className="w-4 h-4" />
@@ -513,7 +569,7 @@ const AIMinaCoach: React.FC = () => {
                 onClick={startVoiceRecording}
                 variant="outline"
                 className="rounded-xl px-4 py-3 h-11 border-accent text-accent hover:bg-accent hover:text-accent-foreground shrink-0"
-                disabled={state.isLoading}
+                disabled={state.isLoading || state.isStreaming}
               >
                 <Mic className="w-4 h-4" />
               </Button>
