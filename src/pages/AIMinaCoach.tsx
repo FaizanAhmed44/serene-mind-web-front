@@ -25,6 +25,9 @@ interface ChatState {
   sessionActive: boolean;
   sessionId: string | null;
   isStreaming: boolean;
+  voiceMode: boolean;
+  voiceMessages: Message[];
+  isPlayingAudio: boolean;
 }
 
 interface ReportData {
@@ -63,6 +66,9 @@ const AIMinaCoach: React.FC = () => {
     sessionActive: true,
     sessionId: null,
     isStreaming: false,
+    voiceMode: false,
+    voiceMessages: [],
+    isPlayingAudio: false,
   });
 
   const [reportModal, setReportModal] = useState<{
@@ -75,15 +81,27 @@ const AIMinaCoach: React.FC = () => {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const voiceMessagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollVoiceToBottom = () => {
+    voiceMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [state.messages]);
+
+  // Auto-scroll voice messages when they change or when loading/audio state changes
+  useEffect(() => {
+    if (state.voiceMode) {
+      scrollVoiceToBottom();
+    }
+  }, [state.voiceMessages, state.voiceMode, state.isLoading, state.isPlayingAudio]);
 
   // ✅ Auto-focus textarea when component mounts or session becomes active
   useEffect(() => {
@@ -314,23 +332,267 @@ const AIMinaCoach: React.FC = () => {
     });
   };
 
-  const startVoiceRecording = () => {
+  const startVoiceRecording = async () => {
+    // Just open the voice overlay, don't start recording yet
     updateState({ 
-      isRecording: true, 
-      showVoiceOverlay: true 
+      showVoiceOverlay: true,
+      voiceMode: true,
+      isRecording: false
     });
   };
 
-  const stopVoiceRecording = () => {
-    updateState({ 
-      isRecording: false, 
-      showVoiceOverlay: false 
-    });
+  const toggleRecording = async () => {
+    if (!state.isRecording) {
+      // Start recording
+      try {
+        // Request microphone access
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        // Create MediaRecorder with better audio format
+        const mediaRecorder = new MediaRecorder(stream, {
+          mimeType: 'audio/webm;codecs=opus'
+        });
+        const audioChunks: Blob[] = [];
+        
+        mediaRecorder.ondataavailable = (event) => {
+          audioChunks.push(event.data);
+        };
+        
+        mediaRecorder.onstop = async () => {
+          // Stop all tracks
+          stream.getTracks().forEach(track => track.stop());
+          
+          // Create audio blob with proper MIME type
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          
+          // Convert to base64
+          const reader = new FileReader();
+          reader.onloadend = async () => {
+            const base64Audio = reader.result?.toString().split(',')[1];
+            if (base64Audio) {
+              await transcribeAndSendAudio(base64Audio);
+            }
+          };
+          reader.readAsDataURL(audioBlob);
+        };
+        
+        // Start recording with time slices
+        mediaRecorder.start(1000); // Record in 1-second chunks
+        
+        // Store mediaRecorder reference for stopping
+        (window as unknown as { currentMediaRecorder?: MediaRecorder }).currentMediaRecorder = mediaRecorder;
+        
+        updateState({ 
+          isRecording: true
+        });
+        
+      } catch (error) {
+        console.error("Error accessing microphone:", error);
+        updateState({
+          error: "Microphone access denied. Please allow microphone access to use voice features.",
+          isRecording: false
+        });
+      }
+    } else {
+      // Stop recording
+      const mediaRecorder = (window as unknown as { currentMediaRecorder?: MediaRecorder }).currentMediaRecorder;
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+      
+      updateState({ 
+        isRecording: false
+      });
+    }
+  };
+
+  const transcribeAndSendAudio = async (base64Audio: string) => {
+    try {
+      updateState({ isLoading: true, error: "" });
+
+      // Call STT endpoint
+      const sttResponse = await fetch("http://localhost:8000/stt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          audio_data: base64Audio,
+          session_id: state.sessionId,
+          mime_type: "audio/webm"
+        }),
+      });
+
+      if (!sttResponse.ok) {
+        const errorText = await sttResponse.text();
+        throw new Error(`STT error: ${sttResponse.status} - ${errorText}`);
+      }
+
+      const sttData = await sttResponse.json();
+      
+      if (sttData.success && sttData.transcript && sttData.transcript.trim()) {
+        const voiceMessage = sttData.transcript.trim();
+        
+        // Add user voice message to BOTH voice conversation AND main messages
+        const userVoiceMessage: Message = {
+          id: Date.now().toString(),
+          text: voiceMessage,
+          sender: 'user',
+          timestamp: new Date(),
+        };
+        
+        // Update both voice messages and main messages in a single state update
+        setState(prev => ({
+          ...prev,
+          voiceMessages: [...prev.voiceMessages, userVoiceMessage],
+          messages: [...prev.messages, userVoiceMessage]
+        }));
+        
+        // Send to MINA and get response
+        await sendVoiceMessage(voiceMessage);
+      } else {
+        console.error("STT failed:", sttData.error || "No transcript received");
+        updateState({
+          error: sttData.error || "No speech detected. Please try speaking again.",
+          isLoading: false
+        });
+      }
+
+    } catch (error) {
+      console.error("Error transcribing audio:", error);
+      updateState({
+        error: `Failed to transcribe audio: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        isLoading: false
+      });
+    }
+  };
+
+  const exitVoiceMode = () => {
+    // Stop recording if active
+    const mediaRecorder = (window as unknown as { currentMediaRecorder?: MediaRecorder }).currentMediaRecorder;
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+    }
     
-    // Simulate voice-to-text conversion
-    setTimeout(() => {
-      sendMessage("I've been feeling overwhelmed lately and could use some guidance on managing my stress.");
-    }, 500);
+    updateState({ 
+      voiceMode: false,
+      showVoiceOverlay: false,
+      isRecording: false,
+      isPlayingAudio: false,
+      voiceMessages: [] // Clear voice messages since they're already in main chat
+    });
+  };
+
+  const sendVoiceMessage = async (text: string) => {
+    if (!text.trim()) return;
+
+    updateState({ isLoading: true, error: "" });
+
+    try {
+      // Send message to MINA using the same endpoint as text chat
+      const response = await fetch("http://localhost:8000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_message: text,
+          is_session_end: false,
+          session_id: state.sessionId,
+          stream: false,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server error: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.mina_reply && data.mina_reply.trim()) {
+        // Add MINA's response to BOTH voice conversation AND main messages
+        const minaVoiceMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: data.mina_reply.trim(),
+          sender: 'mina',
+          timestamp: new Date(),
+        };
+        
+        // Update both voice messages and main messages in a single state update
+        setState(prev => ({
+          ...prev,
+          voiceMessages: [...prev.voiceMessages, minaVoiceMessage],
+          messages: [...prev.messages, minaVoiceMessage],
+          isLoading: false,
+          sessionId: data.session_id
+        }));
+
+        // Generate TTS audio for MINA's response
+        await generateAndPlayAudio(data.mina_reply.trim());
+      } else {
+        throw new Error("No response received from MINA");
+      }
+
+    } catch (error) {
+      console.error("Error sending voice message:", error);
+      updateState({
+        error: `Failed to send voice message: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        isLoading: false
+      });
+    }
+  };
+
+  const generateAndPlayAudio = async (text: string) => {
+    try {
+      updateState({ isPlayingAudio: true, error: "" });
+
+      // Call TTS endpoint
+      const ttsResponse = await fetch("http://localhost:8000/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: text,
+          session_id: state.sessionId,
+          voice: "aura-asteria-en"
+        }),
+      });
+
+      if (!ttsResponse.ok) {
+        const errorText = await ttsResponse.text();
+        throw new Error(`TTS error: ${ttsResponse.status} - ${errorText}`);
+      }
+
+      const ttsData = await ttsResponse.json();
+      
+      if (ttsData.success && ttsData.audio_data) {
+        // Create audio element and play (use WAV format as returned by Deepgram TTS)
+        const audio = new Audio(`data:audio/wav;base64,${ttsData.audio_data}`);
+        
+        audio.onended = () => {
+          updateState({ isPlayingAudio: false });
+        };
+        
+        audio.onerror = (e) => {
+          console.error("Error playing audio:", e);
+          updateState({ 
+            isPlayingAudio: false,
+            error: "Failed to play audio response"
+          });
+        };
+        
+        await audio.play();
+      } else {
+        console.error("TTS failed:", ttsData.error);
+        updateState({ 
+          isPlayingAudio: false,
+          error: ttsData.error || "Failed to generate speech"
+        });
+      }
+
+    } catch (error) {
+      console.error("Error generating/playing audio:", error);
+      updateState({ 
+        isPlayingAudio: false,
+        error: `Failed to generate speech: ${error instanceof Error ? error.message : 'Unknown error'}`
+      });
+    }
   };
 
   const TypingIndicator = () => (
@@ -350,45 +612,126 @@ const AIMinaCoach: React.FC = () => {
     if (!state.showVoiceOverlay) return null;
 
     return (
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="flex flex-col items-center space-y-8">
-          <div className={cn(
-            "w-32 h-32 rounded-full bg-accent/20 flex items-center justify-center",
-            "transition-all duration-300",
-            state.isRecording && "scale-110 bg-accent/30"
-          )}>
-            <div className={cn(
-              "w-20 h-20 rounded-full bg-accent flex items-center justify-center",
-              state.isRecording && "animate-pulse"
-            )}>
-              <Mic className="w-10 h-10 text-white" />
+      <div className="fixed inset-0 bg-background backdrop-blur-sm z-50 flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+              <Mic className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">Voice Conversation</h2>
+              <p className="text-sm text-muted-foreground">
+                Speak naturally with MINA • Messages saved to chat
+              </p>
             </div>
           </div>
-          
-          {state.isRecording && (
-            <div className="flex space-x-1">
-              {[...Array(5)].map((_, i) => (
+          <Button
+            onClick={exitVoiceMode}
+            variant="outline"
+            size="sm"
+            className="rounded-full"
+          >
+            Exit Voice
+          </Button>
+        </div>
+
+        {/* Voice Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {state.voiceMessages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                <Mic className="w-8 h-8 text-accent" />
+              </div>
+              <h3 className="text-lg font-medium mb-2">Ready to talk?</h3>
+              <p className="text-muted-foreground">Click the green microphone below to start recording</p>
+              <p className="text-xs text-muted-foreground mt-2">Your conversation will be saved to the main chat</p>
+            </div>
+          ) : (
+            state.voiceMessages.map((message) => (
+              <div
+                key={message.id}
+                className={cn(
+                  "flex",
+                  message.sender === 'user' ? "justify-end" : "justify-start"
+                )}
+              >
                 <div
-                  key={i}
-                  className="w-1 bg-accent rounded-full animate-pulse"
-                  style={{
-                    height: `${Math.random() * 40 + 20}px`,
-                    animationDelay: `${i * 0.1}s`
-                  }}
-                />
-              ))}
+                  className={cn(
+                    "max-w-xs lg:max-w-md px-4 py-3 rounded-2xl",
+                    message.sender === 'user'
+                      ? "bg-accent text-accent-foreground rounded-br-md"
+                      : "bg-secondary text-secondary-foreground rounded-bl-md"
+                  )}
+                >
+                  <div className="flex items-center space-x-2 mb-1">
+                    <span className="text-xs font-semibold">
+                      {message.sender === 'user' ? 'You' : 'MINA'}
+                    </span>
+                  </div>
+                  <p className="text-sm">{message.text}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-xs opacity-70">
+                      {message.timestamp.toLocaleTimeString()}
+                    </p>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                      <span className="text-xs opacity-70">Saved</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+
+          {/* Loading indicator */}
+          {state.isLoading && (
+            <div className="flex justify-start">
+              <div className="flex items-center space-x-2 px-4 py-3 bg-secondary/50 rounded-2xl rounded-bl-md max-w-xs">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span className="text-sm text-muted-foreground">MINA is thinking...</span>
+              </div>
             </div>
           )}
 
-          <Button
-            onClick={stopVoiceRecording}
-            variant="destructive"
-            size="lg"
-            className="rounded-full px-8"
-          >
-            <StopCircle className="w-5 h-5 mr-2" />
-            Stop Recording
-          </Button>
+          {/* Audio playing indicator */}
+          {state.isPlayingAudio && (
+            <div className="flex justify-start">
+              <div className="flex items-center space-x-2 px-4 py-3 bg-accent/20 rounded-2xl rounded-bl-md max-w-xs">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span className="text-sm text-accent">MINA is speaking...</span>
+              </div>
+            </div>
+          )}
+          
+          {/* Scroll anchor for auto-scroll */}
+          <div ref={voiceMessagesEndRef} />
+        </div>
+
+        {/* Voice Controls */}
+        <div className="p-4 border-t bg-background/95">
+          <div className="flex items-center justify-center space-x-4">
+            <Button
+              onClick={toggleRecording}
+              size="lg"
+              className={cn(
+                "rounded-full w-16 h-16 text-white transition-colors",
+                state.isRecording 
+                  ? "bg-red-500 hover:bg-red-600" 
+                  : "bg-green-500 hover:bg-green-600"
+              )}
+              disabled={state.isLoading || state.isPlayingAudio}
+            >
+              <Mic className="w-8 h-8" />
+            </Button>
+          </div>
+          
+          <p className="text-center text-sm text-muted-foreground mt-2">
+            {state.isRecording ? "Recording... Click to stop and send" :
+             state.isLoading ? "MINA is processing..." : 
+             state.isPlayingAudio ? "MINA is speaking..." : 
+             "Click to start recording"}
+          </p>
         </div>
       </div>
     );
@@ -565,14 +908,16 @@ const AIMinaCoach: React.FC = () => {
                 <Send className="w-4 h-4" />
               </Button>
               
-              <Button
-                onClick={startVoiceRecording}
-                variant="outline"
-                className="rounded-xl px-4 py-3 h-11 border-accent text-accent hover:bg-accent hover:text-accent-foreground shrink-0"
-                disabled={state.isLoading || state.isStreaming}
-              >
-                <Mic className="w-4 h-4" />
-              </Button>
+              {!state.voiceMode && (
+                <Button
+                  onClick={startVoiceRecording}
+                  variant="outline"
+                  className="rounded-xl px-4 py-3 h-11 border-accent text-accent hover:bg-accent hover:text-accent-foreground shrink-0"
+                  disabled={state.isLoading || state.isStreaming}
+                >
+                  <Mic className="w-4 h-4" />
+                </Button>
+              )}
             </div>
           )}
         </div>
