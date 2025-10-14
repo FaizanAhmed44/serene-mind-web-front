@@ -31,6 +31,7 @@ import EnrolledCourses from "./pages/EnrolledCourses";
 import AIMinaCoach from "./pages/AIMinaCoach";
 import ProfileSettings from "./components/ProfileSettings";
 import PaymentHistory from "./components/PaymentHistory";
+import AIMinaCoach2 from "./pages/AIMinaCoach2";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,7 @@ const App: React.FC = () => {
                             <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
                             <Route path="/courses/:id/success" element={<CourseSuccess />} />
                             <Route path="/ai-mina-coach" element={<AIMinaCoach />} />
+                            <Route path="/ai-mina-coach2" element={<AIMinaCoach2 />} />
                             <Route path="/payment-history" element={<PaymentHistory />} />
                             <Route path="/settings" element={<ProfileSettings />} />
                             <Route path="*" element={<NotFound />} />
