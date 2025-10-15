@@ -21,14 +21,10 @@ const corresponding = {
 const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
   const group = useRef<Group>(null);
 
-  // Always call hooks at the top level — never inside conditionals
-  const gltf = useGLTF("/model/model.glb");
-  const { scene, nodes, materials } = gltf || {};
-
-  const fbx = useFBX("/animation/Breathing Idle.fbx");
-  const { animations: breathingAnimation = [] } = fbx || {};
-
-  const { actions } = useAnimations(breathingAnimation, group);
+  // --- Load model and animation ---
+  const { scene, nodes, materials } = useGLTF("/model/model.glb");
+  const { animations: breathingAnimation = [] } = useFBX("/animation/Breathing Idle.fbx");
+  const { actions, names } = useAnimations(breathingAnimation, group);
 
   const [mouthCues, setMouthCues] = useState<any[]>([]);
   const animationFrameRef = useRef<number | null>(null);
@@ -37,15 +33,14 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
   const lastCueEndRef = useRef(0);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
-  // --- Debug / Validation ---
+  // --- Debug info ---
   useEffect(() => {
-    console.log("GLTF Scene:", scene);
-    console.log("GLTF Nodes:", Object.keys(nodes || {}));
-    console.log("FBX Animations:", breathingAnimation.length);
-    if (!scene) console.warn("Model not loaded: /model/model.glb");
-    if (!breathingAnimation.length)
-      console.warn("Animation not loaded: /animation/Breathing Idle.fbx");
-  }, [scene, nodes, breathingAnimation]);
+    console.log("🟢 GLTF Scene Loaded:", scene);
+    console.log("🦴 GLTF Nodes:", Object.keys(nodes || {}));
+    console.log("🎞️ FBX Animations Loaded:", breathingAnimation.length);
+    console.log("🎬 Animation Clip Names:", names);
+    console.log("🎬 Available Actions:", actions ? Object.keys(actions) : "No actions");
+  }, [scene, nodes, breathingAnimation, names, actions]);
 
   // --- Mesh references for lipsync ---
   const headMesh = useMemo(
@@ -57,20 +52,113 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
     [scene]
   );
 
-  // --- Initialize breathing animation ---
+  // --- Breathing animation auto-start ---
   useEffect(() => {
-    if (actions['breathing']) {
-      actions['breathing'].reset().fadeIn(0.5).play();
-      actions['breathing'].setEffectiveWeight(0.3);
-      actions['breathing'].setEffectiveTimeScale(0.5);
+    if (!actions || Object.keys(actions).length === 0) {
+      console.warn("⚠️ No animation actions found to play.");
+      return;
     }
+
+    // Pick 'breathing' if available, else first action
+    const clipName =
+      Object.keys(actions).find((n) => n.toLowerCase().includes("breath")) ||
+      Object.keys(actions)[0];
+
+    const action = actions[clipName];
+    if (!action) {
+      console.warn("⚠️ No matching animation action found:", clipName);
+      return;
+    }
+
+    console.log("🚀 Playing animation:", clipName);
+
+    action.reset().fadeIn(0.5).play();
+    action.setEffectiveWeight(0.5);
+    action.setEffectiveTimeScale(0.4);// Slow down for subtle breathing
+
     return () => {
-      if (actions['breathing']) actions['breathing'].fadeOut(0.5);
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      console.log("🛑 Cleaning up animation:", clipName);
+      action.fadeOut(0.5);
     };
   }, [actions]);
 
-  // --- Lipsync handler ---
+  // --- Lipsync logic ---
+  const generateMouthCues = async (text: string) => {
+    try {
+      const response = await fetch(
+        "https://lipsync-api-app-bwaxdtgfgqe8bqd8.centralindia-01.azurewebsites.net/generate-cues",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to generate mouth cues");
+
+      const data = await response.json();
+      if (Array.isArray(data.mouthCues)) {
+        setMouthCues(data.mouthCues);
+        lastCueEndRef.current = data.mouthCues.at(-1)?.end || 0;
+      }
+    } catch (error) {
+      console.error("Lipsync API Error:", error);
+    }
+  };
+
+  const resetMouth = () => {
+    if (!headMesh?.morphTargetDictionary || !teethMesh?.morphTargetDictionary) return;
+    Object.values(corresponding).forEach((viseme) => {
+      const headIndex = headMesh.morphTargetDictionary[viseme];
+      const teethIndex = teethMesh.morphTargetDictionary[viseme];
+      if (headIndex !== undefined && headMesh.morphTargetInfluences)
+        headMesh.morphTargetInfluences[headIndex] = 0;
+      if (teethIndex !== undefined && teethMesh.morphTargetInfluences)
+        teethMesh.morphTargetInfluences[teethIndex] = 0;
+    });
+  };
+
+  const animateMouth = (timestamp: number) => {
+    if (!mouthCues.length || !speechStartTimeRef.current) {
+      animationFrameRef.current = requestAnimationFrame(animateMouth);
+      return;
+    }
+
+    const elapsed = (timestamp - speechStartTimeRef.current) / 1000;
+    const currentCue = mouthCues.find(
+      (cue) => elapsed >= cue.start && elapsed < cue.end
+    );
+
+    resetMouth();
+
+    if (currentCue && headMesh?.morphTargetDictionary) {
+      const viseme =
+        corresponding[currentCue.value as keyof typeof corresponding];
+      const headIndex = headMesh.morphTargetDictionary[viseme];
+      const teethIndex = teethMesh?.morphTargetDictionary?.[viseme];
+      const influence = 0.5;
+      if (headIndex !== undefined && headMesh.morphTargetInfluences)
+        headMesh.morphTargetInfluences[headIndex] = influence;
+      if (teethIndex !== undefined && teethMesh?.morphTargetInfluences)
+        teethMesh.morphTargetInfluences[teethIndex] = influence;
+    }
+
+    if (!isSpeakingRef.current && elapsed > lastCueEndRef.current + 0.1) {
+      resetMouth();
+      return;
+    }
+
+    animationFrameRef.current = requestAnimationFrame(animateMouth);
+  };
+
+  useEffect(() => {
+    animationFrameRef.current = requestAnimationFrame(animateMouth);
+    return () => {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    };
+  }, [mouthCues]);
+
+  // --- Speech logic ---
   useEffect(() => {
     if (!therapistReply) return;
 
@@ -101,101 +189,12 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
     };
   }, [therapistReply]);
 
-  // --- Fetch mouth cues from API ---
-  const generateMouthCues = async (text: string) => {
-    try {
-      const response = await fetch(
-        "https://lipsync-api-app-bwaxdtgfgqe8bqd8.centralindia-01.azurewebsites.net/generate-cues",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to generate mouth cues");
-
-      const data = await response.json();
-      if (Array.isArray(data.mouthCues)) {
-        setMouthCues(data.mouthCues);
-        lastCueEndRef.current = data.mouthCues.at(-1)?.end || 0;
-      }
-    } catch (error) {
-      console.error("Lipsync API Error:", error);
-    }
-  };
-
-  // --- Reset all visemes ---
-  const resetMouth = () => {
-    if (!headMesh?.morphTargetDictionary || !teethMesh?.morphTargetDictionary)
-      return;
-
-    Object.values(corresponding).forEach((viseme) => {
-      const headIndex = headMesh.morphTargetDictionary[viseme];
-      const teethIndex = teethMesh.morphTargetDictionary[viseme];
-      if (headIndex !== undefined && headMesh.morphTargetInfluences)
-        headMesh.morphTargetInfluences[headIndex] = 0;
-      if (teethIndex !== undefined && teethMesh.morphTargetInfluences)
-        teethMesh.morphTargetInfluences[teethIndex] = 0;
-    });
-  };
-
-  // --- Animate mouth frames ---
-  const animateMouth = (timestamp: number) => {
-    if (!mouthCues.length || !speechStartTimeRef.current) {
-      animationFrameRef.current = requestAnimationFrame(animateMouth);
-      return;
-    }
-
-    const elapsed = (timestamp - speechStartTimeRef.current) / 1000;
-    const lipSyncSpeed = 0.6;
-    const adjustedElapsed = elapsed * lipSyncSpeed;
-    const currentCue = mouthCues.find(
-      (cue) => adjustedElapsed >= cue.start && adjustedElapsed < cue.end
-    );
-
-    resetMouth();
-
-    if (currentCue && headMesh?.morphTargetDictionary) {
-      const viseme =
-        corresponding[currentCue.value as keyof typeof corresponding];
-      const headIndex = headMesh.morphTargetDictionary[viseme];
-      const teethIndex = teethMesh?.morphTargetDictionary?.[viseme];
-
-      const influence = 0.5;
-      if (headIndex !== undefined && headMesh.morphTargetInfluences)
-        headMesh.morphTargetInfluences[headIndex] = influence;
-      if (teethIndex !== undefined && teethMesh?.morphTargetInfluences)
-        teethMesh.morphTargetInfluences[teethIndex] = influence;
-    }
-
-    if (!isSpeakingRef.current && elapsed > lastCueEndRef.current + 0.1) {
-      resetMouth();
-      return;
-    }
-
-    animationFrameRef.current = requestAnimationFrame(animateMouth);
-  };
-
-  useEffect(() => {
-    animationFrameRef.current = requestAnimationFrame(animateMouth);
-    return () => {
-      if (animationFrameRef.current)
-        cancelAnimationFrame(animationFrameRef.current);
-    };
-  }, [mouthCues]);
-
-  // --- Render ---
   return (
     <group ref={group} position={[0, -42, 0]}>
-    {scene ? (
-      <primitive 
-        object={scene} 
-        scale={[19, 19, 24]} 
-        rotation={[-0.7, 0, 0]} 
-      />
-    ) : null}
-  </group>
+      {scene ? (
+        <primitive object={scene} scale={[19, 19, 24]} rotation={[-0.7, 0, 0]} />
+      ) : null}
+    </group>
   );
 };
 

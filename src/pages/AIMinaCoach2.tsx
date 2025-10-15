@@ -4,7 +4,7 @@ import { OrbitControls } from '@react-three/drei';
 import Trigger from '@/components/Trigger'; // Adjust path if needed
 import Loader from '@/components/Loader';
 import Character from '@/components/Character';
-import LivingRoomBackground from '@/components/LivingRoomBackground';
+import SoothingBackground from '@/components/SoothingBackground';
 import VoiceTherapy from '@/components/VoiceTherapy';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -49,7 +49,7 @@ const AIMinaCoach2: React.FC = () => {
           />
           
           <Suspense fallback={<Trigger setLoading={setLoading} />}>
-            <LivingRoomBackground />
+            <SoothingBackground />
             <Character therapistReply={therapistReply} />
           </Suspense>
         </Canvas>
