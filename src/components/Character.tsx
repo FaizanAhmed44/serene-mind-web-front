@@ -59,21 +59,16 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
 
   // --- Initialize breathing animation ---
   useEffect(() => {
-    if (actions && actions["breathing"]) {
-      const breathing = actions["breathing"];
-      breathing.reset().fadeIn(0.5).play();
-      breathing.setEffectiveWeight(0.3);
-      breathing.setEffectiveTimeScale(0.5);
-    } else if (breathingAnimation[0]) {
-      breathingAnimation[0].name = "breathing";
+    if (actions['breathing']) {
+      actions['breathing'].reset().fadeIn(0.5).play();
+      actions['breathing'].setEffectiveWeight(0.3);
+      actions['breathing'].setEffectiveTimeScale(0.5);
     }
-
     return () => {
-      if (actions?.["breathing"]) actions["breathing"].fadeOut(0.5);
-      if (animationFrameRef.current)
-        cancelAnimationFrame(animationFrameRef.current);
+      if (actions['breathing']) actions['breathing'].fadeOut(0.5);
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
-  }, [actions, breathingAnimation]);
+  }, [actions]);
 
   // --- Lipsync handler ---
   useEffect(() => {
