@@ -29,7 +29,7 @@ interface ReportData {
   report_version: string;
 }
 
-const AIMinaCoach2: React.FC = () => {
+const TalkToMina: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [therapistReply, setTherapistReply] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -417,7 +417,7 @@ const AIMinaCoach2: React.FC = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            AI Mina Coach
+            Talk To Mina
           </motion.h1>
           
           {/* Session Controls */}
@@ -600,4 +600,4 @@ const AIMinaCoach2: React.FC = () => {
   );
 };
 
-export default AIMinaCoach2;
+export default TalkToMina;
