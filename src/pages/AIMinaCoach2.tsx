@@ -558,7 +558,7 @@ const AIMinaCoach2: React.FC = () => {
       {(isRecording || isLoading || isPlayingAudio) && (
         <div style={{ 
           position: 'absolute', 
-          top: 20, 
+          top: 80, 
           right: 20, 
           background: 'rgba(255,255,255,0.9)', 
           padding: '8px 16px', 
