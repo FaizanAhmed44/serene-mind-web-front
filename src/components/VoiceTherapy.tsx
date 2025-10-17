@@ -1,102 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button'; // Assuming shadcn Button
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Mic } from 'lucide-react';
 
 type Props = {
-  onTherapistReply: (reply: string) => void;
+  onToggleRecording: () => void;
+  isRecording: boolean;
+  isLoading: boolean;
+  isPlayingAudio: boolean;
 };
 
-interface SpeechRecognitionAlternative {
-  transcript: string;
-  confidence: number;
-}
+const VoiceTherapy: React.FC<Props> = ({ 
+  onToggleRecording, 
+  isRecording, 
+  isLoading, 
+  isPlayingAudio 
+}) => {
+  const getButtonText = () => {
+    if (isRecording) return 'Stop Recording';
+    if (isLoading) return 'Processing...';
+    if (isPlayingAudio) return 'MINA is Speaking...';
+    return 'Start Talking';
+  };
 
-interface SpeechRecognitionResult {
-  [index: number]: SpeechRecognitionAlternative;
-  length: number;
-  item(index: number): SpeechRecognitionAlternative;
-  isFinal: boolean;
-  [Symbol.iterator](): IterableIterator<SpeechRecognitionAlternative>;
-}
-
-interface SpeechRecognitionResultList {
-  [index: number]: SpeechRecognitionResult;
-  length: number;
-  item(index: number): SpeechRecognitionResult;
-  [Symbol.iterator](): IterableIterator<SpeechRecognitionResult>;
-}
-
-interface SpeechRecognitionEvent extends Event {
-  results: SpeechRecognitionResultList;
-  resultIndex: number;
-}
-
-interface SpeechRecognition extends EventTarget {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
-  start(): void;
-  stop(): void;
-}
-
-declare global {
-  interface Window {
-    SpeechRecognition: new () => SpeechRecognition;
-    webkitSpeechRecognition: new () => SpeechRecognition;
-  }
-}
-
-const VoiceTherapy: React.FC<Props> = ({ onTherapistReply }) => {
-  const [isListening, setIsListening] = useState(false);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
-
-  useEffect(() => {
-    const SpeechRecognitionCtor = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-    if (SpeechRecognitionCtor) {
-      const rec = new SpeechRecognitionCtor() as SpeechRecognition;
-      rec.continuous = true;
-      rec.interimResults = true;
-      rec.lang = 'en-US';
-
-      rec.onresult = (event: SpeechRecognitionEvent) => {
-        let finalTranscript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript;
-          }
-        }
-        if (finalTranscript) {
-          // Send to backend for reply (replace with your API)
-          fetch('/api/therapy-reply', { // Or your endpoint
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: finalTranscript }),
-          })
-            .then(res => res.json())
-            .then(data => onTherapistReply(data.reply))
-            .catch(err => console.error('Backend error:', err));
-        }
-      };
-
-      setRecognition(rec);
-    }
-  }, []);
-
-  const toggleListening = () => {
-    if (recognition) {
-      if (isListening) {
-        recognition.stop();
-      } else {
-        recognition.start();
-      }
-      setIsListening(!isListening);
-    }
+  const getButtonVariant = () => {
+    if (isRecording) return 'destructive';
+    return 'default';
   };
 
   return (
     <div style={{ position: 'absolute', bottom: 20, left: 20, zIndex: 10 }}>
-      <Button onClick={toggleListening} variant={isListening ? 'destructive' : 'default'}>
-        {isListening ? 'Stop Listening' : 'Start Talking'}
+      <Button 
+        onClick={onToggleRecording} 
+        variant={getButtonVariant()}
+        disabled={isLoading || isPlayingAudio}
+        className="flex items-center gap-2"
+      >
+        <Mic className="w-4 h-4" />
+        {getButtonText()}
       </Button>
     </div>
   );

@@ -1,9 +1,19 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
 import { Group, SkinnedMesh } from "three";
+import { API_ENDPOINTS } from "@/config/api";
+
+type MouthCue = {
+  start: number;
+  end: number;
+  value: string;
+  intensity?: number;
+};
 
 type CharacterProps = {
   therapistReply: string;
+  audioElement?: HTMLAudioElement | null;
+  mouthCues?: MouthCue[];
 };
 
 const corresponding = {
@@ -18,7 +28,7 @@ const corresponding = {
   X: "viseme_PP",
 } as const;
 
-const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
+const Character: React.FC<CharacterProps> = ({ therapistReply, audioElement, mouthCues: propMouthCues, ...props }) => {
   const group = useRef<Group>(null);
 
   // --- Load model and animation ---
@@ -26,12 +36,11 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
   const { animations: breathingAnimation = [] } = useFBX("/animation/Breathing Idle.fbx");
   const { actions, names } = useAnimations(breathingAnimation, group);
 
-  const [mouthCues, setMouthCues] = useState<any[]>([]);
+  const [mouthCues, setMouthCues] = useState<MouthCue[]>([]);
   const animationFrameRef = useRef<number | null>(null);
   const speechStartTimeRef = useRef(0);
   const isSpeakingRef = useRef(false);
   const lastCueEndRef = useRef(0);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // --- Debug info ---
   useEffect(() => {
@@ -85,8 +94,9 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
   // --- Lipsync logic ---
   const generateMouthCues = async (text: string) => {
     try {
+      console.log("🎬 Generating lipsync cues for:", text.substring(0, 50) + "...");
       const response = await fetch(
-        "https://lipsync-api-app-bwaxdtgfgqe8bqd8.centralindia-01.azurewebsites.net/generate-cues",
+        API_ENDPOINTS.GENERATE_CUES,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -94,15 +104,20 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
         }
       );
 
-      if (!response.ok) throw new Error("Failed to generate mouth cues");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to generate mouth cues: ${response.status} - ${errorText}`);
+      }
 
       const data = await response.json();
+      console.log("✅ Received mouth cues:", data.mouthCues?.length, "cues");
+      
       if (Array.isArray(data.mouthCues)) {
         setMouthCues(data.mouthCues);
         lastCueEndRef.current = data.mouthCues.at(-1)?.end || 0;
       }
     } catch (error) {
-      console.error("Lipsync API Error:", error);
+      console.error("❌ Lipsync API Error:", error);
     }
   };
 
@@ -125,6 +140,15 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
     }
 
     const elapsed = (timestamp - speechStartTimeRef.current) / 1000;
+    
+    // Check if animation is complete (past all cues)
+    if (elapsed > lastCueEndRef.current + 0.2) {
+      console.log("🛑 Lipsync animation completed at", elapsed.toFixed(2), "seconds");
+      resetMouth();
+      isSpeakingRef.current = false;
+      return; // Stop the animation loop
+    }
+    
     const currentCue = mouthCues.find(
       (cue) => elapsed >= cue.start && elapsed < cue.end
     );
@@ -143,11 +167,7 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
         teethMesh.morphTargetInfluences[teethIndex] = influence;
     }
 
-    if (!isSpeakingRef.current && elapsed > lastCueEndRef.current + 0.1) {
-      resetMouth();
-      return;
-    }
-
+    // Continue animation
     animationFrameRef.current = requestAnimationFrame(animateMouth);
   };
 
@@ -158,36 +178,89 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, ...props }) => {
     };
   }, [mouthCues]);
 
-  // --- Speech logic ---
+  // --- Load pre-generated mouth cues from parent ---
   useEffect(() => {
-    if (!therapistReply) return;
+    if (propMouthCues && propMouthCues.length > 0) {
+      console.log("✅ Loaded pre-generated mouth cues:", propMouthCues.length, "cues");
+      setMouthCues(propMouthCues);
+      lastCueEndRef.current = propMouthCues.at(-1)?.end || 0;
+    }
+  }, [propMouthCues]);
 
-    isSpeakingRef.current = true;
-    generateMouthCues(therapistReply);
+  // --- Lipsync animation logic (audio played by parent component) ---
+  useEffect(() => {
+    if (!therapistReply || !therapistReply.trim()) {
+      // No text - stop animation and reset mouth
+      isSpeakingRef.current = false;
+      resetMouth();
+      setMouthCues([]);
+      speechStartTimeRef.current = 0;
+      return;
+    }
 
-    const utterance = new SpeechSynthesisUtterance(therapistReply);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    utterance.lang = "en-US";
-
-    utterance.onstart = () => {
+    console.log("👄 Preparing lipsync for:", therapistReply.substring(0, 50) + "...");
+    
+    // If no pre-generated cues provided, generate them now (fallback)
+    if (!propMouthCues || propMouthCues.length === 0) {
+      console.log("⚠️ No pre-generated cues - fetching from API");
+      isSpeakingRef.current = false;
+      generateMouthCues(therapistReply);
+    } else {
+      console.log("✅ Using pre-generated cues - ready for instant sync");
+    }
+    
+    // Set up audio event listener if audio element is provided
+    if (audioElement) {
+      const handlePlay = () => {
+        console.log("🎵 Audio started - BEGIN lipsync animation NOW");
+        speechStartTimeRef.current = performance.now();
+        isSpeakingRef.current = true;
+      };
+      
+      const handleEnded = () => {
+        console.log("🛑 Audio ended - STOP lipsync animation NOW");
+        isSpeakingRef.current = false;
+        resetMouth();
+      };
+      
+      const handlePause = () => {
+        console.log("⏸️ Audio paused - PAUSE lipsync animation");
+        isSpeakingRef.current = false;
+        resetMouth();
+      };
+      
+      audioElement.addEventListener('play', handlePlay);
+      audioElement.addEventListener('ended', handleEnded);
+      audioElement.addEventListener('pause', handlePause);
+      
+      // If audio is already playing when component mounts, start immediately
+      if (!audioElement.paused && audioElement.currentTime > 0) {
+        console.log("🎵 Audio already playing - starting lipsync immediately");
+        speechStartTimeRef.current = performance.now() - (audioElement.currentTime * 1000);
+        isSpeakingRef.current = true;
+      }
+      
+      return () => {
+        audioElement.removeEventListener('play', handlePlay);
+        audioElement.removeEventListener('ended', handleEnded);
+        audioElement.removeEventListener('pause', handlePause);
+        isSpeakingRef.current = false;
+        resetMouth();
+      };
+    } else {
+      // No audio element - start immediately (fallback)
+      console.log("⚠️ No audio element provided - starting lipsync immediately");
       speechStartTimeRef.current = performance.now();
-    };
+      isSpeakingRef.current = true;
+    }
 
-    utterance.onend = () => {
-      isSpeakingRef.current = false;
-      resetMouth();
-    };
-
-    utteranceRef.current = utterance;
-    speechSynthesis.speak(utterance);
-
+    // Cleanup when component unmounts or new reply comes
     return () => {
-      speechSynthesis.cancel();
+      console.log("🧹 Cleaning up lipsync");
       isSpeakingRef.current = false;
       resetMouth();
     };
-  }, [therapistReply]);
+  }, [therapistReply, audioElement, propMouthCues]);
 
   return (
     <group ref={group} position={[0, -42, 0]}>
