@@ -51,7 +51,7 @@ const App: React.FC = () => {
                 {/* Authentication routes without sidebar */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route path="/" element={<LandingPage />} />
+                <Route path="/" element={<Login />} />
 
                 {/* Quiz detail route without sidebar */}
                 <Route path={ASSESSMENT_ROUTES.ASSESSMENT_DETAILS} element={<QuizDetail />} />
