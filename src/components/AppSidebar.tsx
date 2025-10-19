@@ -10,6 +10,7 @@ import {
   GraduationCap,
   LogOut,
   Bot,
+  Mic
 } from "lucide-react";
 import {
   Sidebar,
@@ -36,11 +37,16 @@ const menuItems = [
     url: "/courses",
     icon: Book,
   },
-  {
-    title: "AI Mina Coach",
-    url: "/ai-mina-coach",
-    icon: Bot,
-  },
+    {
+      title: "AI Mina Coach",
+      url: "/ai-mina-coach",
+      icon: Bot,
+    },
+    {
+      title: "Talk To Mina",
+      url: "/talk-to-mina",
+      icon: Mic,
+    },
   {
     title: "My Enrolled Courses",
     url: "/enrolled-courses",

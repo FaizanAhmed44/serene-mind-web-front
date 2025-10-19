@@ -34,6 +34,7 @@ import PaymentHistory from "./components/PaymentHistory";
 import { ASSESSMENT_ROUTES } from "./routes/routes";
 import QuizPage from "./pages/assesment";
 import { QuizDetail } from "./components/assesment/quizDetail";
+import TalkToMina from "./pages/TalkToMina";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,7 @@ const App: React.FC = () => {
                             <Route path="/courses/:id/enroll" element={<CourseEnroll />} />
                             <Route path="/courses/:id/success" element={<CourseSuccess />} />
                             <Route path="/ai-mina-coach" element={<AIMinaCoach />} />
+                            <Route path="//talk-to-mina" element={<TalkToMina />} />
                             <Route path="/payment-history" element={<PaymentHistory />} />
                             <Route path="/settings" element={<ProfileSettings />} />
                             <Route path={ASSESSMENT_ROUTES.ASSESSMENT} element={<QuizPage />} />
