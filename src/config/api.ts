@@ -1,6 +1,6 @@
 // Backend API Configuration
 // All endpoints use local backend (main.py)
-export const BACKEND_URL = "http://localhost:8000";
+export const BACKEND_URL = "https://mina-api.corecognitive.io";
 
 // API Endpoints - All from local main.py
 export const API_ENDPOINTS = {

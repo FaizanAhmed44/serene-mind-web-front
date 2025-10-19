@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Download, FileText, Heart, Brain, Target, Lightbulb, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { BACKEND_URL } from '@/config/api';
 
 interface ReportData {
   user_name: string;
@@ -34,7 +35,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, reportData, 
     
     setIsDownloading(true);
     try {
-      const response = await fetch(`http://localhost:8000/download-report/${sessionId}`);
+      const response = await fetch(`${BACKEND_URL}/download-report/${sessionId}`);
       
       if (!response.ok) {
         throw new Error('Failed to download report');

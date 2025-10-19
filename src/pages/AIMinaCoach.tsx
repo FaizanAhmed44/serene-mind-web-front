@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import ReportModal from '@/components/ReportModal';
+import { API_ENDPOINTS } from '@/config/api';
 
 interface Message {
   id: string;
@@ -79,29 +80,23 @@ const AIMinaCoach: React.FC = () => {
     data: null,
   });
 
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const voiceMessagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const isVisualizingRef = useRef<boolean>(false);
+  const isRecordingRef = useRef<boolean>(false);
+  const microphoneCircleRef = useRef<HTMLDivElement>(null);
+  const audioScaleRef = useRef<number>(1);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const scrollVoiceToBottom = () => {
-    voiceMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   useEffect(() => {
     scrollToBottom();
   }, [state.messages]);
-
-  // Auto-scroll voice messages when they change or when loading/audio state changes
-  useEffect(() => {
-    if (state.voiceMode) {
-      scrollVoiceToBottom();
-    }
-  }, [state.voiceMessages, state.voiceMode, state.isLoading, state.isPlayingAudio]);
 
   // ✅ Auto-focus textarea when component mounts or session becomes active
   useEffect(() => {
@@ -149,7 +144,7 @@ const AIMinaCoach: React.FC = () => {
 
     try {
       // ✅ Use same /chat endpoint with stream=true
-      const response = await fetch("http://localhost:8000/chat", {
+      const response = await fetch(API_ENDPOINTS.CHAT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -299,7 +294,7 @@ const AIMinaCoach: React.FC = () => {
 
   const generateUserReport = async (sessionId: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/generate-report`, {
+      const response = await fetch(API_ENDPOINTS.GENERATE_REPORT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session_id: sessionId }),
@@ -341,12 +336,80 @@ const AIMinaCoach: React.FC = () => {
     });
   };
 
+  const startAudioVisualization = (stream: MediaStream) => {
+    // Create audio context and analyser
+    const audioContext = new AudioContext();
+    const analyser = audioContext.createAnalyser();
+    const source = audioContext.createMediaStreamSource(stream);
+    
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.8;
+    source.connect(analyser);
+    
+    audioContextRef.current = audioContext;
+    analyserRef.current = analyser;
+    isVisualizingRef.current = true;
+    
+    // Start visualization loop
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    
+    const visualize = () => {
+      if (!isVisualizingRef.current || !analyserRef.current) {
+        return;
+      }
+      
+      analyserRef.current.getByteFrequencyData(dataArray);
+      
+      // Calculate average volume
+      const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+      
+      // Scale from 0.8 to 1.4 based on volume (0-255)
+      const scale = 0.8 + (average / 255) * 0.6;
+      audioScaleRef.current = scale;
+      
+      // Directly update DOM instead of React state to avoid re-renders
+      if (microphoneCircleRef.current) {
+        microphoneCircleRef.current.style.transform = `scale(${scale})`;
+      }
+      
+      animationFrameRef.current = requestAnimationFrame(visualize);
+    };
+    
+    visualize();
+  };
+
+  const stopAudioVisualization = () => {
+    isVisualizingRef.current = false;
+    
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close();
+    }
+    
+    audioContextRef.current = null;
+    analyserRef.current = null;
+    audioScaleRef.current = 1;
+    
+    // Reset DOM transform
+    if (microphoneCircleRef.current) {
+      microphoneCircleRef.current.style.transform = 'scale(1)';
+    }
+  };
+
   const toggleRecording = async () => {
-    if (!state.isRecording) {
+    // Use ref to check current recording state to avoid stale closure
+    if (!isRecordingRef.current) {
       // Start recording
       try {
         // Request microphone access
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        // Start audio visualization
+        startAudioVisualization(stream);
         
         // Create MediaRecorder with better audio format
         const mediaRecorder = new MediaRecorder(stream, {
@@ -359,6 +422,9 @@ const AIMinaCoach: React.FC = () => {
         };
         
         mediaRecorder.onstop = async () => {
+          // Stop audio visualization
+          stopAudioVisualization();
+          
           // Stop all tracks
           stream.getTracks().forEach(track => track.stop());
           
@@ -379,15 +445,20 @@ const AIMinaCoach: React.FC = () => {
         // Start recording with time slices
         mediaRecorder.start(1000); // Record in 1-second chunks
         
-        // Store mediaRecorder reference for stopping
-        (window as unknown as { currentMediaRecorder?: MediaRecorder }).currentMediaRecorder = mediaRecorder;
+        // Store mediaRecorder and stream reference for stopping
+        (window as unknown as { currentMediaRecorder?: MediaRecorder; currentStream?: MediaStream }).currentMediaRecorder = mediaRecorder;
+        (window as unknown as { currentMediaRecorder?: MediaRecorder; currentStream?: MediaStream }).currentStream = stream;
         
+        // Update both state and ref
+        isRecordingRef.current = true;
         updateState({ 
           isRecording: true
         });
         
       } catch (error) {
         console.error("Error accessing microphone:", error);
+        stopAudioVisualization();
+        isRecordingRef.current = false;
         updateState({
           error: "Microphone access denied. Please allow microphone access to use voice features.",
           isRecording: false
@@ -400,6 +471,10 @@ const AIMinaCoach: React.FC = () => {
         mediaRecorder.stop();
       }
       
+      stopAudioVisualization();
+      
+      // Update both state and ref
+      isRecordingRef.current = false;
       updateState({ 
         isRecording: false
       });
@@ -411,7 +486,7 @@ const AIMinaCoach: React.FC = () => {
       updateState({ isLoading: true, error: "" });
 
       // Call STT endpoint
-      const sttResponse = await fetch("http://localhost:8000/stt", {
+      const sttResponse = await fetch(API_ENDPOINTS.STT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -431,7 +506,7 @@ const AIMinaCoach: React.FC = () => {
       if (sttData.success && sttData.transcript && sttData.transcript.trim()) {
         const voiceMessage = sttData.transcript.trim();
         
-        // Add user voice message to BOTH voice conversation AND main messages
+        // Add user voice message to voice conversation only
         const userVoiceMessage: Message = {
           id: Date.now().toString(),
           text: voiceMessage,
@@ -439,11 +514,10 @@ const AIMinaCoach: React.FC = () => {
           timestamp: new Date(),
         };
         
-        // Update both voice messages and main messages in a single state update
+        // Update only voice messages during voice mode
         setState(prev => ({
           ...prev,
-          voiceMessages: [...prev.voiceMessages, userVoiceMessage],
-          messages: [...prev.messages, userVoiceMessage]
+          voiceMessages: [...prev.voiceMessages, userVoiceMessage]
         }));
         
         // Send to MINA and get response
@@ -472,13 +546,29 @@ const AIMinaCoach: React.FC = () => {
       mediaRecorder.stop();
     }
     
-    updateState({ 
+    // Stop audio visualization
+    stopAudioVisualization();
+    
+    // Stop any playing audio
+    const currentAudio = (window as unknown as { currentVoiceAudio?: HTMLAudioElement }).currentVoiceAudio;
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+    
+    // Reset recording ref
+    isRecordingRef.current = false;
+    
+    // Transfer all voice messages to main chat when exiting
+    setState(prev => ({
+      ...prev,
+      messages: [...prev.messages, ...prev.voiceMessages],
       voiceMode: false,
       showVoiceOverlay: false,
       isRecording: false,
       isPlayingAudio: false,
-      voiceMessages: [] // Clear voice messages since they're already in main chat
-    });
+      voiceMessages: [] // Clear voice messages after transferring
+    }));
   };
 
   const sendVoiceMessage = async (text: string) => {
@@ -488,7 +578,7 @@ const AIMinaCoach: React.FC = () => {
 
     try {
       // Send message to MINA using the same endpoint as text chat
-      const response = await fetch("http://localhost:8000/chat", {
+      const response = await fetch(API_ENDPOINTS.CHAT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -507,7 +597,7 @@ const AIMinaCoach: React.FC = () => {
       const data = await response.json();
       
       if (data.mina_reply && data.mina_reply.trim()) {
-        // Add MINA's response to BOTH voice conversation AND main messages
+        // Add MINA's response to voice conversation only
         const minaVoiceMessage: Message = {
           id: (Date.now() + 1).toString(),
           text: data.mina_reply.trim(),
@@ -515,11 +605,10 @@ const AIMinaCoach: React.FC = () => {
           timestamp: new Date(),
         };
         
-        // Update both voice messages and main messages in a single state update
+        // Update only voice messages during voice mode
         setState(prev => ({
           ...prev,
           voiceMessages: [...prev.voiceMessages, minaVoiceMessage],
-          messages: [...prev.messages, minaVoiceMessage],
           isLoading: false,
           sessionId: data.session_id
         }));
@@ -539,12 +628,59 @@ const AIMinaCoach: React.FC = () => {
     }
   };
 
+  const startPlaybackVisualization = (audio: HTMLAudioElement) => {
+    try {
+      // Create audio context and analyser for playback
+      const audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaElementSource(audio);
+      
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.8;
+      source.connect(analyser);
+      analyser.connect(audioContext.destination); // Connect to speakers
+      
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      isVisualizingRef.current = true;
+      
+      // Start visualization loop
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      
+      const visualize = () => {
+        if (!isVisualizingRef.current || !analyserRef.current) {
+          return;
+        }
+        
+        analyserRef.current.getByteFrequencyData(dataArray);
+        
+        // Calculate average volume
+        const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+        
+        // Scale from 0.85 to 1.5 based on volume (0-255)
+        const scale = 0.85 + (average / 255) * 0.65;
+        audioScaleRef.current = scale;
+        
+        // Directly update DOM instead of React state to avoid re-renders
+        if (microphoneCircleRef.current) {
+          microphoneCircleRef.current.style.transform = `scale(${scale})`;
+        }
+        
+        animationFrameRef.current = requestAnimationFrame(visualize);
+      };
+      
+      visualize();
+    } catch (error) {
+      console.error("Error setting up audio visualization:", error);
+    }
+  };
+
   const generateAndPlayAudio = async (text: string) => {
     try {
       updateState({ isPlayingAudio: true, error: "" });
 
       // Call TTS endpoint
-      const ttsResponse = await fetch("http://localhost:8000/tts", {
+      const ttsResponse = await fetch(API_ENDPOINTS.TTS, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -565,12 +701,22 @@ const AIMinaCoach: React.FC = () => {
         // Create audio element and play (use WAV format as returned by Deepgram TTS)
         const audio = new Audio(`data:audio/wav;base64,${ttsData.audio_data}`);
         
+        // Store audio reference
+        (window as unknown as { currentVoiceAudio?: HTMLAudioElement }).currentVoiceAudio = audio;
+        
+        audio.onplay = () => {
+          // Start visualization when audio starts playing
+          startPlaybackVisualization(audio);
+        };
+        
         audio.onended = () => {
+          stopAudioVisualization();
           updateState({ isPlayingAudio: false });
         };
         
         audio.onerror = (e) => {
           console.error("Error playing audio:", e);
+          stopAudioVisualization();
           updateState({ 
             isPlayingAudio: false,
             error: "Failed to play audio response"
@@ -588,6 +734,7 @@ const AIMinaCoach: React.FC = () => {
 
     } catch (error) {
       console.error("Error generating/playing audio:", error);
+      stopAudioVisualization();
       updateState({ 
         isPlayingAudio: false,
         error: `Failed to generate speech: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -636,76 +783,76 @@ const AIMinaCoach: React.FC = () => {
           </Button>
         </div>
 
-        {/* Voice Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {state.voiceMessages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4">
-                <Mic className="w-8 h-8 text-accent" />
-              </div>
-              <h3 className="text-lg font-medium mb-2">Ready to talk?</h3>
-              <p className="text-muted-foreground">Click the green microphone below to start recording</p>
-              <p className="text-xs text-muted-foreground mt-2">Your conversation will be saved to the main chat</p>
+        {/* Voice Interaction Area */}
+        <div className="flex-1 overflow-y-auto p-4 flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center text-center max-w-md">
+            {/* Animated Microphone Icon with Audio Frequency */}
+            <div 
+              ref={microphoneCircleRef}
+              className={cn(
+                "w-32 h-32 rounded-full flex items-center justify-center mb-6 transition-colors duration-300",
+                state.isRecording 
+                  ? "bg-red-500/20" 
+                  : state.isLoading 
+                  ? "bg-blue-500/20 animate-pulse"
+                  : state.isPlayingAudio 
+                  ? "bg-purple-500/20"
+                  : "bg-accent/20"
+              )}
+              style={{
+                transition: (state.isRecording || state.isPlayingAudio) ? 'transform 0.1s ease-out' : 'transform 0.3s ease-out',
+                transform: 'scale(1)'
+              }}
+            >
+              <Mic className={cn(
+                "w-16 h-16 transition-colors",
+                state.isRecording 
+                  ? "text-red-500" 
+                  : state.isLoading 
+                  ? "text-blue-500"
+                  : state.isPlayingAudio 
+                  ? "text-purple-500"
+                  : "text-accent"
+              )} />
             </div>
-          ) : (
-            state.voiceMessages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex",
-                  message.sender === 'user' ? "justify-end" : "justify-start"
-                )}
-              >
-                <div
-                  className={cn(
-                    "max-w-xs lg:max-w-md px-4 py-3 rounded-2xl",
-                    message.sender === 'user'
-                      ? "bg-accent text-accent-foreground rounded-br-md"
-                      : "bg-secondary text-secondary-foreground rounded-bl-md"
-                  )}
-                >
-                  <div className="flex items-center space-x-2 mb-1">
-                    <span className="text-xs font-semibold">
-                      {message.sender === 'user' ? 'You' : 'MINA'}
-                    </span>
-                  </div>
-                  <p className="text-sm">{message.text}</p>
-                  <div className="flex items-center justify-between mt-1">
-                    <p className="text-xs opacity-70">
-                      {message.timestamp.toLocaleTimeString()}
-                    </p>
-                    <div className="flex items-center space-x-1">
-                      <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                      <span className="text-xs opacity-70">Saved</span>
-                    </div>
-                  </div>
+            
+            {/* Status Messages */}
+            {state.isRecording && (
+              <div>
+                <h3 className="text-xl font-semibold mb-2 text-red-500">Recording...</h3>
+                <p className="text-muted-foreground">Listening to your voice</p>
+                <p className="text-sm text-muted-foreground mt-2">Click the red button to stop and send</p>
+              </div>
+            )}
+            
+            {state.isLoading && (
+              <div>
+                <h3 className="text-xl font-semibold mb-2 text-blue-500">Processing...</h3>
+                <p className="text-muted-foreground">MINA is thinking about your message</p>
+              </div>
+            )}
+            
+            {state.isPlayingAudio && (
+              <div>
+                <h3 className="text-xl font-semibold mb-2 text-purple-500">MINA Speaking...</h3>
+                <p className="text-muted-foreground">Listen to MINA's response</p>
+              </div>
+            )}
+            
+            {!state.isRecording && !state.isLoading && !state.isPlayingAudio && (
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Ready to talk with MINA</h3>
+                <p className="text-muted-foreground mb-3">Click the green microphone below to start</p>
+                <div className="inline-flex items-center space-x-2 px-4 py-2 bg-accent/10 rounded-full">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-muted-foreground">Voice mode active</span>
                 </div>
+                <p className="text-xs text-muted-foreground mt-4">
+                  💬 Your conversation will be saved to the main chat when you exit
+                </p>
               </div>
-            ))
-          )}
-
-          {/* Loading indicator */}
-          {state.isLoading && (
-            <div className="flex justify-start">
-              <div className="flex items-center space-x-2 px-4 py-3 bg-secondary/50 rounded-2xl rounded-bl-md max-w-xs">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="text-sm text-muted-foreground">MINA is thinking...</span>
-              </div>
-            </div>
-          )}
-
-          {/* Audio playing indicator */}
-          {state.isPlayingAudio && (
-            <div className="flex justify-start">
-              <div className="flex items-center space-x-2 px-4 py-3 bg-accent/20 rounded-2xl rounded-bl-md max-w-xs">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="text-sm text-accent">MINA is speaking...</span>
-              </div>
-            </div>
-          )}
-          
-          {/* Scroll anchor for auto-scroll */}
-          <div ref={voiceMessagesEndRef} />
+            )}
+          </div>
         </div>
 
         {/* Voice Controls */}
