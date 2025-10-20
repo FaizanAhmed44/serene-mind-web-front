@@ -12,6 +12,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { API_ENDPOINTS } from "@/config/api";
 import ReportModal from '@/components/ReportModal';
 import { Button } from '@/components/ui/button';
+import { useAuth } from "@/hooks/useAuth";
 
 interface ReportData {
   user_name: string;
@@ -30,6 +31,7 @@ interface ReportData {
 }
 
 const TalkToMina: React.FC = () => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [therapistReply, setTherapistReply] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -145,6 +147,8 @@ const TalkToMina: React.FC = () => {
           is_session_end: true,
           session_id: sessionId,
           stream: false,
+          user_Id:user.id ,
+          user_name: user.name,
         }),
       });
 
@@ -174,7 +178,11 @@ const TalkToMina: React.FC = () => {
       const response = await fetch(API_ENDPOINTS.GENERATE_REPORT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sid }),
+        body: JSON.stringify({ 
+          session_id: sid,
+          user_Id:user.id,
+          user_name: user.name,
+         }),
       });
 
       if (!response.ok) {
@@ -268,6 +276,8 @@ const TalkToMina: React.FC = () => {
           is_session_end: isSessionEnd,
           session_id: sessionId,
           stream: false,
+          user_Id:user.id ,
+          user_name: user.name,
         }),
       });
 

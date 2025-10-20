@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import ReportModal from '@/components/ReportModal';
 import { API_ENDPOINTS } from '@/config/api';
 
+
 interface Message {
   id: string;
   text: string;
@@ -152,6 +153,8 @@ const AIMinaCoach: React.FC = () => {
           is_session_end: isSessionEnd,
           session_id: state.sessionId,
           stream: true,  // ✅ Enable streaming
+          user_Id:user.id ,
+          user_name: user.name,
         }),
       });
 
@@ -297,7 +300,11 @@ const AIMinaCoach: React.FC = () => {
       const response = await fetch(API_ENDPOINTS.GENERATE_REPORT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId }),
+        body: JSON.stringify({ 
+            session_id: sessionId,
+            user_Id:user.id ,
+            user_name: user.name,
+         }),
       });
 
       if (!response.ok) {
@@ -586,6 +593,8 @@ const AIMinaCoach: React.FC = () => {
           is_session_end: false,
           session_id: state.sessionId,
           stream: false,
+          user_Id:user.id ,
+          user_name: user.name,
         }),
       });
 
