@@ -439,7 +439,7 @@ const TalkToMina: React.FC = () => {
           >
             {sessionId && sessionActive && (
               <div className="text-xs text-muted-foreground">
-                Session: {sessionId.slice(-8)}
+                Session: {sessionId.slice(-8)} • User: {user.name}
               </div>
             )}
             {sessionActive ? (
