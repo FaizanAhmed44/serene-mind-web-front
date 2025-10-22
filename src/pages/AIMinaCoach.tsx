@@ -910,7 +910,7 @@ const AIMinaCoach: React.FC = () => {
             <div className="flex items-center space-x-3">
               {state.sessionId && state.sessionActive && (
                 <div className="text-sm text-muted-foreground">
-                  Session: {state.sessionId.slice(-8)}
+                  Session: {state.sessionId.slice(-8)} | {user.name}
                 </div>
               )}
               {state.sessionActive ? (
