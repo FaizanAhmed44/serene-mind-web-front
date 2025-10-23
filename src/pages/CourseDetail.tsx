@@ -286,58 +286,40 @@ const CourseDetail = () => {
       <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
     </div>
 
-      {/* Header */}
-      {/* <motion.div 
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="sticky top-0 z-10 bg-background/90 backdrop-blur-xl border-b border-border/20 shadow-lg"
-      >
-        <div className="flex items-center justify-between p-4">
-          <motion.div
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.4 }}
-          >
-            <SidebarTrigger />
-          </motion.div>
-          <motion.h1 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl font-semibold truncate bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
-          >
-            {course.title}
-          </motion.h1>
-          <FavoriteButton course={course} />
-        </div>
-      </motion.div> */}
+    <motion.div
+      className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
+      initial={{ y: -50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      <div className="flex items-center justify-between p-3 sm:p-4 gap-3">
+        {/* Sidebar Trigger */}
+        <motion.div
+          whileHover={{ rotate: 360, scale: 1.1 }}
+          transition={{ duration: 0.4 }}
+          className="shrink-0"
+        >
+          <SidebarTrigger />
+        </motion.div>
 
-      
-      <motion.div
-        className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <div className="flex items-center justify-between p-4">
-          <motion.div
-            whileHover={{ rotate: 360, scale: 1.1 }}
-            transition={{ duration: 0.4 }}
-          >
-            <SidebarTrigger />
-          </motion.div>
-          <motion.h1
-            className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            {course.title}
-          </motion.h1>
+        {/* Responsive Course Title */}
+        <motion.h1
+          className="flex-1 text-center text-base sm:text-lg md:text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent truncate px-2"
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          title={course.title} // Tooltip on hover (optional accessibility)
+        >
+          {course.title}
+        </motion.h1>
+
+        {/* Favorite Button */}
+        <div className="shrink-0">
           <FavoriteButton course={course} />
-          {/* <div className="w-10" /> */}
         </div>
-      </motion.div>       
+      </div>
+    </motion.div>
+
 
       <div className="container mx-auto px-4 py-6 relative z-10">
         {isEnrolled ? (

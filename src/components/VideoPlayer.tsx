@@ -97,36 +97,48 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           </video>
         )}
       </div>
-  
-      <div className="flex justify-between items-center">
-        <div>
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <p className="text-sm text-muted-foreground">{duration}</p>
-        </div>
-        <div className="flex space-x-2">
-          <Button
-            disabled={!hasPrevious}
-            onClick={onPrevious}
-            className="px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
-          >
-            Previous
-          </Button>
-          <Button
-            disabled={!hasNext}
-            onClick={onNext}
-            className="px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
-          >
-            Next
-          </Button>
-          <Button
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4 sm:p-0">
+  {/* Title & Duration */}
+  <div className="flex-1 min-w-0">
+    <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
+      {title}
+    </h3>
+    <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+      {duration}
+    </p>
+  </div>
+
+  {/* Action Buttons */}
+  <div className="flex flex-wrap gap-2 sm:gap-3">
+    <Button
+      disabled={!hasPrevious}
+      onClick={onPrevious}
+      size="sm"
+      variant="outline"
+      className="min-w-[80px] px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
+    >
+      Previous
+    </Button>
+    <Button
+      disabled={!hasNext}
+      onClick={onNext}
+      size="sm"
+      className="min-w-[80px] px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
+    >
+      Next
+    </Button>
+    <Button
             disabled={completed || markCompleteMutation.isPending}
             onClick={() => markCompleteMutation.mutate()}
-            className="px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
+            className="min-w-[100px] px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
           >
             {completed ? "Completed" : "Mark as Completed"}
           </Button>
-        </div>
-      </div>
+    
+  </div>
+</div>
+
+      
     </div>
   );
 };
