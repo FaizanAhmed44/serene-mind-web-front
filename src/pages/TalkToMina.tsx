@@ -236,174 +236,183 @@ const TalkToMina: React.FC = () => {
   };
 
   // Process voice input: STT -> Chat -> TTS
-  const processVoiceInput = async (base64Audio: string, isSessionEnd: boolean = false) => {
-    try {
-      setIsLoading(true);
-      setError(null);
+// Process voice input: STT -> Chat -> TTS
+const processVoiceInput = async (base64Audio: string, isSessionEnd: boolean = false) => {
+  try {
+    setIsLoading(true);
+    setError(null);
 
-      // Step 1: Speech-to-Text
-      console.log("🎤 Step 1: Converting speech to text...");
-      const sttResponse = await fetch(API_ENDPOINTS.STT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          audio_data: base64Audio,
-          session_id: sessionId,
-          mime_type: "audio/webm"
-        }),
-      });
+    const introScript = `Hello, I’m MINA — your MindScience Assistant, powered by CoreCognitive.
 
-      if (!sttResponse.ok) {
-        throw new Error(`STT error: ${sttResponse.status}`);
-      }
+I know what it’s like when your mind won’t quiet down — when anxiety steals your calm, or stress turns to burnout.
 
-      const sttData = await sttResponse.json();
-      
-      if (!sttData.success || !sttData.transcript || !sttData.transcript.trim()) {
-        throw new Error("No speech detected. Please try again.");
-      }
+I’m not therapy I’m transformation.  
+I don’t diagnose pain I help unlock your power.
 
-      const userMessage = sttData.transcript.trim();
-      console.log("✅ Transcript:", userMessage);
+Through Neuro-Linguistic Programming and Silva Mind Science, I’ll help you rewire thoughts, restore balance, and refocus your energy.
 
-      // Step 2: Get MINA's response
-      console.log("🤖 Step 2: Getting MINA's response...");
-      const chatResponse = await fetch(API_ENDPOINTS.CHAT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_message: userMessage,
-          is_session_end: isSessionEnd,
-          session_id: sessionId,
-          stream: false,
-          user_Id:user.id ,
-          user_name: user.name,
-        }),
-      });
+You were never broken only disconnected from your potential.
 
-      if (!chatResponse.ok) {
-        throw new Error(`Chat error: ${chatResponse.status}`);
-      }
+Start transforming right here, with me.
+I’m MINA where science meets the soul.`;
 
-      const chatData = await chatResponse.json();
-      
-      if (!chatData.mina_reply || !chatData.mina_reply.trim()) {
-        throw new Error("No response received from MINA");
-      }
+    // 🟢 If this is the first interaction (no session yet)
+    if (!sessionId) {
+      console.log("🪷 Playing MINA introduction script...");
 
-      const minaResponse = chatData.mina_reply.trim();
-      console.log("✅ MINA Response:", minaResponse);
-      
-      // Update session ID
-      if (chatData.session_id) {
-        setSessionId(chatData.session_id);
-      }
-
-      // Check if session ended and generate report
-      if (isSessionEnd || !chatData.session_active) {
-        await generateUserReport(chatData.session_id);
-        setSessionActive(false);
-      }
-
-      // Step 3: Text-to-Speech + Lipsync Generation (PARALLEL)
-      console.log("🔊 Step 3: Generating TTS audio AND lipsync cues in parallel...");
-      
       const [ttsResponse, lipsyncResponse] = await Promise.all([
-        // TTS API call
         fetch(API_ENDPOINTS.TTS, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            text: minaResponse,
-            session_id: sessionId,
-            voice: "aura-asteria-en"
+            text: introScript,
+            voice: "aura-asteria-en",
           }),
         }),
-        // Lipsync API call
         fetch(API_ENDPOINTS.GENERATE_CUES, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            text: minaResponse
-          }),
-        })
+          body: JSON.stringify({ text: introScript }),
+        }),
       ]);
 
-      if (!ttsResponse.ok) {
-        throw new Error(`TTS error: ${ttsResponse.status}`);
-      }
-
-      if (!lipsyncResponse.ok) {
-        throw new Error(`Lipsync error: ${lipsyncResponse.status}`);
+      if (!ttsResponse.ok || !lipsyncResponse.ok) {
+        throw new Error("Failed to generate intro TTS or lipsync");
       }
 
       const [ttsData, lipsyncData] = await Promise.all([
         ttsResponse.json(),
-        lipsyncResponse.json()
+        lipsyncResponse.json(),
       ]);
-      
-      if (!ttsData.success || !ttsData.audio_data) {
-        throw new Error("Failed to generate speech");
-      }
 
-      if (!lipsyncData.mouthCues || !Array.isArray(lipsyncData.mouthCues)) {
-        throw new Error("Failed to generate lipsync cues");
-      }
-
-      console.log("✅ Audio generated:", ttsData.audio_data ? "Ready" : "Failed");
-      console.log("✅ Lipsync cues generated:", lipsyncData.mouthCues.length, "cues");
-      console.log("🎬 Preparing synchronized playback...");
-      
-      // Create audio element
-      setIsLoading(false);
       const audio = new Audio(`data:audio/wav;base64,${ttsData.audio_data}`);
-      
-      // Set up audio event handlers for UI state only
-      audio.onplay = () => {
-        console.log("🎵 Audio playback started");
-        setIsPlayingAudio(true);
-      };
-      
+
+      // 🐢 Slow down mouth cues slightly for smoother movement
+      const slowedCues = lipsyncData.mouthCues.map((cue: any) => ({
+        ...cue,
+        start: cue.start * 3.5, // 30% slower
+        end: cue.end * 3.5,
+      }));
+
+      setTherapistReply(introScript);
+      setMouthCues(slowedCues);
+      setCurrentAudio(audio);
+
+      audio.onplay = () => setIsPlayingAudio(true);
       audio.onended = () => {
-        console.log("✅ Audio playback finished");
         setIsPlayingAudio(false);
-        // Clear after a small delay to let lipsync finish
         setTimeout(() => {
-          setTherapistReply('');
+          setTherapistReply("");
           setCurrentAudio(null);
           setMouthCues([]);
-        }, 200);
+        }, 300);
       };
-      
-      audio.onerror = (e) => {
-        console.error("Error playing audio:", e);
-        setIsPlayingAudio(false);
-        setTherapistReply('');
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      await audio.play();
+      setIsLoading(false);
+      return;
+    }
+
+    // 🧠 Normal conversation flow
+    console.log("🎤 Processing user voice input...");
+
+    const sttResponse = await fetch(API_ENDPOINTS.STT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        audio_data: base64Audio,
+        session_id: sessionId,
+        mime_type: "audio/webm",
+      }),
+    });
+
+    if (!sttResponse.ok) throw new Error(`STT error: ${sttResponse.status}`);
+    const sttData = await sttResponse.json();
+    if (!sttData.success || !sttData.transcript?.trim())
+      throw new Error("No speech detected.");
+
+    const userMessage = sttData.transcript.trim();
+    console.log("✅ Transcript:", userMessage);
+
+    const chatResponse = await fetch(API_ENDPOINTS.CHAT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_message: userMessage,
+        is_session_end: isSessionEnd,
+        session_id: sessionId,
+      }),
+    });
+
+    if (!chatResponse.ok) throw new Error(`Chat error: ${chatResponse.status}`);
+    const chatData = await chatResponse.json();
+    const minaResponse =
+      chatData.mina_reply?.trim() || "I didn’t quite catch that.";
+    const newSessionId = chatData.session_id || sessionId;
+
+    // 🎧 Generate TTS + lipsync for MINA’s reply
+    const [ttsResponse, lipsyncResponse] = await Promise.all([
+      fetch(API_ENDPOINTS.TTS, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: minaResponse,
+          voice: "aura-asteria-en",
+        }),
+      }),
+      fetch(API_ENDPOINTS.GENERATE_CUES, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: minaResponse }),
+      }),
+    ]);
+
+    if (!ttsResponse.ok || !lipsyncResponse.ok)
+      throw new Error("Failed to generate reply TTS or lipsync");
+
+    const [ttsData, lipsyncData] = await Promise.all([
+      ttsResponse.json(),
+      lipsyncResponse.json(),
+    ]);
+
+    const replyAudio = new Audio(`data:audio/wav;base64,${ttsData.audio_data}`);
+
+    // 🐢 Apply slowdown to lipsync timing
+    const slowedCues = lipsyncData.mouthCues.map((cue: any) => ({
+      ...cue,
+      start: cue.start * 1.3,
+      end: cue.end * 1.3,
+    }));
+
+    setTherapistReply(minaResponse);
+    setMouthCues(slowedCues);
+    setCurrentAudio(replyAudio);
+
+    replyAudio.onplay = () => setIsPlayingAudio(true);
+    replyAudio.onended = () => {
+      setIsPlayingAudio(false);
+      setTimeout(() => {
+        setTherapistReply("");
         setCurrentAudio(null);
         setMouthCues([]);
-        setError("Failed to play audio response");
-      };
-      
-      // Set text, audio element, and PRE-GENERATED mouth cues
-      // All data is ready BEFORE playback starts
-      setTherapistReply(minaResponse);
-      setMouthCues(lipsyncData.mouthCues);
-      setCurrentAudio(audio);
-      
-      // Small delay to ensure React state updates before playing
-      await new Promise(resolve => setTimeout(resolve, 50));
-      
-      // Start audio playback - Character will sync automatically with pre-loaded cues
-      console.log("▶️ Starting audio playback - lipsync cues already loaded, perfect sync guaranteed!");
-      await audio.play();
+      }, 300);
+    };
 
-    } catch (err) {
-      console.error("Voice processing error:", err);
-      setIsLoading(false);
-      setIsPlayingAudio(false);
-      setError(err instanceof Error ? err.message : 'Voice processing failed');
-    }
-  };
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await replyAudio.play();
+
+    setSessionId(newSessionId);
+    setIsLoading(false);
+  } catch (error) {
+    console.error("Error processing voice input:", error);
+    setIsLoading(false);
+    setIsPlayingAudio(false);
+    setError("Something went wrong during voice processing.");
+  }
+};
+
+
 
   return (
     
