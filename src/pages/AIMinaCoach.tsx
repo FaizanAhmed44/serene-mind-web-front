@@ -1177,7 +1177,7 @@ const AIMinaCoach: React.FC = () => {
           <div className="text-4xl mb-4">⚠️</div>
           <p className="text-lg font-medium mb-2 text-red-600">Mina Session Limit Reached</p>
           <p className="text-sm text-gray-600 mb-4">
-            You have used all your available sessions. Please wait until more are added or contact support.
+            You have used all your free available sessions. Please contact support for Paid Sessions.
           </p>
         </div>
       </div>
