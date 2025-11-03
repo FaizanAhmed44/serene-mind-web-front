@@ -8,7 +8,9 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import ReportModal from '@/components/ReportModal';
 import { API_ENDPOINTS } from '@/config/api';
-
+import { useDecrementMinaSession } from '@/hooks/useMinaSession';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { motion } from 'framer-motion';
 
 interface Message {
   id: string;
@@ -90,6 +92,7 @@ const AIMinaCoach: React.FC = () => {
   const isRecordingRef = useRef<boolean>(false);
   const microphoneCircleRef = useRef<HTMLDivElement>(null);
   const audioScaleRef = useRef<number>(1);
+  const decrementMinaSession = useDecrementMinaSession();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -285,6 +288,8 @@ const AIMinaCoach: React.FC = () => {
   };
 
   const endSession = async () => {
+    
+    await decrementMinaSession.mutateAsync();
     // Send session end message
     await sendMessage("Thank you for the session. I'd like to end our conversation now.", true);
     
@@ -898,13 +903,18 @@ const AIMinaCoach: React.FC = () => {
       {/* Header */}
       <div className="shrink-0 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-6 py-4">
+          
           <div className="flex justify-between items-center">
+          
             <div>
               <h1 className="text-2xl font-bold text-primary mb-1">
                 Mina – Your Mind Science Coach
               </h1>
               <p className="text-sm text-muted-foreground">
                 A safe space for self-growth, mindset building, and emotional clarity
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Sessions left: <span className="text-accent font-bold">{user.minaSessionCount}</span>
               </p>
             </div>
             <div className="flex items-center space-x-3">
@@ -913,23 +923,24 @@ const AIMinaCoach: React.FC = () => {
                   Session: {state.sessionId.slice(-8)} | {user.name}
                 </div>
               )}
-              {state.sessionActive ? (
+              {state.sessionActive && user.minaSessionCount > 0 ? (
                 <Button
                   onClick={handleEndSession}
                   variant="outline"
                   size="sm"
-                  className="text-red-600 border-red-600 hover:bg-red-50"
+                  className="text-red-600 border-red-600 hover:bg-red-100 hover:text-red-600"
                 >
                   End Session
                 </Button>
               ) : (
-                <Button
-                  onClick={handleStartNewSession}
-                  size="sm"
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-                >
-                  ✨ Start New Session
-                </Button>
+                <div></div>
+                // <Button
+                //   onClick={handleStartNewSession}
+                //   size="sm"
+                //   className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                // >
+                //   ✨ Start New Session
+                // </Button>
               )}
             </div>
           </div>
@@ -1000,7 +1011,7 @@ const AIMinaCoach: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="shrink-0 border-t border-border bg-background/95 backdrop-blur-sm sticky bottom-0">
+      {/* <div className="shrink-0 border-t border-border bg-background/95 backdrop-blur-sm sticky bottom-0">
         <div className="px-6 py-4">
           {state.error && (
             <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
@@ -1077,7 +1088,103 @@ const AIMinaCoach: React.FC = () => {
             </div>
           )}
         </div>
+      </div> */}
+
+{/* Input Area */}
+<div className="shrink-0 border-t border-border bg-background/95 backdrop-blur-sm sticky bottom-0">
+  <div className="px-6 py-4">
+    {state.error && (
+      <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        {state.error}
       </div>
+    )}
+
+    {/* Check if user has remaining sessions */}
+    {user?.minaSessionCount > 0 ? (
+      !state.sessionActive ? (
+        <div className="text-center py-8">
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 max-w-md mx-auto">
+            <div className="text-4xl mb-4">🪷</div>
+            <p className="text-lg font-medium mb-2">Session Ended</p>
+            <p className="text-sm mb-4">
+              Your session report has been generated. Check the popup for details.
+            </p>
+            <Button
+              onClick={handleStartNewSession}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-2 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              ✨ Start New Session
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-end space-x-3 max-w-4xl mx-auto">
+          <div className="flex-1">
+            <textarea
+              ref={textareaRef}
+              value={state.input}
+              onChange={(e) => updateState({ input: e.target.value })}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage(state.input);
+                }
+              }}
+              onClick={handleTextareaClick}
+              placeholder="Share what's on your mind..."
+              className="w-full min-h-[44px] max-h-32 px-4 py-3 rounded-xl border border-input bg-background/50 focus:outline-none focus:ring-2 focus:ring-ring resize-none overflow-hidden"
+              disabled={state.isLoading || state.isStreaming}
+              rows={1}
+              style={{
+                height: '44px',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              }}
+              onInput={(e) => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = '44px';
+                const scrollHeight = target.scrollHeight;
+                if (scrollHeight > 44) {
+                  target.style.height = Math.min(scrollHeight, 128) + 'px';
+                }
+              }}
+            />
+          </div>
+
+          <Button
+            onClick={handleSendClick}
+            disabled={!state.input.trim() || state.isLoading || state.isStreaming}
+            className="rounded-xl px-4 py-3 h-11 shrink-0"
+          >
+            <Send className="w-4 h-4" />
+          </Button>
+
+          {!state.voiceMode && (
+            <Button
+              onClick={startVoiceRecording}
+              variant="outline"
+              className="rounded-xl px-4 py-3 h-11 border-accent text-accent hover:bg-accent hover:text-accent-foreground shrink-0"
+              disabled={state.isLoading || state.isStreaming}
+            >
+              <Mic className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
+      )
+    ) : (
+      <div className="text-center py-8">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 max-w-md mx-auto">
+          <div className="text-4xl mb-4">⚠️</div>
+          <p className="text-lg font-medium mb-2 text-red-600">Mina Session Limit Reached</p>
+          <p className="text-sm text-gray-600 mb-4">
+            You have used all your available sessions. Please wait until more are added or contact support.
+          </p>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
 
       <VoiceOverlay />
       

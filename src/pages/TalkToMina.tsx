@@ -13,6 +13,7 @@ import { API_ENDPOINTS } from "@/config/api";
 import ReportModal from '@/components/ReportModal';
 import { Button } from '@/components/ui/button';
 import { useAuth } from "@/hooks/useAuth";
+import { useDecrementMinaSession } from '@/hooks/useMinaSession';
 
 interface ReportData {
   user_name: string;
@@ -47,6 +48,7 @@ const TalkToMina: React.FC = () => {
     value: string;
     intensity?: number;
   }>>([]);
+  const decrementMinaSession = useDecrementMinaSession();
   
   const [reportModal, setReportModal] = useState<{
     isOpen: boolean;
@@ -136,7 +138,10 @@ const TalkToMina: React.FC = () => {
     }
 
     try {
-      setIsLoading(true);
+      setIsLoading(true);      
+
+      //Decrement minaSessionCount via API
+      await decrementMinaSession.mutateAsync();
       
       // Send final message to backend with session end flag
       const response = await fetch(API_ENDPOINTS.CHAT, {
@@ -442,24 +447,25 @@ const TalkToMina: React.FC = () => {
                 Session: {sessionId.slice(-8)} | {user.name}
               </div>
             )}
-            {sessionActive ? (
+            {sessionActive && user.minaSessionCount > 0 ? (
               <Button
                 onClick={handleEndSession}
                 variant="outline"
                 size="sm"
-                className="text-red-600 border-red-600 hover:bg-red-50"
+                className="text-red-600 border-red-600 hover:bg-red-100 hover:text-red-600"
                 disabled={isLoading || isRecording}
               >
                 End Session
               </Button>
             ) : (
-              <Button
-                onClick={handleStartNewSession}
-                size="sm"
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-              >
-                ✨ Start New Session
-              </Button>
+              <div></div>
+              // <Button
+              //   onClick={handleStartNewSession}
+              //   size="sm"
+              //   className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+              // >
+              //   ✨ Start New Session
+              // </Button>
             )}
           </motion.div>
         </div>
@@ -504,15 +510,46 @@ const TalkToMina: React.FC = () => {
         </Canvas>
       </div>
       </ErrorBoundary>
-      
+
       {/* Voice Controls - Only show when session is active */}
-      {sessionActive && (
-        <VoiceTherapy 
-          onToggleRecording={toggleRecording}
-          isRecording={isRecording}
-          isLoading={isLoading}
-          isPlayingAudio={isPlayingAudio}
-        />
+        {sessionActive && (
+        <div className="relative">
+          {user.minaSessionCount > 0 ? (
+            <VoiceTherapy
+              onToggleRecording={toggleRecording}
+              isRecording={isRecording}
+              isLoading={isLoading}
+              isPlayingAudio={isPlayingAudio}
+            />
+          ) : (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 20,
+                left: 20,
+                zIndex: 10,
+              }}
+              className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 shadow-xl max-w-xs border border-purple-200"
+            >
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="text-4xl">Out of Sessions</div>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Your <strong>minaSessionCount</strong> is <span className="text-red-600 font-bold">0</span>.<br />
+                  You cannot start a new session.
+                </p>
+                <button
+                  className="mt-2 px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-full hover:from-purple-600 hover:to-pink-600 transition-all shadow-md"
+                  onClick={() => {
+                    // Optional: redirect to buy more sessions
+                    // window.location.href = '/pricing';
+                  }}
+                >
+                  Get More Sessions
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       )}
       
       {/* Session Ended Overlay */}

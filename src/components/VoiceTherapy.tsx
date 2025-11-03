@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Mic } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 type Props = {
   onToggleRecording: () => void;
@@ -15,6 +16,9 @@ const VoiceTherapy: React.FC<Props> = ({
   isLoading, 
   isPlayingAudio 
 }) => {
+
+  const { user } = useAuth();    
+
   const getButtonText = () => {
     if (isRecording) return 'Stop Recording';
     if (isLoading) return 'Processing...';
@@ -38,7 +42,11 @@ const VoiceTherapy: React.FC<Props> = ({
         <Mic className="w-4 h-4" />
         {getButtonText()}
       </Button>
+      <div className="mt-2 text-xs text-muted-foreground text-center font-medium">
+        Sessions left: <span className="text-accent font-bold">{user.minaSessionCount}</span>
+      </div>
     </div>
+    
   );
 };
 

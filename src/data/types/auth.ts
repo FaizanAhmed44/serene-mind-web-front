@@ -34,6 +34,7 @@ export type User = {
   location?: string | null;
   avatar?: string | null;
   email_verified: boolean;
+  minaSessionCount: number;
   created_at: string;
   updated_at: string;
 };

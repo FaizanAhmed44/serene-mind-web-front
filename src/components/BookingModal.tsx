@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { format, addDays, addMinutes } from "date-fns";
+import { format, addDays, addMinutes,isBefore } from "date-fns";
 import { Calendar, Clock, FileText, CreditCard } from "lucide-react";
 import {
   Dialog,
@@ -399,7 +399,7 @@ const TimeSelection = ({
         {availabilitySlots.map((slot) => {
           const startTime = slot.startTime;
           const endTime = slot.endTime;
-
+          console.log(selectedSession.durationMinutes)
           return (
             <Button
               key={`${slot.startTime}-${slot.endTime}`}
@@ -416,3 +416,77 @@ const TimeSelection = ({
     </div>
   );
 };
+
+
+// const TimeSelection = ({
+//   selectedDate,
+//   availabilitySlots,
+//   selectedSession,
+//   selectedTime,
+//   setSelectedTime,
+// }: TimeSelectionProps) => {
+//   // Function to generate divided time slots based on session duration
+//   const generateSlots = (startTime: string, endTime: string, duration: number) => {
+//     const slots: { startTime: string; endTime: string }[] = [];
+
+//     const [startHour, startMinute] = startTime.split(":").map(Number);
+//     const [endHour, endMinute] = endTime.split(":").map(Number);
+
+//     let start = new Date(selectedDate);
+//     start.setHours(startHour, startMinute, 0, 0);
+
+//     let end = new Date(selectedDate);
+//     end.setHours(endHour, endMinute, 0, 0);
+
+//     while (isBefore(addMinutes(start, duration), end) || +start === +end) {
+//       const slotEnd = addMinutes(start, duration);
+//       if (isBefore(slotEnd, end) || +slotEnd === +end) {
+//         slots.push({
+//           startTime: start.toLocaleTimeString([], {
+//             hour: "2-digit",
+//             minute: "2-digit",
+//             hour12: false,
+//           }),
+//           endTime: slotEnd.toLocaleTimeString([], {
+//             hour: "2-digit",
+//             minute: "2-digit",
+//             hour12: false,
+//           }),
+//         });
+//       }
+//       start = addMinutes(start, duration);
+//     }
+
+//     return slots;
+//   };
+
+//   // Flatten all generated slots for all availability ranges
+//   const allSlots = availabilitySlots.flatMap((slot) =>
+//     generateSlots(slot.startTime, slot.endTime, selectedSession.durationMinutes)
+//   );
+
+//   return (
+//     <div>
+//       <label className="text-sm font-medium mb-3 block">Select Time</label>
+//       {allSlots.length === 0 ? (
+//         <p className="text-sm text-muted-foreground">
+//           No available time slots for this duration.
+//         </p>
+//       ) : (
+//         <div className="grid grid-cols-3 gap-2">
+//           {allSlots.map((slot, index) => (
+//             <Button
+//               key={index}
+//               variant={selectedTime === slot.startTime ? "default" : "outline"}
+//               size="sm"
+//               onClick={() => setSelectedTime(slot.startTime)}
+//               className="text-sm"
+//             >
+//               {slot.startTime} - {slot.endTime}
+//             </Button>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };

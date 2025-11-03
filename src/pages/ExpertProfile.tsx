@@ -308,8 +308,7 @@ const ExpertProfile = () => {
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
         expert={expert}
-        sessionTypes={sessionTypes}
-      />
+        sessionTypes={sessionTypes}     />
     </motion.div>
   );
 };
