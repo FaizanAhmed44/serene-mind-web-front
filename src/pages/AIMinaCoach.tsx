@@ -8,9 +8,10 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import ReportModal from '@/components/ReportModal';
 import { API_ENDPOINTS } from '@/config/api';
-import { useDecrementMinaSession } from '@/hooks/useMinaSession';
+import { useDecrementMinaSession,useCreateSessionDetail } from '@/hooks/useMinaSession';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { motion } from 'framer-motion';
+
 
 interface Message {
   id: string;
@@ -52,7 +53,6 @@ interface ReportData {
 
 const AIMinaCoach: React.FC = () => {
   const { user } = useAuth();
-  
   const [state, setState] = useState<ChatState>({
     messages: [
       {
@@ -74,7 +74,7 @@ const AIMinaCoach: React.FC = () => {
     voiceMessages: [],
     isPlayingAudio: false,
   });
-
+  const { mutate: createSession, isSuccess, error } = useCreateSessionDetail();
   const [reportModal, setReportModal] = useState<{
     isOpen: boolean;
     data: ReportData | null;
@@ -317,6 +317,12 @@ const AIMinaCoach: React.FC = () => {
       }
 
       const reportData = await response.json();
+
+      createSession({
+        sessionId,
+        sessionMode: 'Text-Voice', // or 'Text', 'Video', etc.
+        sessionReportJson: JSON.stringify(reportData.report_data),
+      });
       
       // Show report modal instead of alert
       setReportModal({

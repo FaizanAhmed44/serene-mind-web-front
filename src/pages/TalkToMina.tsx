@@ -13,7 +13,7 @@ import { API_ENDPOINTS } from "@/config/api";
 import ReportModal from '@/components/ReportModal';
 import { Button } from '@/components/ui/button';
 import { useAuth } from "@/hooks/useAuth";
-import { useDecrementMinaSession } from '@/hooks/useMinaSession';
+import { useDecrementMinaSession, useCreateSessionDetail } from '@/hooks/useMinaSession';
 
 interface ReportData {
   user_name: string;
@@ -42,6 +42,8 @@ const TalkToMina: React.FC = () => {
   const [sessionActive, setSessionActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
+  const { mutate: createSession,  isSuccess } = useCreateSessionDetail();
+
   const [mouthCues, setMouthCues] = useState<Array<{
     start: number;
     end: number;
@@ -178,8 +180,7 @@ const TalkToMina: React.FC = () => {
 
   // Generate user report
   const generateUserReport = async (sid: string) => {
-    try {
-      console.log("📊 Generating user report for session:", sid);
+    try {      
       const response = await fetch(API_ENDPOINTS.GENERATE_REPORT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -195,6 +196,13 @@ const TalkToMina: React.FC = () => {
       }
 
       const reportData = await response.json();
+      // store user report
+      createSession({
+        sessionId,
+        sessionMode: 'AI-Mina', 
+        sessionReportJson: JSON.stringify(reportData.report_data),
+      });
+     
       console.log("✅ Report generated successfully");
       
       // Show report modal
