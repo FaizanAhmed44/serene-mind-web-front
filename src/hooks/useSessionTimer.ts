@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface UseSessionTimerProps {
-  duration?: number; // Duration in seconds (default: 15 minutes = 900 seconds)
+  duration?: number;
   onTimeUp: () => void;
   autoStart?: boolean;
 }
@@ -15,6 +15,12 @@ export const useSessionTimer = ({
   const [isActive, setIsActive] = useState(autoStart);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const hasCalledTimeUpRef = useRef(false);
+  const onTimeUpRef = useRef(onTimeUp);
+
+  // Keep the callback ref updated
+  useEffect(() => {
+    onTimeUpRef.current = onTimeUp;
+  }, [onTimeUp]);
 
   const startTimer = useCallback(() => {
     setIsActive(true);
@@ -39,7 +45,6 @@ export const useSessionTimer = ({
     }
   }, [duration]);
 
-  // Format time as MM:SS
   const formatTime = useCallback((seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -60,7 +65,7 @@ export const useSessionTimer = ({
     } else if (timeRemaining === 0 && !hasCalledTimeUpRef.current) {
       hasCalledTimeUpRef.current = true;
       stopTimer();
-      onTimeUp();
+      onTimeUpRef.current();
     }
 
     return () => {
@@ -68,20 +73,16 @@ export const useSessionTimer = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [isActive, timeRemaining, onTimeUp, stopTimer]);
+  }, [isActive, timeRemaining, stopTimer]);
 
-  // Cleanup on unmount (page navigation)
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (isActive && intervalRef.current) {
+      if (intervalRef.current) {
         clearInterval(intervalRef.current);
-        // Trigger session end if timer was active
-        if (!hasCalledTimeUpRef.current && timeRemaining < duration) {
-          onTimeUp();
-        }
       }
     };
-  }, [isActive, duration, timeRemaining, onTimeUp]);
+  }, []);
 
   return {
     timeRemaining,
