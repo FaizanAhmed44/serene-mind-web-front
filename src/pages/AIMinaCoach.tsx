@@ -11,6 +11,7 @@ import { API_ENDPOINTS } from '@/config/api';
 import { useDecrementMinaSession,useCreateSessionDetail } from '@/hooks/useMinaSession';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { motion } from 'framer-motion';
+import { useSessionTimer } from '@/hooks/useSessionTimer';
 
 
 interface Message {
@@ -94,6 +95,16 @@ const AIMinaCoach: React.FC = () => {
   const audioScaleRef = useRef<number>(1);
   const decrementMinaSession = useDecrementMinaSession();
 
+  // Session timer (15 minutes)
+  const sessionTimer = useSessionTimer({
+    duration: 900, // 15 minutes in seconds
+    onTimeUp: () => {
+      console.log("⏰ Session time limit reached - auto-ending session");
+      handleEndSession();
+    },
+    autoStart: false,
+  });
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -115,6 +126,11 @@ const AIMinaCoach: React.FC = () => {
 
   const sendMessage = async (text: string, isSessionEnd: boolean = false) => {
     if (!text.trim()) return;
+
+    // Start timer on first interaction
+    if (!sessionTimer.isActive && state.sessionActive) {
+      sessionTimer.startTimer();
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -259,11 +275,13 @@ const AIMinaCoach: React.FC = () => {
   };
 
   const handleEndSession = () => {
+    sessionTimer.stopTimer();
     endSession();
   };
 
   // ✅ Start a completely new session
   const handleStartNewSession = () => {
+    sessionTimer.resetTimer();
     updateState({
       messages: [],
       input: "",
@@ -421,6 +439,11 @@ const AIMinaCoach: React.FC = () => {
   const toggleRecording = async () => {
     // Use ref to check current recording state to avoid stale closure
     if (!isRecordingRef.current) {
+      // Start timer on first interaction
+      if (!sessionTimer.isActive && state.sessionActive) {
+        sessionTimer.startTimer();
+      }
+
       // Start recording
       try {
         // Request microphone access
@@ -924,6 +947,16 @@ const AIMinaCoach: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center space-x-3">
+              {sessionTimer.isActive && (
+                <div className={cn(
+                  "text-sm font-semibold px-3 py-1 rounded-full",
+                  sessionTimer.timeRemaining <= 60 
+                    ? "bg-red-100 text-red-600" 
+                    : "bg-primary/10 text-primary"
+                )}>
+                  ⏱️ {sessionTimer.formattedTime}
+                </div>
+              )}
               {state.sessionId && state.sessionActive && (
                 <div className="text-sm text-muted-foreground">
                   Session: {state.sessionId.slice(-8)} | {user.name}

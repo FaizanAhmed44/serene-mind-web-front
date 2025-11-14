@@ -14,6 +14,8 @@ import ReportModal from '@/components/ReportModal';
 import { Button } from '@/components/ui/button';
 import { useAuth } from "@/hooks/useAuth";
 import { useDecrementMinaSession, useCreateSessionDetail } from '@/hooks/useMinaSession';
+import { useSessionTimer } from '@/hooks/useSessionTimer';
+import { cn } from '@/lib/utils';
 
 interface ReportData {
   user_name: string;
@@ -59,6 +61,16 @@ const TalkToMina: React.FC = () => {
     isOpen: false,
     data: null,
   });
+
+  // Session timer (15 minutes)
+  const sessionTimer = useSessionTimer({
+    duration: 900, // 15 minutes in seconds
+    onTimeUp: () => {
+      console.log("⏰ Session time limit reached - auto-ending session");
+      handleEndSession();
+    },
+    autoStart: false,
+  });
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -66,6 +78,11 @@ const TalkToMina: React.FC = () => {
   // Toggle recording function
   const toggleRecording = async () => {
     if (!isRecording) {
+      // Start timer on first interaction
+      if (!sessionTimer.isActive && sessionActive) {
+        sessionTimer.startTimer();
+      }
+
       // Stop any currently playing audio before starting new recording
       if (currentAudio) {
         currentAudio.pause();
@@ -129,6 +146,7 @@ const TalkToMina: React.FC = () => {
 
   // End session handler
   const handleEndSession = () => {
+    sessionTimer.stopTimer();
     endSession();
   };
 
@@ -239,6 +257,7 @@ const TalkToMina: React.FC = () => {
     setError(null);
     setCurrentAudio(null);
     setMouthCues([]);
+    sessionTimer.resetTimer();
     
     // Stop any playing audio
     if (currentAudio) {
@@ -450,6 +469,16 @@ const TalkToMina: React.FC = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
+            {sessionTimer.isActive && (
+              <div className={cn(
+                "text-sm font-semibold px-3 py-1 rounded-full",
+                sessionTimer.timeRemaining <= 60 
+                  ? "bg-red-100 text-red-600" 
+                  : "bg-primary/10 text-primary"
+              )}>
+                ⏱️ {sessionTimer.formattedTime}
+              </div>
+            )}
             {sessionId && sessionActive && (
               <div className="text-xs text-muted-foreground">
                 Session: {sessionId.slice(-8)} | {user.name}
