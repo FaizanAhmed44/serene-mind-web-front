@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useRef } from 'react';
+import React, { Suspense, useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import Trigger from '@/components/Trigger'; // Adjust path if needed
@@ -74,6 +74,16 @@ const TalkToMina: React.FC = () => {
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+
+  // Cleanup: End session if user navigates away while session is active
+  useEffect(() => {
+    return () => {
+      if (sessionTimer.isActive && sessionActive) {
+        console.log("🚪 User navigating away - ending active session");
+        handleEndSession();
+      }
+    };
+  }, [sessionTimer.isActive, sessionActive]);
 
   // Toggle recording function
   const toggleRecording = async () => {

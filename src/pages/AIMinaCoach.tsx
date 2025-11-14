@@ -120,6 +120,29 @@ const AIMinaCoach: React.FC = () => {
     }
   }, [state.sessionActive]);
 
+  // Cleanup: End session if user navigates away while session is active
+  useEffect(() => {
+    const handleNavigationCleanup = () => {
+      if (sessionTimer.isActive && state.sessionActive) {
+        console.log("🚪 User navigating away - ending active session");
+        handleEndSession();
+      }
+    };
+    
+    return handleNavigationCleanup;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionTimer.isActive, state.sessionActive]);
+
+  // Cleanup: End session if user navigates away while session is active
+  useEffect(() => {
+    return () => {
+      if (sessionTimer.isActive && state.sessionActive) {
+        console.log("🚪 User navigating away - ending active session");
+        handleEndSession();
+      }
+    };
+  }, [sessionTimer.isActive, state.sessionActive]);
+
   const updateState = (updates: Partial<ChatState>) => {
     setState(prev => ({ ...prev, ...updates }));
   };
