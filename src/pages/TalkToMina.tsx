@@ -557,47 +557,47 @@ const TalkToMina: React.FC = () => {
         </Canvas>
       </div>
       </ErrorBoundary>
-
-      {/* Voice Controls - Only show when session is active */}
-        {sessionActive && (
-        <div className="relative">
-          {user.minaSessionCount > 0 ? (
-            <VoiceTherapy
-              onToggleRecording={toggleRecording}
-              isRecording={isRecording}
-              isLoading={isLoading}
-              isPlayingAudio={isPlayingAudio}
-            />
-          ) : (
-            <div
-              style={{
-                position: 'absolute',
-                bottom: 20,
-                left: 20,
-                zIndex: 10,
-              }}
-              className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 shadow-xl max-w-xs border border-purple-200"
-            >
-              <div className="flex flex-col items-center text-center space-y-3">
-                <div className="text-4xl">Out of Sessions</div>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  Your <strong>minaSessionCount</strong> is <span className="text-red-600 font-bold">0</span>.<br />
-                  You cannot start a new session.
-                </p>
-                <button
-                  className="mt-2 px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-full hover:from-purple-600 hover:to-pink-600 transition-all shadow-md"
-                  onClick={() => {
-                    // Optional: redirect to buy more sessions
-                    // window.location.href = '/pricing';
-                  }}
-                >
-                  Get More Sessions
-                </button>
-              </div>
-            </div>
-          )}
+      <div className="pb-28 md:pb-0" />
+{/* Voice Controls - Only show when session is active */}
+{sessionActive && (
+  <div
+    className="
+      fixed 
+      bottom-0 left-0 
+      w-full 
+      z-50
+      px-4 py-3 
+      bg-white 
+      shadow-[0_-4px_12px_rgba(0,0,0,0.1)]
+      md:static 
+      md:bg-transparent 
+      md:shadow-none
+    "
+  >
+    {user.minaSessionCount > 0 ? (
+      <VoiceTherapy
+        onToggleRecording={toggleRecording}
+        isRecording={isRecording}
+        isLoading={isLoading}
+        isPlayingAudio={isPlayingAudio}
+      />
+    ) : (
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 shadow-xl max-w-xs border border-purple-200 mx-auto">
+        <div className="flex flex-col items-center text-center space-y-3">
+          <div className="text-4xl">Out of Sessions</div>
+          <p className="text-sm text-gray-700 leading-relaxed">
+            Your <strong>minaSessionCount</strong> is
+            <span className="text-red-600 font-bold"> 0</span>.
+          </p>
+          <button className="mt-2 px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-full">
+            Get More Sessions
+          </button>
         </div>
-      )}
+      </div>
+    )}
+  </div>
+)}
+
       
       {/* Session Ended Overlay */}
       {!sessionActive && (
