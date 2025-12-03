@@ -14,6 +14,7 @@ type CharacterProps = {
   therapistReply: string;
   audioElement?: HTMLAudioElement | null;
   mouthCues?: MouthCue[];
+  isMobile?: boolean;
 };
 
 const corresponding = {
@@ -28,7 +29,13 @@ const corresponding = {
   X: "viseme_PP",
 } as const;
 
-const Character: React.FC<CharacterProps> = ({ therapistReply, audioElement, mouthCues: propMouthCues, ...props }) => {
+const Character: React.FC<CharacterProps> = ({ 
+  therapistReply, 
+  audioElement, 
+  mouthCues: propMouthCues, 
+  isMobile = false,
+  ...props 
+}) => {
   const group = useRef<Group>(null);
 
   // --- Load model and animation ---
@@ -41,6 +48,9 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, audioElement, mou
   const speechStartTimeRef = useRef(0);
   const isSpeakingRef = useRef(false);
   const lastCueEndRef = useRef(0);
+
+  // Track animation mixer for mobile constraints
+  const animationMixerRef = useRef<any>(null);
 
   // --- Debug info ---
   useEffect(() => {
@@ -61,7 +71,7 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, audioElement, mou
     [scene]
   );
 
-  // --- Breathing animation auto-start ---
+  // --- Breathing animation auto-start with STRONG mobile constraints ---
   useEffect(() => {
     if (!actions || Object.keys(actions).length === 0) {
       console.warn("⚠️ No animation actions found to play.");
@@ -83,13 +93,60 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, audioElement, mou
 
     action.reset().fadeIn(0.5).play();
     action.setEffectiveWeight(0.5);
-    action.setEffectiveTimeScale(0.4);// Slow down for subtle breathing
+    
+    // MUCH SLOWER ANIMATION ON MOBILE to reduce movement
+    const timeScale = isMobile ? 0.3 : 0.3; // Even slower on mobile
+    action.setEffectiveTimeScale(timeScale);
+
+    // For mobile: Reduce animation influence to minimize movement
+    if (isMobile) {
+      action.setEffectiveWeight(0.1); // Reduced weight on mobile
+    }
+    else{
+      action.setEffectiveWeight(0.4); // Normal weight on desktop
+    }
 
     return () => {
       console.log("🛑 Cleaning up animation:", clipName);
       action.fadeOut(0.5);
     };
-  }, [actions]);
+  }, [actions, isMobile]);
+
+  // --- REAL-TIME POSITION CONSTRAINTS FOR MOBILE ---
+  useEffect(() => {
+    if (!isMobile || !group.current) return;
+
+    let constraintFrameId: number;
+    const maxXMovement = 0.5; // VERY small movement allowed on mobile
+    const centerX = 0; // Center position
+
+    const applyPositionConstraints = () => {
+      if (group.current) {
+        const currentPos = group.current.position;
+        
+        // Reset to center with very tight constraints
+        if (Math.abs(currentPos.x - centerX) > maxXMovement) {
+          group.current.position.x = centerX + (currentPos.x > centerX ? maxXMovement : -maxXMovement);
+        }
+        
+        // Also ensure Y position doesn't change too much
+        const baseY = -42;
+        if (Math.abs(currentPos.y - baseY) > 0.5) {
+          group.current.position.y = baseY;
+        }
+      }
+      
+      constraintFrameId = requestAnimationFrame(applyPositionConstraints);
+    };
+
+    constraintFrameId = requestAnimationFrame(applyPositionConstraints);
+
+    return () => {
+      if (constraintFrameId) {
+        cancelAnimationFrame(constraintFrameId);
+      }
+    };
+  }, [isMobile]);
 
   // --- Lipsync logic ---
   const generateMouthCues = async (text: string) => {
@@ -263,9 +320,16 @@ const Character: React.FC<CharacterProps> = ({ therapistReply, audioElement, mou
   }, [therapistReply, audioElement, propMouthCues]);
 
   return (
-    <group ref={group} position={[0, -42, 0]}>
+    <group 
+      ref={group} 
+      position={isMobile ? [0, -42, 0] : [0, -42, 0]} // Same position for both
+    >
       {scene ? (
-        <primitive object={scene} scale={[19, 19, 24]} rotation={[-0.7, 0, 0]} />
+        <primitive 
+          object={scene} 
+          scale={[19, 19, 24]} 
+          rotation={[-0.7, 0, 0]} 
+        />
       ) : null}
     </group>
   );

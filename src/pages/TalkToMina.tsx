@@ -1,7 +1,7 @@
 import React, { Suspense, useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import Trigger from '@/components/Trigger'; // Adjust path if needed
+import Trigger from '@/components/Trigger';
 import Loader from '@/components/Loader';
 import Character from '@/components/Character';
 import SoothingBackground from '@/components/SoothingBackground';
@@ -61,6 +61,20 @@ const TalkToMina: React.FC = () => {
     isOpen: false,
     data: null,
   });
+
+  // Add mobile detection state
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Session timer (15 minutes)
   const sessionTimer = useSessionTimer({
@@ -506,13 +520,6 @@ const TalkToMina: React.FC = () => {
               </Button>
             ) : (
               <div></div>
-              // <Button
-              //   onClick={handleStartNewSession}
-              //   size="sm"
-              //   className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-              // >
-              //   ✨ Start New Session
-              // </Button>
             )}
           </motion.div>
         </div>
@@ -521,14 +528,18 @@ const TalkToMina: React.FC = () => {
       <ErrorBoundary
         fallback={<div className="flex items-center justify-center h-full bg-white">Failed to load 3D scene—check console for details.</div>}
       >
-      <div className="flex-1">
+      <div className="flex-1 relative">
         <Canvas
-          camera={{ position: [0, 1.4, 1.5], fov: 25 }}
-          gl={{ antialias: false }} // Helps with context issues
-          style={{ background: 'white' }}
-        >
+  camera={{ 
+    // Mobile camera position (adjusted)
+    position: isMobile ? [0, 1.3, 2.3] : [0, 1.4, 1.5], 
+    // Mobile FOV (adjusted)
+    fov: isMobile ? 28 : 25 
+  }}
+  gl={{ antialias: false }}
+  className="w-full h-full"
+>
           <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
-          {/* Lighting */}
           <ambientLight intensity={1} />
           <directionalLight
             position={[5, 5, 5]}
@@ -552,51 +563,47 @@ const TalkToMina: React.FC = () => {
               therapistReply={therapistReply} 
               audioElement={currentAudio}
               mouthCues={mouthCues}
+              isMobile={isMobile}
             />
           </Suspense>
         </Canvas>
+        
+       
       </div>
       </ErrorBoundary>
-      <div className="pb-28 md:pb-0" />
-{/* Voice Controls - Only show when session is active */}
-{sessionActive && (
-  <div
-    className="
-      fixed 
-      bottom-0 left-0 
-      w-full 
-      z-50
-      px-4 py-3 
-      bg-white 
-      shadow-[0_-4px_12px_rgba(0,0,0,0.1)]
-      md:static 
-      md:bg-transparent 
-      md:shadow-none
-    "
-  >
-    {user.minaSessionCount > 0 ? (
-      <VoiceTherapy
-        onToggleRecording={toggleRecording}
-        isRecording={isRecording}
-        isLoading={isLoading}
-        isPlayingAudio={isPlayingAudio}
-      />
-    ) : (
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 shadow-xl max-w-xs border border-purple-200 mx-auto">
-        <div className="flex flex-col items-center text-center space-y-3">
-          <div className="text-4xl">Out of Sessions</div>
-          <p className="text-sm text-gray-700 leading-relaxed">
-            Your <strong>minaSessionCount</strong> is
-            <span className="text-red-600 font-bold"> 0</span>.
-          </p>
-          <button className="mt-2 px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-full">
-            Get More Sessions
-          </button>
+      
+      {/* Voice Controls - Only show when session is active */}
+      {sessionActive && (
+        <div className={cn(
+          "relative",
+          isMobile ? "mt-2" : ""
+        )}>
+          {user.minaSessionCount > 0 ? (
+            <VoiceTherapy
+              onToggleRecording={toggleRecording}
+              isRecording={isRecording}
+              isLoading={isLoading}
+              isPlayingAudio={isPlayingAudio}
+              isMobile={isMobile}
+            />
+          ) : (
+            <div className={cn(
+              "bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl shadow-xl border border-purple-200 mx-auto",
+              isMobile ? "p-4 mt-2 w-11/12" : "p-6 max-w-xs"
+            )}>
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className={isMobile ? "text-2xl" : "text-4xl"}>Out of Sessions</div>
+                <p className={isMobile ? "text-xs" : "text-sm"}>
+                  Your minaSessionCount is <span className="text-red-600 font-bold">0</span>.
+                </p>
+                <button className="px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-full">
+                  Get More Sessions
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-    )}
-  </div>
-)}
+      )}
 
       
       {/* Session Ended Overlay */}
@@ -612,17 +619,30 @@ const TalkToMina: React.FC = () => {
             transform: 'translate(-50%, 50%)',
             zIndex: 20,
             textAlign: 'center',
+            width: isMobile ? '90%' : 'auto',
           }}
         >
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-8 shadow-2xl max-w-md">
-            <div className="text-6xl mb-4">🪷</div>
-            <p className="text-2xl font-bold mb-2 text-gray-800">Session Ended</p>
-            <p className="text-sm mb-6 text-gray-600">
+          <div className={cn(
+            "bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl shadow-2xl",
+            isMobile ? "p-6" : "p-8 max-w-md"
+          )}>
+            <div className={cn(isMobile ? "text-4xl mb-3" : "text-6xl mb-4")}>🪷</div>
+            <p className={cn(
+              "font-bold mb-2 text-gray-800",
+              isMobile ? "text-xl" : "text-2xl"
+            )}>Session Ended</p>
+            <p className={cn(
+              "mb-6 text-gray-600",
+              isMobile ? "text-xs" : "text-sm"
+            )}>
               Your session report has been generated. Check the popup for details.
             </p>
             <Button
               onClick={handleStartNewSession}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+              className={cn(
+                "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl",
+                isMobile ? "px-5 py-2.5 text-sm" : "px-6 py-3"
+              )}
             >
               ✨ Start New Session
             </Button>
@@ -634,15 +654,17 @@ const TalkToMina: React.FC = () => {
       {error && (
         <div style={{ 
           position: 'absolute', 
-          top: 80, 
+          top: isMobile ? 70 : 80, 
           left: '50%', 
           transform: 'translateX(-50%)',
           background: '#fee', 
           color: '#c33', 
-          padding: '12px 24px', 
           borderRadius: '8px',
           zIndex: 20,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          width: isMobile ? '90%' : 'auto',
+          padding: isMobile ? '10px 16px' : '12px 24px',
+          fontSize: isMobile ? '13px' : '14px'
         }}>
           ⚠️ {error}
         </div>
@@ -652,25 +674,26 @@ const TalkToMina: React.FC = () => {
       {(isRecording || isLoading || isPlayingAudio) && (
         <div style={{ 
           position: 'absolute', 
-          top: 80, 
-          right: 20, 
+          top: isMobile ? 70 : 80, 
+          right: isMobile ? 10 : 20, 
           background: 'rgba(255,255,255,0.9)', 
-          padding: '8px 16px', 
           borderRadius: '20px',
           zIndex: 20,
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          padding: isMobile ? '6px 12px' : '8px 16px',
+          fontSize: isMobile ? '12px' : '14px'
         }}>
           <div style={{
-            width: '8px',
-            height: '8px',
+            width: isMobile ? '6px' : '8px',
+            height: isMobile ? '6px' : '8px',
             borderRadius: '50%',
             background: isRecording ? '#ef4444' : isPlayingAudio ? '#3b82f6' : '#f59e0b',
             animation: 'pulse 1.5s ease-in-out infinite'
           }} />
-          <span style={{ fontSize: '14px', fontWeight: 500 }}>
+          <span style={{ fontWeight: 500 }}>
             {isRecording ? 'Recording...' : isLoading ? 'Processing...' : 'MINA Speaking...'}
           </span>
         </div>
