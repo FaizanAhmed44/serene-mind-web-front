@@ -119,6 +119,8 @@ const Character: React.FC<CharacterProps> = ({
     let constraintFrameId: number;
     const maxXMovement = 0.5; // VERY small movement allowed on mobile
     const centerX = 0; // Center position
+    // Mobile uses higher Y position (-40) to bring character up in frame
+    const baseY = -40;
 
     const applyPositionConstraints = () => {
       if (group.current) {
@@ -130,7 +132,6 @@ const Character: React.FC<CharacterProps> = ({
         }
         
         // Also ensure Y position doesn't change too much
-        const baseY = -42;
         if (Math.abs(currentPos.y - baseY) > 0.5) {
           group.current.position.y = baseY;
         }
@@ -322,12 +323,15 @@ const Character: React.FC<CharacterProps> = ({
   return (
     <group 
       ref={group} 
-      position={isMobile ? [0, -42, 0] : [0, -42, 0]} // Same position for both
+      // Mobile: higher Y position (-40) to bring character up in frame
+      // Desktop: standard position (-42)
+      position={isMobile ? [0, -40, 0] : [0, -42, 0]}
     >
       {scene ? (
         <primitive 
           object={scene} 
-          scale={[19, 19, 24]} 
+          // Mobile: slightly smaller scale to fit better in viewport
+          scale={isMobile ? [18, 18, 23] : [19, 19, 24]} 
           rotation={[-0.7, 0, 0]} 
         />
       ) : null}

@@ -122,25 +122,13 @@ const AIMinaCoach: React.FC = () => {
 
   // Cleanup: End session if user navigates away while session is active
   useEffect(() => {
-    const handleNavigationCleanup = () => {
-      if (sessionTimer.isActive && state.sessionActive) {
-        console.log("🚪 User navigating away - ending active session");
-        handleEndSession();
-      }
-    };
-    
-    return handleNavigationCleanup;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionTimer.isActive, state.sessionActive]);
-
-  // Cleanup: End session if user navigates away while session is active
-  useEffect(() => {
     return () => {
       if (sessionTimer.isActive && state.sessionActive) {
         console.log("🚪 User navigating away - ending active session");
         handleEndSession();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionTimer.isActive, state.sessionActive]);
 
   const updateState = (updates: Partial<ChatState>) => {
@@ -950,29 +938,45 @@ const AIMinaCoach: React.FC = () => {
     );
   };
 
+  // Don't render until user is loaded to prevent white screen on reload
+  if (!user) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen flex flex-col bg-background">
       {/* Header */}
       <div className="shrink-0 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="px-6 py-4">
+        <div className="px-4 md:px-6 py-4">
           
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-3">
+            {/* Sidebar trigger for mobile navigation */}
+            <div className="shrink-0">
+              <SidebarTrigger />
+            </div>
           
-            <div>
-              <h1 className="text-2xl font-bold text-primary mb-1">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg md:text-2xl font-bold text-primary mb-1 truncate">
                 Mina – Your Mind Science Coach
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs md:text-sm text-muted-foreground hidden sm:block">
                 A safe space for self-growth, mindset building, and emotional clarity
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs md:text-sm text-muted-foreground">
                 Sessions left: <span className="text-accent font-bold">{user.minaSessionCount}</span>
               </p>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 md:space-x-3 shrink-0">
               {sessionTimer.isActive && (
                 <div className={cn(
-                  "text-sm font-semibold px-3 py-1 rounded-full",
+                  "text-xs md:text-sm font-semibold px-2 md:px-3 py-1 rounded-full",
                   sessionTimer.timeRemaining <= 60 
                     ? "bg-red-100 text-red-600" 
                     : "bg-primary/10 text-primary"
@@ -981,7 +985,7 @@ const AIMinaCoach: React.FC = () => {
                 </div>
               )}
               {state.sessionId && state.sessionActive && (
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs md:text-sm text-muted-foreground hidden md:block">
                   Session: {state.sessionId.slice(-8)} | {user.name}
                 </div>
               )}
@@ -990,19 +994,13 @@ const AIMinaCoach: React.FC = () => {
                   onClick={handleEndSession}
                   variant="outline"
                   size="sm"
-                  className="text-red-600 border-red-600 hover:bg-red-100 hover:text-red-600"
+                  className="text-red-600 border-red-600 hover:bg-red-100 hover:text-red-600 text-xs md:text-sm px-2 md:px-3"
                 >
-                  End Session
+                  End
+                  <span className="hidden md:inline ml-1">Session</span>
                 </Button>
               ) : (
                 <div></div>
-                // <Button
-                //   onClick={handleStartNewSession}
-                //   size="sm"
-                //   className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-                // >
-                //   ✨ Start New Session
-                // </Button>
               )}
             </div>
           </div>

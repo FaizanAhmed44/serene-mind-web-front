@@ -62,15 +62,26 @@ const TalkToMina: React.FC = () => {
     data: null,
   });
 
-  // Add mobile detection state
-  const [isMobile, setIsMobile] = useState(false);
+  // Mobile detection state - initialize correctly to avoid flash
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return false;
+  });
+
+  // Track if initial detection is complete
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
     
+    // Ensure we have correct value after hydration
     checkMobile();
+    setIsLayoutReady(true);
+    
     window.addEventListener('resize', checkMobile);
     
     return () => window.removeEventListener('resize', checkMobile);
@@ -461,9 +472,17 @@ const TalkToMina: React.FC = () => {
     }
   };
 
+  // Don't render Canvas until layout is ready and user is loaded to prevent flash/white screen
+  if (!isLayoutReady || !user) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-white">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
-    
-    <div className="w-full h-full flex flex-col bg-white relative">
+    <div className="w-full flex flex-col bg-white relative" style={{ height: '100dvh', minHeight: '-webkit-fill-available' }}>
       <motion.div
         className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg"
         initial={{ y: -50, opacity: 0 }}
@@ -528,17 +547,19 @@ const TalkToMina: React.FC = () => {
       <ErrorBoundary
         fallback={<div className="flex items-center justify-center h-full bg-white">Failed to load 3D scene—check console for details.</div>}
       >
-      <div className="flex-1 relative">
+      <div className="flex-1 relative" style={{ minHeight: isMobile ? '60vh' : 'auto' }}>
         <Canvas
-  camera={{ 
-    // Mobile camera position (adjusted)
-    position: isMobile ? [0, 1.3, 2.3] : [0, 1.4, 1.5], 
-    // Mobile FOV (adjusted)
-    fov: isMobile ? 28 : 25 
-  }}
-  gl={{ antialias: false }}
-  className="w-full h-full"
->
+          key={`canvas-${isMobile ? 'mobile' : 'desktop'}`}
+          camera={{ 
+            // Mobile: higher Y (1.6) to look up at character, closer Z (1.8) to fill frame
+            // Desktop: standard position
+            position: isMobile ? [0, 1.6, 1.8] : [0, 1.4, 1.5], 
+            // Mobile: wider FOV to capture more of the scene
+            fov: isMobile ? 32 : 25 
+          }}
+          gl={{ antialias: false }}
+          className="w-full h-full"
+        >
           <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
           <ambientLight intensity={1} />
           <directionalLight

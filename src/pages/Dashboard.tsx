@@ -218,7 +218,8 @@ const Dashboard = () => {
 
   const stats = defaultStats;
 
-  if (isCompletedLoading || isEnrolledLoading || sessionsLoading) {
+  // Show loading state if user not ready or data is loading
+  if (!user || isCompletedLoading || isEnrolledLoading || sessionsLoading) {
       return (
         <motion.div
           className="min-h-screen bg-background relative"

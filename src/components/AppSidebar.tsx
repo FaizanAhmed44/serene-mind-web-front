@@ -23,6 +23,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -83,8 +84,17 @@ const menuItems = [
 export function AppSidebar() {
   const location = useLocation();
   const { user } = useAuth(); 
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  // Close sidebar on mobile when a menu item is clicked
+  const handleMenuClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const handleLogout = () => {
+    handleMenuClick();
     localStorage.removeItem("token");        
     window.location.href = "/login";
   };
@@ -131,6 +141,7 @@ export function AppSidebar() {
                       <Link
                         to={item.url}
                         className="flex items-center space-x-3 px-3 py-2"
+                        onClick={handleMenuClick}
                       >
                         <item.icon
                           size={16}
@@ -177,7 +188,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-gray-200 p-4">
-        <Link to="/profile">
+        <Link to="/profile" onClick={handleMenuClick}>
           <div className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-200 transition-colors duration-200 group cursor-pointer">
             {user?.avatar ? (
               <img
